@@ -24,6 +24,7 @@
     <fillPercent>0.5</fillPercent>
     <canOverlapZones>false</canOverlapZones>
     <castEdgeShadows>true</castEdgeShadows>
+    <selectable>true</selectable>
     <costList>
       <Steel>250</Steel>
       <Plasteel>75</Plasteel>

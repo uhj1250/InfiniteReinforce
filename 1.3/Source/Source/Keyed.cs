@@ -11,11 +11,11 @@ namespace InfiniteReinforce
 {
     public static class Keyed
     {
-        public static string InsertItem(string item) => "IR.InsertItem".Translate(item);
-        public static string ReinforcedCount(int count) => "IR.ReinforcedCount".Translate(count);
-        public static string FailedDamaged(string thing) => "IR.FailedDamaged".Translate(thing);
-        public static string FailedExplosion(string building) => "IR.FailedExplosion".Translate(building);
-        public static string FailedDestroy(string thing) => "IR.FailedDestroy".Translate(thing);
+        public static string InsertItem(string item) => "IR.InsertItem".Translate(item).CapitalizeFirst();
+        public static string ReinforcedCount(int count) => "IR.ReinforcedCount".Translate(count).CapitalizeFirst();
+        public static string FailedDamaged(string thing) => "IR.FailedDamaged".Translate(thing).CapitalizeFirst();
+        public static string FailedExplosion(string building) => "IR.FailedExplosion".Translate(building).CapitalizeFirst();
+        public static string FailedDestroy(string thing) => "IR.FailedDestroy".Translate(thing).CapitalizeFirst();
 
         public static string Translate(this ReinforceFailureResult result)
         {

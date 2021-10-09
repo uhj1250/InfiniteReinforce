@@ -13,8 +13,8 @@ namespace InfiniteReinforce
 {
     public class Building_Reinforcer : Building
     {
-        protected CompPowerTrader power;
-        protected CompThingContainer container;
+        protected CompPowerTrader power = null;
+        protected CompThingContainer container = null;
 
         public bool PowerOn
         {
@@ -27,7 +27,7 @@ namespace InfiniteReinforce
                 return power?.PowerOn ?? false;
             }
         }
-        public ThingWithComps HoldingItem => container?.ContainedThing as ThingWithComps;
+        public ThingWithComps HoldingItem => ContainerComp?.ContainedThing as ThingWithComps;
 
         public CompThingContainer ContainerComp
         {
@@ -42,18 +42,20 @@ namespace InfiniteReinforce
         public override void ExposeData()
         {
             base.ExposeData();
+
+
         }
 
 
         public void InsertItem(ThingWithComps item)
         {
-            container.innerContainer.Take(item);
+            ContainerComp.innerContainer.Take(item);
         }
 
         public void ExtractItem()
         {
             
-            if (container.innerContainer.TryDropAll(InteractionCell, Map, ThingPlaceMode.Near))
+            if (ContainerComp.innerContainer.TryDropAll(InteractionCell, Map, ThingPlaceMode.Near))
             {
 
             }

@@ -27,7 +27,7 @@
             <clipFolderPath>Impact/BuildingDestroyed/Metal/Big</clipFolderPath>
           </li>
         </grains>
-        <volumeRange>20~20</volumeRange>
+        <volumeRange>30~30</volumeRange>
         <onCamera>true</onCamera>
       </li>
     </subSounds>
@@ -43,7 +43,7 @@
             <clipFolderPath>Impact/BuildingDestroyed/Metal/Medium</clipFolderPath>
           </li>
         </grains>
-        <volumeRange>20~20</volumeRange>
+        <volumeRange>30~30</volumeRange>
         <onCamera>true</onCamera>
       </li>
     </subSounds>
@@ -59,10 +59,33 @@
             <clipFolderPath>Impact/BuildingDestroyed/Metal/Small</clipFolderPath>
           </li>
         </grains>
-        <volumeRange>20~20</volumeRange>
+        <volumeRange>30~30</volumeRange>
         <onCamera>true</onCamera>
       </li>
     </subSounds>
   </SoundDef>
 
+  
+  <SoundDef>
+    <defName>Reinforce_Progress</defName>  
+    <sustain>True</sustain>  
+    <maxVoices>3</maxVoices>  
+    <priorityMode>PrioritizeNearest</priorityMode>  
+    <sustainStopSound>Machining_Stop</sustainStopSound>  
+    <sustainFadeoutTime>0.25</sustainFadeoutTime>  
+    <subSounds>
+      <li>
+        <muteWhenPaused>True</muteWhenPaused>      
+        <grains>
+          <li Class="AudioGrain_Folder">
+            <clipFolderPath>Interact/Work/Machine/Loop</clipFolderPath>
+          </li>
+        </grains>      
+        <volumeRange>30~30</volumeRange>      
+        <pitchRange>0.9541177~1.137647</pitchRange>      
+        <sustainLoop>False</sustainLoop>
+        <onCamera>true</onCamera>
+      </li>
+    </subSounds>
+  </SoundDef>
 </Defs>

@@ -17,6 +17,7 @@ namespace InfiniteReinforce
         public static readonly SoundDef Reinforce_FailedCritical;
         public static readonly SoundDef Reinforce_FailedNormal;
         public static readonly SoundDef Reinforce_FailedMinor;
+        public static readonly SoundDef Reinforce_Progress;
 
         public static readonly ReinforceDef Reinforce_Hitpoint;
         public static readonly ReinforceDef Reinforce_Reloadable;

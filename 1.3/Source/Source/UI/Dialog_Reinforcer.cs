@@ -36,6 +36,7 @@ namespace InfiniteReinforce
         protected List<ThingDefCountClass> thingcountcache = new List<ThingDefCountClass>();
         protected List<string> reinforcehistory = new List<string>();
         protected string reinforcehistorycache;
+        protected Sustainer sustainer;
 
         protected ThingWithComps thing => building?.HoldingItem;
         protected ThingComp_Reinforce comp
@@ -177,6 +178,7 @@ namespace InfiniteReinforce
                 selectedindex = index;
                 reinforceaction = action;
                 reinforcehistorycache = resultstring;
+                sustainer = ReinforceDefOf.Reinforce_Progress.TrySpawnSustainer(SoundInfo.OnCamera());
             }
             else 
             {
@@ -186,6 +188,7 @@ namespace InfiniteReinforce
 
         public bool Reinforced()
         {
+            sustainer.End();
             ResetProgress();
             if (thing != null)
             {
@@ -237,11 +240,11 @@ namespace InfiniteReinforce
                     break;
                 case ReinforceFailureResult.DamageLittle:
                     DamageThing(Rand.Range(1, 10));
-                    if (!thing.Destroyed) Find.LetterStack.ReceiveLetter(Keyed.FailedLetter, Keyed.FailedDamaged(thing.Label), LetterDefOf.NegativeEvent, building);
+                    if (!thing?.Destroyed ?? false) Find.LetterStack.ReceiveLetter(Keyed.FailedLetter, Keyed.FailedDamaged(thing.Label), LetterDefOf.NegativeEvent, building);
                     break;
                 case ReinforceFailureResult.DamageLarge:
                     DamageThing(Rand.Range(10, 60));
-                    if (!thing.Destroyed) Find.LetterStack.ReceiveLetter(Keyed.FailedLetter, Keyed.FailedDamaged(thing.Label), LetterDefOf.NegativeEvent, building);
+                    if (!thing?.Destroyed ?? false) Find.LetterStack.ReceiveLetter(Keyed.FailedLetter, Keyed.FailedDamaged(thing.Label), LetterDefOf.NegativeEvent, building);
                     break;
                 case ReinforceFailureResult.Explosion:
                     Find.LetterStack.ReceiveLetter(Keyed.FailedLetter, Keyed.FailedExplosion(building.Label), LetterDefOf.NegativeEvent, building);
@@ -259,10 +262,11 @@ namespace InfiniteReinforce
 
         public void DamageThing(float damage)
         {
-            if (thing.HitPoints < damage)
+            if (thing.HitPoints <= damage)
             {
-                thing.Destroy(DestroyMode.Vanish);
                 Find.LetterStack.ReceiveLetter(Keyed.FailedLetter, Keyed.FailedDestroy(thing.Label), LetterDefOf.Death, building);
+                ReinforceDefOf.Reinforce_FailedCritical.PlayOneShotOnCamera();
+                thing.Destroy(DestroyMode.Vanish);
             }
             else
             {
@@ -396,10 +400,11 @@ namespace InfiniteReinforce
 
             Rect failureRect = listmain.GetRect(FontHeight);
 
-            GUI.color = Color.red;
+            float chance = comp.GetFailureChance((float)building.MaxHitPoints / building.HitPoints);
+            GUI.color = Color.Lerp(Color.green,Color.red, chance/50f);
             GUI.Box(failureRect, "");
             GUI.Label(failureRect, " " + Keyed.FailureChance, fontleft);
-            GUI.Label(failureRect, comp.GetFailureChance((float)building.MaxHitPoints / building.HitPoints) + "% ", fontright);
+            GUI.Label(failureRect, String.Format(" {0:0.00}%", chance), fontright);
             GUI.color = Color.white;
 
             for(int i=0; i<statlist.Count; i++)

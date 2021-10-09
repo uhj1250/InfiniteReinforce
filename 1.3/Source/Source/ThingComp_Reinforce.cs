@@ -95,7 +95,11 @@ namespace InfiniteReinforce
             QualityCategory cat;
             if (parent.TryGetQuality(out cat))
             {
-                GenMapUI.DrawThingLabel(parent, cat.GetLabelShort() + "+1");
+                GenMapUI.DrawThingLabel(parent, cat.GetLabelShort() + " +" + reinforced);
+            }
+            else
+            {
+                GenMapUI.DrawThingLabel(parent, "+" + reinforced);
             }
         }
 
