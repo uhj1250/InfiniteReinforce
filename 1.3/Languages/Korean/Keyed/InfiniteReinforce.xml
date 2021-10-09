@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <IR.Reinforce>강화</IR.Reinforce>
+  <IR.ReinforceDesc>아이템을 강화합니다.</IR.ReinforceDesc>
+  <IR.TakeOut>꺼내기</IR.TakeOut>
+  <IR.TakeOutDesc>아이템을 꺼냅니다.</IR.TakeOutDesc>
+  <IR.Empty>비어있음</IR.Empty>
+  <IR.InsertItem>{0}를 강화기에 넣기</IR.InsertItem>
+  <IR.ReinforcedCount>{0}번 강화됨</IR.ReinforcedCount>
+  <IR.NotEnough>자원부족</IR.NotEnough>
+  <IR.Success>성공</IR.Success>
+  <IR.Failed>실패함</IR.Failed>
+  <IR.History>강화기록</IR.History>
+  <IR.ReinforceStatPart>강화됨: x</IR.ReinforceStatPart>
+  <IR.Materials>재료</IR.Materials>
+  <IR.FailedLetter>강화 실패</IR.FailedLetter>
+  <IR.FailedDamaged>{0}이(가) 손상되었습니다.</IR.FailedDamaged>
+  <IR.FailedExplosion>{0}이(가) 폭발했습니다.</IR.FailedExplosion>
+  <IR.FailedDestroy>{0}이(가) 파괴되었습니다.</IR.FailedDestroy>
+  <IR.FailureChance>실패 확률</IR.FailureChance>
+  <IR.FailureOutcome>실패 효과</IR.FailureOutcome>
+  <IR.Failure>실패</IR.Failure>
+  <IR.MinorDamage>경미한 손상</IR.MinorDamage>
+  <IR.MajorDamage>심각한 손상</IR.MajorDamage>
+  <IR.Explosion>폭발</IR.Explosion>
+  <IR.Destruction>파괴</IR.Destruction>
+
+</LanguageData>

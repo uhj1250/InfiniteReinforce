@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<Defs>
+	<InfiniteReinforce.ReinforceableStatDef>
+		<defName>Mass</defName>
+		<reversal>true</reversal>
+	</InfiniteReinforce.ReinforceableStatDef>
+
+	<InfiniteReinforce.ReinforceableStatDef>
+		<defName>RangedWeapon_DamageMultiplier</defName>
+		<offsetPerLevel>0.003</offsetPerLevel>
+		<isGeneric>false</isGeneric>
+	</InfiniteReinforce.ReinforceableStatDef>
+
+	<InfiniteReinforce.ReinforceableStatDef>
+		<defName>MeleeWeapon_DamageMultiplier</defName>
+		<offsetPerLevel>0.003</offsetPerLevel>
+		<isGeneric>false</isGeneric>
+	</InfiniteReinforce.ReinforceableStatDef>
+
+</Defs>

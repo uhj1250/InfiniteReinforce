@@ -1,0 +1,68 @@
+﻿<?xml version="1.0" encoding="utf-8"?><Defs>
+
+  <SoundDef>
+    <defName>Reinforce_Success</defName>
+    <maxSimultaneous>1</maxSimultaneous>
+    <subSounds>
+      <li>
+        <grains>
+          <li Class="AudioGrain_Clip">
+            <clipPath>Misc/CryptosleepCasket/CryptosleepCasketEject</clipPath>
+          </li>
+        </grains>
+        <volumeRange>15~15</volumeRange>
+        <onCamera>true</onCamera>
+      </li>
+    </subSounds>
+  </SoundDef>
+
+  <SoundDef>
+    <defName>Reinforce_FailedCritical</defName>
+    <context>MapOnly</context>
+    <maxSimultaneous>2</maxSimultaneous>
+    <subSounds>
+      <li>
+        <grains>
+          <li Class="AudioGrain_Folder">
+            <clipFolderPath>Impact/BuildingDestroyed/Metal/Big</clipFolderPath>
+          </li>
+        </grains>
+        <volumeRange>20~20</volumeRange>
+        <onCamera>true</onCamera>
+      </li>
+    </subSounds>
+  </SoundDef>
+
+  <SoundDef>
+    <defName>Reinforce_FailedNormal</defName>
+    <maxSimultaneous>2</maxSimultaneous>
+    <subSounds>
+      <li>
+        <grains>
+          <li Class="AudioGrain_Folder">
+            <clipFolderPath>Impact/BuildingDestroyed/Metal/Medium</clipFolderPath>
+          </li>
+        </grains>
+        <volumeRange>20~20</volumeRange>
+        <onCamera>true</onCamera>
+      </li>
+    </subSounds>
+  </SoundDef>
+
+  <SoundDef>
+    <defName>Reinforce_FailedMinor</defName>
+    <maxSimultaneous>2</maxSimultaneous>
+    <subSounds>
+      <li>
+        <grains>
+          <li Class="AudioGrain_Folder">
+            <clipFolderPath>Impact/BuildingDestroyed/Metal/Small</clipFolderPath>
+          </li>
+        </grains>
+        <volumeRange>20~20</volumeRange>
+        <onCamera>true</onCamera>
+      </li>
+    </subSounds>
+  </SoundDef>
+
+</Defs>

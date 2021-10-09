@@ -1,0 +1,74 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+  <ThingDef ParentName="BuildingBase">
+    <defName>EquipmentReinforcer</defName>
+    <label>equipment reinforcer</label>
+    <description>A machine that eliminates tons of resources.&#10;&#10;If damaged, eliminating effeciency increases.</description>
+    <thingClass>InfiniteReinforce.Building_Reinforcer</thingClass>
+    <graphicData>
+      <texPath>Things/Building/Reinforcer/Reinforcer</texPath>
+      <graphicClass>Graphic_Multi</graphicClass>
+      <shadowData>
+        <volume>(2.9,0.6,1.9)</volume>
+      </shadowData>
+      <drawSize>(3, 2)</drawSize>
+    </graphicData>
+    <drawerType>MapMeshAndRealTime</drawerType>
+    <drawGUIOverlay>true</drawGUIOverlay>
+    <defaultPlacingRot>South</defaultPlacingRot>
+    <altitudeLayer>Building</altitudeLayer>
+    <passability>PassThroughOnly</passability>
+    <pathCost>42</pathCost>
+    <blockWind>true</blockWind>
+    <fillPercent>0.5</fillPercent>
+    <canOverlapZones>false</canOverlapZones>
+    <castEdgeShadows>true</castEdgeShadows>
+    <costList>
+      <Steel>250</Steel>
+      <Plasteel>75</Plasteel>
+      <ComponentSpacer>1</ComponentSpacer>
+    </costList>
+    <researchPrerequisites><li>MicroelectronicsBasics</li></researchPrerequisites>
+    <constructionSkillPrerequisite>8</constructionSkillPrerequisite>
+    <statBases>
+      <MaxHitPoints>300</MaxHitPoints>
+      <WorkToBuild>25000</WorkToBuild>
+      <Mass>75</Mass>
+      <Flammability>0.1</Flammability>
+      <Beauty>-5</Beauty>
+    </statBases>
+    <size>(3, 2)</size>
+    <interactionCellOffset>(0,0,2)</interactionCellOffset>
+    <hasInteractionCell>true</hasInteractionCell>
+    <building>
+      <destroySound>BuildingDestroyed_Metal_Big</destroySound>
+    </building>
+    <designationCategory>Misc</designationCategory>
+    <minifiedDef>MinifiedThing</minifiedDef>
+    <thingCategories>
+      <li>BuildingsMisc</li>
+    </thingCategories>
+    <tickerType>Normal</tickerType>
+    <inspectorTabs>
+      <li>ITab_Storage</li>
+    </inspectorTabs>
+    <surfaceType>Item</surfaceType>
+    <comps>
+      <li Class="CompProperties_Power">
+        <compClass>CompPowerTrader</compClass>
+        <basePowerConsumption>250</basePowerConsumption>
+      </li>
+      <li Class="CompProperties_Flickable"/>
+      <li Class="CompProperties_ThingContainer">
+        <compClass>InfiniteReinforce.CompReinforcerContainer</compClass>
+        <containedThingOffset>(0,0,1)</containedThingOffset>
+        <stackLimit>1</stackLimit>
+      </li>
+    </comps>
+    <placeWorkers>
+      <li>PlaceWorker_PreventInteractionSpotOverlap</li>
+    </placeWorkers>
+  </ThingDef>
+
+</Defs>

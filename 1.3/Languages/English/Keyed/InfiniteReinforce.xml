@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <IR.Reinforce>Reinforce</IR.Reinforce>
+  <IR.ReinforceDesc>Reinforce the item.</IR.ReinforceDesc>
+  <IR.TakeOut>Take out</IR.TakeOut>
+  <IR.TakeOutDesc>Take out the item.</IR.TakeOutDesc>
+  <IR.Empty>Empty</IR.Empty>
+  <IR.InsertItem>Insert {0} into reinforcer</IR.InsertItem>
+  <IR.ReinforcedCount>Reinforced {0} times</IR.ReinforcedCount>
+  <IR.NotEnough>Not enough resources</IR.NotEnough>
+  <IR.Success>Success</IR.Success>
+  <IR.Failed>Failed</IR.Failed>
+  <IR.History>History</IR.History>
+  <IR.ReinforceStatPart>Reinforced: x</IR.ReinforceStatPart>
+  <IR.Materials>Materials</IR.Materials>
+  <IR.FailedLetter>Reinforce Failed</IR.FailedLetter>
+  <IR.FailedDamaged>{0} had damaged.</IR.FailedDamaged>
+  <IR.FailedExplosion>{0} had exploded.</IR.FailedExplosion>
+  <IR.FailedDestroy>{0} had destroyed.</IR.FailedDestroy>
+  <IR.FailureChance>Chance of failure</IR.FailureChance>
+  <IR.FailureOutcome>Failure outcome</IR.FailureOutcome>
+  <IR.Failure>Failure</IR.Failure>
+  <IR.MinorDamage>Minor damage</IR.MinorDamage>
+  <IR.MajorDamage>Major damage</IR.MajorDamage>
+  <IR.Explosion>Explosion</IR.Explosion>
+  <IR.Destruction>Destruction</IR.Destruction>
+</LanguageData>

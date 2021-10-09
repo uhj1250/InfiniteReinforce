@@ -1,0 +1,60 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using RimWorld;
+using Verse;
+
+
+
+namespace InfiniteReinforce
+{
+    [StaticConstructorOnStartup]
+    public static class DefInjection
+    {
+        static DefInjection()
+        {
+
+            CompProperties prop = new CompProperties(typeof(ThingComp_Reinforce));
+            //StatPart_Reinforce part = new StatPart_Reinforce();
+            //StatPart_Reinforce_Reversal partrev = new StatPart_Reinforce_Reversal();
+            List<ReinforceableStatDef> whitelist = DefDatabase<ReinforceableStatDef>.AllDefs.ToList();
+            List<ThingDef> things = DefDatabase<ThingDef>.AllDefs.Where(x => x.IsReinforcable()).ToList();
+            List<StatDef> stats = DefDatabase<StatDef>.AllDefs.Where(x => whitelist.Exists(y => y.defName.Equals(x.defName)) || (x.category.IsReinforcable() && !ExcludedStatDefs(x))).ToList();
+            for (int i=0; i<things.Count; i++)
+            {
+                things[i].comps.Add(prop);
+                things[i].drawGUIOverlayQuality = false;
+            }
+            for (int i=0; i<stats.Count; i++)
+            {
+                if (stats[i].parts == null)
+                {
+                    stats[i].parts = new List<StatPart>();
+                }
+                string deflower = stats[i].defName.ToLower();
+                ReinforceableStatDef def = DefDatabase<ReinforceableStatDef>.GetNamedSilentFail(stats[i].defName);
+                if (def != null)
+                {
+                    if (!def.reversal) stats[i].parts.Add(new StatPart_Reinforce());
+                    else stats[i].parts.Add(new StatPart_Reinforce_Reversal());
+                }
+                else if (deflower.Contains("cooldown")) stats[i].parts.Add(new StatPart_Reinforce_Reversal());
+                else if (deflower.Contains("delay")) stats[i].parts.Add(new StatPart_Reinforce_Reversal());
+                else stats[i].parts.Add(new StatPart_Reinforce());
+            }
+            ReinforceUtility.ReinforcableStats = stats;
+            ReinforceUtility.WhiteList = whitelist;
+        }
+
+        public static bool ExcludedStatDefs(StatDef stat)
+        {
+            string deflower = stat.defName.ToLower();
+            return deflower.Contains("dps") || deflower.Contains("insulation");
+        }
+
+
+
+    }
+}
