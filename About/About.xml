@@ -17,6 +17,6 @@
 		<li>brrainz.harmony</li>
 		<li>latta.infusion</li>
 	</loadAfter>
-	<packageId>inf.reinforce</packageId>
+	<packageId>O.inf.reinforce</packageId>
 	<description>Infinite reinforcement(requires infinite resource)</description>
 </ModMetaData>
