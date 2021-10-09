@@ -36,7 +36,6 @@ namespace InfiniteReinforce
         protected List<ThingDefCountClass> thingcountcache = new List<ThingDefCountClass>();
         protected List<string> reinforcehistory = new List<string>();
         protected string reinforcehistorycache;
-        protected Sustainer sustainer;
 
         protected ThingWithComps thing => building?.HoldingItem;
         protected ThingComp_Reinforce comp
@@ -178,7 +177,6 @@ namespace InfiniteReinforce
                 selectedindex = index;
                 reinforceaction = action;
                 reinforcehistorycache = resultstring;
-                sustainer = ReinforceDefOf.Reinforce_Progress.TrySpawnSustainer(SoundInfo.OnCamera());
             }
             else 
             {
@@ -188,7 +186,6 @@ namespace InfiniteReinforce
 
         public bool Reinforced()
         {
-            sustainer.End();
             ResetProgress();
             if (thing != null)
             {
