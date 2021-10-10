@@ -42,7 +42,7 @@ namespace InfiniteReinforce
             int qc = 0;
             if (parent.TryGetQuality(out QualityCategory quality)) qc = (int)quality - 2;
 
-            return 1.0f + (reinforcedcount + qc) * FactorPer;
+            return Math.Max(0, 1.0f + (reinforcedcount + qc) * FactorPer);
         }
 
         public float CostMultiplierOf(int start, int dest)

@@ -94,6 +94,14 @@ namespace InfiniteReinforce
         public static bool IsStatAppliable(this StatDef stat, ThingWithComps thing)
         {
             string deflower;
+            ReinforceableStatDef def = WhiteList.FirstOrDefault(x => x.defName.Equals(stat.defName));
+            if (def != null)
+            {
+                if (def.disable) return false;
+                else if (def.isGeneric) return true;
+                else if (def.workerClass != null) return def.Worker.IsAppliable(thing);
+            }
+
             if (StatRequest.For(thing).StatBases.StatListContains(stat))
             {
                 return true;
@@ -108,10 +116,6 @@ namespace InfiniteReinforce
             {
                 deflower = stat.defName.ToLower();
                 if (thing.Stuff != null && deflower.Contains("stuff")) return true;
-            }
-            else if (WhiteList.Exists(x => x.defName.Equals(stat.defName) && x.isGeneric))
-            {
-                return true;
             }
 
 

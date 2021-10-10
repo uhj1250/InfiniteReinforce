@@ -21,7 +21,7 @@
   <IR.FailureOutcome>Failure outcome</IR.FailureOutcome>
   <IR.Failure>Failure</IR.Failure>
   <IR.MinorDamage>Minor damage</IR.MinorDamage>
-  <IR.MajorDamage>Major damage</IR.MajorDamage>
+  <IR.MajorDamage>Serious damage</IR.MajorDamage>
   <IR.Explosion>Explosion</IR.Explosion>
   <IR.Destruction>Destruction</IR.Destruction>
 </LanguageData>

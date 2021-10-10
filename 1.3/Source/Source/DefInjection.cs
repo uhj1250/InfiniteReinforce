@@ -37,6 +37,7 @@ namespace InfiniteReinforce
                 ReinforceableStatDef def = DefDatabase<ReinforceableStatDef>.GetNamedSilentFail(stats[i].defName);
                 if (def != null)
                 {
+                    if (def.disable) continue;
                     if (!def.reversal) stats[i].parts.Add(new StatPart_Reinforce());
                     else stats[i].parts.Add(new StatPart_Reinforce_Reversal());
                 }

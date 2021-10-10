@@ -101,24 +101,34 @@ namespace InfiniteReinforce
 
         public void BuildCostList()
         {
-            costlist = thing.def.CostList;
-            if (costlist == null) costlist = new List<ThingDefCountClass>();
-            if (thing.Stuff != null)
+            ReinforceCostDef costDef = DefDatabase<ReinforceCostDef>.GetNamedSilentFail(thing.def.defName);
+            if (costDef != null)
             {
-                ThingDefCountClass stuff = costlist.FirstOrDefault(x => x.thingDef == thing.Stuff);
-                if (stuff != null)
+                costlist = costDef.costList;
+                if (costlist == null) costlist = new List<ThingDefCountClass>();
+            }
+            else
+            {
+                costlist = thing.def.CostList;
+                if (costlist == null) costlist = new List<ThingDefCountClass>();
+                if (thing.Stuff != null)
                 {
-                    stuff.count += thing.def.costStuffCount;
-                }
-                else
-                {
-                    costlist.Add(new ThingDefCountClass(thing.Stuff, thing.def.CostStuffCount));
+                    ThingDefCountClass stuff = costlist.FirstOrDefault(x => x.thingDef == thing.Stuff);
+                    if (stuff != null)
+                    {
+                        stuff.count += thing.def.costStuffCount;
+                    }
+                    else
+                    {
+                        costlist.Add(new ThingDefCountClass(thing.Stuff, thing.def.CostStuffCount));
+                    }
                 }
             }
             if (costlist.NullOrEmpty())
             {
                 costlist.Add(new ThingDefCountClass(thing.def, 1));
             }
+
 
         }
 
@@ -177,6 +187,7 @@ namespace InfiniteReinforce
                 selectedindex = index;
                 reinforceaction = action;
                 reinforcehistorycache = resultstring;
+                ReinforceDefOf.Reinforce_Progress.PlayOneShotOnCamera();
             }
             else 
             {
@@ -276,7 +287,8 @@ namespace InfiniteReinforce
         public void Explosion()
         { 
             DamageThing(Rand.Range(30, 80));
-            GenExplosion.DoExplosion(building.Position, building.Map, Rand.Range(1, 3), DamageDefOf.Bomb ,building, Rand.Range(50, 120));
+            building.HitPoints = Math.Max((int)(building.HitPoints * Rand.Range(0.65f,0.90f)), 1);
+            GenExplosion.DoExplosion(building.Position, building.Map, Rand.Range(1, 3), DamageDefOf.Bomb, building, Rand.Range(50, 120));
         }
 
         public static void ToggleWindow(Building_Reinforcer building)
