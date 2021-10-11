@@ -93,13 +93,21 @@ namespace InfiniteReinforce
         public override void DrawGUIOverlay()
         {
             QualityCategory cat;
+            ThingWithComps thing = parent;
+            int count = reinforced;
+            if (thing is MinifiedThing)
+            {
+                thing = thing.GetInnerIfMinified() as ThingWithComps;
+                count = thing.GetReinforcedCount();
+            }
+
             if (parent.TryGetQuality(out cat))
             {
-                GenMapUI.DrawThingLabel(parent, cat.GetLabelShort() + " +" + reinforced);
+                GenMapUI.DrawThingLabel(thing, cat.GetLabelShort() + " +" + count);
             }
             else
             {
-                GenMapUI.DrawThingLabel(parent, "+" + reinforced);
+                GenMapUI.DrawThingLabel(thing, "+" + count);
             }
         }
 

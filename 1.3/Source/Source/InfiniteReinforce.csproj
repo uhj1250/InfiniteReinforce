@@ -97,6 +97,7 @@
     <Compile Include="ReinforceWorkers\ReinforceableWorker.cs" />
     <Compile Include="ReinforceWorkers\ReinforceableWorker_Basics.cs" />
     <Compile Include="ReinforceWorkers\ReinforceWorker.cs" />
+    <Compile Include="ReinforceWorkers\ReinforceWorker_EquippedStatOffsets.cs" />
     <Compile Include="ReinforceWorkers\ReinforceWorker_MaxHitPoint.cs" />
     <Compile Include="ReinforceWorkers\ReinforceWorker_Rechargeable.cs" />
     <Compile Include="UI\Dialog_Reinforcer.cs" />

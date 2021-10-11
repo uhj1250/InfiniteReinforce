@@ -15,7 +15,7 @@ namespace InfiniteReinforce
 
         public override bool Accepts(Thing thing)
         {
-            return thing.IsReinforcable();
+            return !(thing is Building) && thing.IsReinforcable();
         }
 
         public override bool Accepts(ThingDef thingDef)

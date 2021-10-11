@@ -102,6 +102,7 @@ namespace InfiniteReinforce
         public void BuildCostList()
         {
             ReinforceCostDef costDef = DefDatabase<ReinforceCostDef>.GetNamedSilentFail(thing.def.defName);
+            if (!costlist.NullOrEmpty()) costlist.Clear();
             if (costDef != null)
             {
                 costlist = costDef.costList;
@@ -206,14 +207,14 @@ namespace InfiniteReinforce
                 if (success ?? false)
                 {
                     reinforceaction();
-                    reinforcehistory.Add(reinforcehistorycache);
+                    reinforcehistory.Add(reinforcehistorycache.CapitalizeFirst());
                     ReinforceDefOf.Reinforce_Success.PlayOneShotOnCamera();
                     return true;
                 }
                 else
                 {
                     ReinforceFailureResult effect = FailureEffect(totalweight, weights);
-                    reinforcehistory.Add(Keyed.Failed + " - " + effect.Translate());
+                    reinforcehistory.Add(Keyed.Failed.CapitalizeFirst() + " - " + effect.Translate());
                     return false;
                 }
             }
@@ -325,6 +326,10 @@ namespace InfiniteReinforce
             }
         }
 
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// From here, UI stuffs
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        
 
         public override void DoWindowContents(Rect inRect)
         {
@@ -429,6 +434,11 @@ namespace InfiniteReinforce
             
             listmain.End();
         }
+        
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// UI components
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
 
         protected void ThingInfo(Rect rect)
         {
@@ -445,10 +455,10 @@ namespace InfiniteReinforce
             Widgets.DrawTextureFitted(iconRect, thing.def.uiIcon, 1.0f);
             GUI.color = Color.white;
 
-            GUI.Label(labelRect, " " + thing.Label, fontleft);
-            GUI.Label(labelRect2, " " + StatDefOf.MarketValue.label + ": " + thing.GetStatValue(StatDefOf.MarketValue), fontleft);
+            GUI.Label(labelRect, " " + thing.Label.CapitalizeFirst(), fontleft);
+            GUI.Label(labelRect2, " " + StatDefOf.MarketValue.label.CapitalizeFirst() + ": " + thing.GetStatValue(StatDefOf.MarketValue), fontleft);
             Widgets.FillableBar(labelRect3.ContractedBy(2f), (float)thing.HitPoints/thing.MaxHitPoints, Texture2D.linearGrayTexture);
-            GUI.Label(labelRect3, " " + StatDefOf.MaxHitPoints.label + " " + String.Format("{0} / {1}", thing.HitPoints, thing.MaxHitPoints), fontleft);
+            GUI.Label(labelRect3, " " + StatDefOf.MaxHitPoints.label.CapitalizeFirst() + " " + String.Format("{0} / {1}", thing.HitPoints, thing.MaxHitPoints), fontleft);
         }
 
         protected void ReinforceHistory(Rect rect)

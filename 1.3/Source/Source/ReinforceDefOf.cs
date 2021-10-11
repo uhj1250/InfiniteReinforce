@@ -21,6 +21,7 @@ namespace InfiniteReinforce
 
         public static readonly ReinforceDef Reinforce_Hitpoint;
         public static readonly ReinforceDef Reinforce_Reloadable;
+        public static readonly ReinforceDef Reinforce_EquippedStatOffset;
 
 
 

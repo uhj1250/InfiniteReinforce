@@ -28,6 +28,15 @@ namespace InfiniteReinforce
             }
         }
         public ThingWithComps HoldingItem => ContainerComp?.ContainedThing as ThingWithComps;
+        //{
+        //    get
+        //    {
+        //        ThingWithComps res;
+        //        res = ContainerComp?.ContainedThing as ThingWithComps;
+        //        if (res is MinifiedThing) return res.GetInnerIfMinified() as ThingWithComps;
+        //        return res;
+        //    }
+        //}
 
         public CompThingContainer ContainerComp
         {

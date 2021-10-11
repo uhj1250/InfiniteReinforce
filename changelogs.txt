@@ -1,3 +1,7 @@
+Version 1.0.0.2
+ - Armor - Material effect multiplier increment factor decreased.
+ - Added equipped stat offset reinforce.
+
 Version 1.0.0.1
  - Persona weapons requires its normal version.
  - CE compatible.

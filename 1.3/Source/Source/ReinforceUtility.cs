@@ -42,6 +42,16 @@ namespace InfiniteReinforce
             return 1.0f;
         }
 
+        public static float GetReinforceCustomFactor(this ThingWithComps thing, ReinforceDef def)
+        {
+            ThingComp_Reinforce reinforce = thing.GetReinforceComp();
+            if (reinforce != null)
+            {
+                return reinforce.GetCustomFactor(def);
+            }
+            return 1.0f;
+        }
+
         public static void GetReinforceInfo(this ThingComp_Reinforce reinforce, StatDef def, out float factor, out int count)
         {
             float fres = 1.0f;
@@ -65,7 +75,6 @@ namespace InfiniteReinforce
             return 0;
         }
 
-
         public static bool TryReinforce(this ThingWithComps thing, StatDef stat, int level = 1)
         {
             ThingComp_Reinforce comp = thing.GetReinforceComp();
@@ -78,22 +87,26 @@ namespace InfiniteReinforce
 
         public static bool IsReinforcable(this Thing thing)
         {
-            return IsReinforcable(thing.def);
+            MinifiedThing minified = thing as MinifiedThing;
+            return (minified !=null && minified.InnerThing.def.IsReinforcable()) || (thing is ThingWithComps && IsReinforcable(thing.def));
         }
 
         public static bool IsReinforcable(this ThingDef thingDef)
         {
-            return thingDef.stackLimit <= 1 && (thingDef.IsApparel || thingDef.IsWeapon);
+            return thingDef.stackLimit <= 1 && (thingDef.IsApparel || thingDef.IsWeapon || thingDef.minifiedDef != null);
         }
+
 
         public static bool IsReinforcable(this StatCategoryDef category)
         {
-            return category == StatCategoryDefOf.Weapon || category == StatCategoryDefOf.Apparel || category == StatCategoryDefOf.StuffStatFactors;
+            return category == StatCategoryDefOf.Weapon || category == StatCategoryDefOf.Apparel;
         }
 
         public static bool IsStatAppliable(this StatDef stat, ThingWithComps thing)
         {
+            if (thing.GetStatValue(stat) == 0) return false;
             string deflower;
+
             ReinforceableStatDef def = WhiteList.FirstOrDefault(x => x.defName.Equals(stat.defName));
             if (def != null)
             {
@@ -106,17 +119,29 @@ namespace InfiniteReinforce
             {
                 return true;
             }
-            else if (stat.category == StatCategoryDefOf.Weapon && thing.def.IsWeapon)
+            else if (stat.category == StatCategoryDefOf.Weapon)
             {
                 deflower = stat.defName.ToLower();
-                if (thing.def.IsRangedWeapon && deflower.Contains("range")) return true;
-                else if (thing.def.IsMeleeWeapon && deflower.Contains("melee")) return true;
+                if (thing.def.IsWeapon)
+                {
+                    if (thing.def.IsRangedWeapon && deflower.Contains("range")) return true;
+                    else if (thing.def.IsMeleeWeapon && deflower.Contains("melee")) return true;
+                }
+                //else if (thing is Building_Turret)
+                //{
+                //    if (deflower.Contains("range")) return true;
+                //}
             }
             else if (stat.category == StatCategoryDefOf.Apparel && thing.def.IsApparel)
             {
                 deflower = stat.defName.ToLower();
                 if (thing.Stuff != null && deflower.Contains("stuff")) return true;
             }
+            //else if (stat.category == StatCategoryDefOf.Building && thing.def.IsBuildingArtificial)
+            //{
+            //
+            //}
+            
 
 
             return false;
@@ -212,6 +237,16 @@ namespace InfiniteReinforce
             return BaseWeights;
         }
 
+        public static bool LowerIsBetter(this StatDef stat)
+        {
+            string deflower = stat.defName.ToLower();
+
+            if (deflower.Contains("delay")
+                || deflower.Contains("cooldown")) return true;
+
+            return false;
+
+        }
 
     }
 }

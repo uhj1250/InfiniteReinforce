@@ -18,4 +18,9 @@
 		<isGeneric>false</isGeneric>
 	</InfiniteReinforce.ReinforceableStatDef>
 
+	<InfiniteReinforce.ReinforceableStatDef>
+		<defName>StuffEffectMultiplierArmor</defName>
+		<offsetPerLevel>0.002</offsetPerLevel>
+		<isGeneric>false</isGeneric>
+	</InfiniteReinforce.ReinforceableStatDef>
 </Defs>

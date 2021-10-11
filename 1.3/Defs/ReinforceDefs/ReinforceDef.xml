@@ -17,4 +17,11 @@
 		<offsetPerLevel>1.00</offsetPerLevel>
 	</InfiniteReinforce.ReinforceDef>
 
+	<InfiniteReinforce.ReinforceDef>
+		<defName>Reinforce_EquippedStatOffset</defName>
+		<label>equipeed stat offset</label>
+		<workerClass>InfiniteReinforce.ReinforceWorker_EquippedStatOffsets</workerClass>
+		<levelRange>1~25</levelRange>
+		<offsetPerLevel>0.005</offsetPerLevel>
+	</InfiniteReinforce.ReinforceDef>
 </Defs>
