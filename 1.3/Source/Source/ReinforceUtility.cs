@@ -87,13 +87,13 @@ namespace InfiniteReinforce
 
         public static bool IsReinforcable(this Thing thing)
         {
-            MinifiedThing minified = thing as MinifiedThing;
-            return (minified !=null && minified.InnerThing.def.IsReinforcable()) || (thing is ThingWithComps && IsReinforcable(thing.def));
+            //MinifiedThing minified = thing as MinifiedThing; (minified !=null && minified.InnerThing.def.IsReinforcable()) || 
+            return (thing is ThingWithComps && IsReinforcable(thing.def));
         }
 
         public static bool IsReinforcable(this ThingDef thingDef)
         {
-            return thingDef.stackLimit <= 1 && (thingDef.IsApparel || thingDef.IsWeapon || thingDef.minifiedDef != null);
+            return thingDef.stackLimit <= 1 && (thingDef.IsApparel || thingDef.IsWeapon);
         }
 
 
