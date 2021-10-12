@@ -38,6 +38,8 @@ namespace InfiniteReinforce
         protected string reinforcehistorycache;
 
         protected ThingWithComps thing => building?.HoldingItem;
+
+
         protected ThingComp_Reinforce comp
         {
             get
@@ -101,33 +103,42 @@ namespace InfiniteReinforce
 
         public void BuildCostList()
         {
-            ReinforceCostDef costDef = DefDatabase<ReinforceCostDef>.GetNamedSilentFail(thing.def.defName);
-            if (!costlist.NullOrEmpty()) costlist.Clear();
-            if (costDef != null)
+            if (building.Fuel > 0)
             {
-                costlist = costDef.costList;
                 if (costlist == null) costlist = new List<ThingDefCountClass>();
+                else costlist.Clear();
+                costlist.Add(new ThingDefCountClass(building.FuelThing.FirstOrDefault(), 1));
             }
             else
             {
-                costlist = thing.def.CostList;
-                if (costlist == null) costlist = new List<ThingDefCountClass>();
-                if (thing.Stuff != null)
+                ReinforceCostDef costDef = DefDatabase<ReinforceCostDef>.GetNamedSilentFail(thing.def.defName);
+                if (!costlist.NullOrEmpty()) costlist.Clear();
+                if (costDef != null)
                 {
-                    ThingDefCountClass stuff = costlist.FirstOrDefault(x => x.thingDef == thing.Stuff);
-                    if (stuff != null)
+                    costlist = costDef.costList;
+                    if (costlist == null) costlist = new List<ThingDefCountClass>();
+                }
+                else
+                {
+                    costlist = thing.def.CostList;
+                    if (costlist == null) costlist = new List<ThingDefCountClass>();
+                    if (thing.Stuff != null)
                     {
-                        stuff.count += thing.def.costStuffCount;
-                    }
-                    else
-                    {
-                        costlist.Add(new ThingDefCountClass(thing.Stuff, thing.def.CostStuffCount));
+                        ThingDefCountClass stuff = costlist.FirstOrDefault(x => x.thingDef == thing.Stuff);
+                        if (stuff != null)
+                        {
+                            stuff.count += thing.def.costStuffCount;
+                        }
+                        else
+                        {
+                            costlist.Add(new ThingDefCountClass(thing.Stuff, thing.def.CostStuffCount));
+                        }
                     }
                 }
-            }
-            if (costlist.NullOrEmpty())
-            {
-                costlist.Add(new ThingDefCountClass(thing.def, 1));
+                if (costlist.NullOrEmpty())
+                {
+                    costlist.Add(new ThingDefCountClass(thing.def, 1));
+                }
             }
 
 
@@ -135,22 +146,34 @@ namespace InfiniteReinforce
 
         public void UpdateThingList()
         {
-            resourcethings = TradeUtility.AllLaunchableThingsForTrade(building.Map).Where(x => costlist.Exists(y => y.thingDef == x.def));
             thingcountcache.Clear();
-            if (!costlist.NullOrEmpty())
+            if (building.Fuel > 0)
             {
-                foreach (ThingDefCountClass cost in costlist)
-                {
-
-                    thingcountcache.Add(new ThingDefCountClass(cost.thingDef, 0));
-                }
+                IEnumerable<ThingDef> fuelthings = building.FuelThing;
+                if (!fuelthings.EnumerableNullOrEmpty()) foreach(ThingDef def in fuelthings)
+                    {
+                        thingcountcache.Add(new ThingDefCountClass(def, (int)building.Fuel));
+                    }
             }
+            else
+            {
+                resourcethings = TradeUtility.AllLaunchableThingsForTrade(building.Map).Where(x => costlist.Exists(y => y.thingDef == x.def));
+                if (!costlist.NullOrEmpty())
+                {
+                    foreach (ThingDefCountClass cost in costlist)
+                    {
 
-            resourcethings.CountThingInCollection(ref thingcountcache);
+                        thingcountcache.Add(new ThingDefCountClass(cost.thingDef, 0));
+                    }
+                }
+
+                resourcethings.CountThingInCollection(ref thingcountcache);
+            }
         }
 
         public int CostOf(int index)
         {
+            if (!building.ApplyMultiplier) return costlist[index].count;
             return (int)(costlist[index].count * comp.CostMultiplier);
         }
 
@@ -163,9 +186,19 @@ namespace InfiniteReinforce
 
         public void RemoveIngredients()
         {
-            for(int i=0; i<costlist.Count; i++)
+            if (building.Fuel > 0)
             {
-                resourcethings.EliminateThingOfType(costlist[i].thingDef, CostOf(i));
+                building.FuelComp.ConsumeOnce();
+                if (building.Fuel <= 0) BuildCostList();
+                ReinforcerEffect effect = building.FuelComp.Props.Effect;
+                if (effect != null && effect.Apply(comp)) effect.DoEffect(building, comp);
+            }
+            else
+            {
+                for (int i = 0; i < costlist.Count; i++)
+                {
+                    resourcethings.EliminateThingOfType(costlist[i].thingDef, CostOf(i));
+                }
             }
             UpdateThingList();
         }
@@ -182,6 +215,7 @@ namespace InfiniteReinforce
 
         public void Reinforce(Func<bool> action, int index, string resultstring)
         {
+            UpdateThingList();
             if (CheckIngredients())
             {
                 onprogress = true;
@@ -201,9 +235,9 @@ namespace InfiniteReinforce
             ResetProgress();
             if (thing != null)
             {
-                RemoveIngredients();
                 int[] weights = comp.GetFailureWeights(out int totalweight);
-                success = !comp.RollFailure(out float rolled, totalweight, building.MaxHitPoints / building.HitPoints);
+                success = building.AlwaysSuccess || !comp.RollFailure(out float rolled, totalweight, building.MaxHitPoints / building.HitPoints);
+                RemoveIngredients();
                 if (success ?? false)
                 {
                     reinforceaction();
@@ -336,7 +370,7 @@ namespace InfiniteReinforce
             if (!building.Spawned || thing == null) Close(true);
             MainContents(inRect.ContractedBy(4f));
         }
-
+        
         protected void MainContents(Rect rect)
         {
             float sectionWidth = rect.width / 3;
@@ -414,12 +448,24 @@ namespace InfiniteReinforce
 
             Rect failureRect = listmain.GetRect(FontHeight);
 
-            float chance = comp.GetFailureChance((float)building.MaxHitPoints / building.HitPoints);
+            float chance = building.AlwaysSuccess ? 0 : comp.GetFailureChance((float)building.MaxHitPoints / building.HitPoints);
             GUI.color = Color.Lerp(Color.green,Color.red, chance/50f);
             GUI.Box(failureRect, "");
             GUI.Label(failureRect, " " + Keyed.FailureChance, fontleft);
             GUI.Label(failureRect, String.Format(" {0:0.00}%", chance), fontright);
             GUI.color = Color.white;
+
+            if (building.Fuel > 0)
+            {
+                if (!building.FuelComp.Props.SpecialOptions.NullOrEmpty())
+                {
+                    List<ReinforceSpecialOption> options = building.FuelComp.Props.SpecialOptions;
+                    for (int i=0; i<options.Count; i++)
+                    {
+                        SpecialOption(listmain.GetRect(FontHeight), options[i],i);
+                    }
+                }
+            }
 
             for(int i=0; i<statlist.Count; i++)
             {
@@ -503,8 +549,7 @@ namespace InfiniteReinforce
             Rect rowRight = rect.RightHalf();
             Color costColor = stackcount < cost ? Color.red : Color.green;
             Widgets.DefLabelWithIcon(rect, def);
-            GUI.Label(rowleft, stackcount + "", fontright);
-            GUI.Label(rowRight, "Required".Translate() + ": " + cost + " ", fontright);
+            GUI.Label(rowRight, stackcount + ", Required".Translate().CapitalizeFirst() + ": " + cost + " ", fontright);
 
             GUI.color = costColor;
             Widgets.DrawHighlight(rect);
@@ -539,6 +584,12 @@ namespace InfiniteReinforce
             listmain.End();
         }
 
+        protected void SpecialOption(Rect rect, ReinforceSpecialOption option, int index)
+        {
+            string left = option.LabelLeft(comp);
+            OptionRow(rect, option.Reinforce(comp), index, left, left, option.LabelRight(comp), !option.Enable(thing));
+        }
+
         protected void StatOption(Rect rect, StatDef stat, int index)
         {
             int level = Rand.Range(1, 25);
@@ -556,7 +607,8 @@ namespace InfiniteReinforce
             OptionRow(rect, def.Worker.Reinforce(comp, level), index, def.Worker.ResultString(level), def.Worker.LeftLabel(comp), def.Worker.RightLabel(comp));
         }
 
-        protected void OptionRow(Rect rect, Func<bool> action, int index, string resultstring, string leftlabel, string rightlabel = null)
+        
+        protected void OptionRow(Rect rect, Func<bool> action, int index, string resultstring, string leftlabel, string rightlabel = null, bool disable = false)
         {
             Rect iconRect = new Rect(rect.x, rect.y, rect.height, rect.height);
             Rect labelRect = new Rect(rect.x + iconRect.width, rect.y, rect.width - iconRect.width, rect.height);
@@ -565,13 +617,13 @@ namespace InfiniteReinforce
             GUI.Label(labelRect, "  " + leftlabel.CapitalizeFirst(), fontleft);
             if (rightlabel != null) GUI.Label(labelRect, rightlabel.CapitalizeFirst() + "  ", fontright);
 
-            UpgradeButton(iconRect, action, index, resultstring);
+            UpgradeButton(iconRect, action, index, resultstring, disable);
         }
 
-        protected void UpgradeButton(Rect rect, Func<bool> action, int index, string resultstring)
+        protected void UpgradeButton(Rect rect, Func<bool> action, int index, string resultstring, bool disable = false)
         {
 
-            if (!onprogress)
+            if (!disable && !onprogress)
             {
                 if (Widgets.ButtonImage(rect, IconCache.Upgrade, Color.white, Color.gray))
                 {

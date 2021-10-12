@@ -1,3 +1,9 @@
+Version 1.0.0.3
+ - Added reinforce mechanite.
+ - Added ancient reinforcer.
+ - Fixed equipment's quality overlay always shown.
+ - Added some option in mod settings.
+ 
 Version 1.0.0.2
  - Armor - Material effect multiplier increment factor decreased.
  - Added equipped stat offset reinforce.

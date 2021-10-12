@@ -10,14 +10,6 @@ using UnityEngine;
 
 namespace InfiniteReinforce
 {
-    public enum ReinforceFailureResult
-    {
-        None = 0,
-        DamageLittle = 1,
-        DamageLarge = 2,
-        Explosion = 3,
-        Destroy = 4
-    }
 
     public static class ReinforceUtility
     {
@@ -25,7 +17,6 @@ namespace InfiniteReinforce
         public static List<ReinforceableStatDef> WhiteList;
         public static List<ReinforceDef> ReinforceDefs = DefDatabase<ReinforceDef>.AllDefs.ToList();
 
-        public static readonly int[] BaseWeights = new int[] { 50, 25, 10, 5, 1 };
 
         public static ThingComp_Reinforce GetReinforceComp(this ThingWithComps thing)
         {
@@ -221,6 +212,7 @@ namespace InfiniteReinforce
 
         public static float GetFailureChance(this ThingComp_Reinforce comp, float multiply)
         {
+            if (IRConfig.WeenieMode) multiply *= IRConfig.FailureChanceMultiplier;
             return Mathf.Min(50f, comp.ReinforcedCount) * multiply;
         }
 
@@ -234,7 +226,7 @@ namespace InfiniteReinforce
         public static int[] GetFailureWeights(this ThingComp_Reinforce comp, out int totalweight)
         {
             totalweight = 100;
-            return BaseWeights;
+            return IRConfig.BaseWeights;
         }
 
         public static bool LowerIsBetter(this StatDef stat)
@@ -242,6 +234,7 @@ namespace InfiniteReinforce
             string deflower = stat.defName.ToLower();
 
             if (deflower.Contains("delay")
+                || deflower.Contains("flammability")
                 || deflower.Contains("cooldown")) return true;
 
             return false;

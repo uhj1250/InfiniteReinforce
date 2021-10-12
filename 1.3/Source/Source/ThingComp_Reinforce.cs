@@ -14,11 +14,12 @@ namespace InfiniteReinforce
         public const float FactorPer = 0.60f;
 
         protected int reinforced = 0;
+        protected int discount = 0;
         protected Dictionary<StatDef, float> statboost = new Dictionary<StatDef, float>();
         protected Dictionary<StatDef, int> reinforcedcount = new Dictionary<StatDef, int>();
         protected Dictionary<ReinforceDef, float> custom = new Dictionary<ReinforceDef, float>();
         protected Dictionary<ReinforceDef, int> customcount = new Dictionary<ReinforceDef, int>();
-
+        protected IRDifficultFlag difficult;
 
         public int ReinforcedCount
         {
@@ -38,20 +39,23 @@ namespace InfiniteReinforce
 
         public float CostMultiplierOf(int reinforcedcount)
         {
-
+            float factor = 1.0f;
+            if (IRConfig.BabyMode) factor *= IRConfig.CostIncrementMultiplier;
             int qc = 0;
             if (parent.TryGetQuality(out QualityCategory quality)) qc = (int)quality - 2;
 
-            return Math.Max(0, 1.0f + (reinforcedcount + qc) * FactorPer);
+            return Math.Max(0, 1.0f + (reinforcedcount - discount + qc) * FactorPer*factor);
         }
 
         public float CostMultiplierOf(int start, int dest)
         {
+            float factor = 1.0f;
+            if (IRConfig.BabyMode) factor *= IRConfig.CostIncrementMultiplier;
             int qc = 0;
-            if (parent.TryGetQuality(out QualityCategory quality)) qc = (int)quality - 2;
+            if (parent.TryGetQuality(out QualityCategory quality)) qc = (int)quality - 2 - discount;
             start += qc;
             dest += qc;
-            return 0.5f*(1 + dest - start)*(FactorPer * (start + dest) + 2);
+            return 0.5f*(1 + dest - start)*(FactorPer * factor * (start + dest) + 2);
         }
 
         
@@ -80,6 +84,8 @@ namespace InfiniteReinforce
         {
             base.PostExposeData();
             Scribe_Values.Look(ref reinforced, "reinforced", 0, true);
+            Scribe_Values.Look(ref discount, "discount", 0, true);
+            Scribe_Values.Look(ref difficult, "difficult", IRDifficultFlag.None, true);
             Scribe_Collections.Look(ref statboost, "statboost", LookMode.Def, LookMode.Value);
             Scribe_Collections.Look(ref reinforcedcount, "reinforcedcount", LookMode.Def, LookMode.Value);
             Scribe_Collections.Look(ref custom, "custom", LookMode.Def, LookMode.Value);
@@ -92,6 +98,7 @@ namespace InfiniteReinforce
 
         public override void DrawGUIOverlay()
         {
+            if (Find.CameraDriver.CurrentZoom > CameraZoomRange.Close) return;
             QualityCategory cat;
             ThingWithComps thing = parent;
             int count = reinforced;
@@ -116,6 +123,13 @@ namespace InfiniteReinforce
         public override string TransformLabel(string label)
         {
             return reinforced > 0 ? label + " +" + reinforced : label;
+        }
+
+        public override IEnumerable<StatDrawEntry> SpecialDisplayStats()
+        {
+            yield return new StatDrawEntry(StatCategoryDefOf.Source, Keyed.ReinforceFlag, difficult.Translate(), Keyed.ReinforceFlagDesc, 0);
+
+
         }
 
         public float GetStatFactor(StatDef def)
@@ -164,7 +178,7 @@ namespace InfiniteReinforce
 
             statboost[stat] += stat.GetOffsetPerLevel()*level;
             reinforcedcount[stat] ++;
-            reinforced++;
+            Reinforced();
             return true;
         }
 
@@ -178,8 +192,22 @@ namespace InfiniteReinforce
 
             custom[def] += def.offsetPerLevel * level;
             customcount[def]++;
-            reinforced++;
+            Reinforced();
             return true;
+        }
+
+        protected void Reinforced()
+        {
+            if (IRConfig.WeenieMode) difficult |= IRDifficultFlag.Weenie;
+            if (IRConfig.SuperWeenieMode) difficult |= IRDifficultFlag.SuperWeenie;
+            if (IRConfig.BabyMode) difficult |= IRDifficultFlag.Baby;
+            reinforced++;
+        }
+
+        
+        public void AddDiscount(int count)
+        {
+            discount += count;
         }
 
     }

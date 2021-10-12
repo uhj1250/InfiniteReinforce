@@ -89,8 +89,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Building_Reinforcer.cs" />
+    <Compile Include="AncientComplex\ComplexThreatWorker_AncientReinforcer.cs" />
+    <Compile Include="Buildings\Building_Reinforcer.cs" />
+    <Compile Include="Buildings\CompProperties_ReinforceFuel.cs" />
+    <Compile Include="Buildings\ReinforcerEffect.cs" />
     <Compile Include="CompReinforcerContainer.cs" />
+    <Compile Include="Configurations\IRMod.cs" />
     <Compile Include="DefInjection.cs" />
     <Compile Include="Defs\ReinforceDefs.cs" />
     <Compile Include="Reflect.cs" />
@@ -100,6 +104,7 @@
     <Compile Include="ReinforceWorkers\ReinforceWorker_EquippedStatOffsets.cs" />
     <Compile Include="ReinforceWorkers\ReinforceWorker_MaxHitPoint.cs" />
     <Compile Include="ReinforceWorkers\ReinforceWorker_Rechargeable.cs" />
+    <Compile Include="Buildings\SpecialOption_Repiar.cs" />
     <Compile Include="UI\Dialog_Reinforcer.cs" />
     <Compile Include="Keyed.cs" />
     <Compile Include="Patches\Harmony.cs" />

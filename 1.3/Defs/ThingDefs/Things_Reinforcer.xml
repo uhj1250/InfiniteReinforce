@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+  <ThingDef ParentName="ResourceBase">
+    <defName>MechReinforcer</defName>
+    <label>reinforcer mechanite</label>
+    <description>A container of mechanites tuned to reinforce equipment. The mechanites reinforce and stabilize equipment without any risk.&#10;&#10;To use this material, a special device is needed.</description>
+    <graphicData>
+      <texPath>Things/Item/MechReinforcer/MechReinforcer</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+    </graphicData>
+    <soundInteract>Metal_Drop</soundInteract>
+    <soundDrop>Standard_Drop</soundDrop>
+    <stackLimit>50</stackLimit>
+    <healthAffectsPrice>false</healthAffectsPrice>
+    <statBases>
+      <MaxHitPoints>150</MaxHitPoints>
+      <MarketValue>4500</MarketValue>
+      <Mass>0.1</Mass>
+      <Flammability>0.1</Flammability>
+    </statBases>
+    <intricate>true</intricate>
+    <thingCategories>
+      <li>Manufactured</li>
+    </thingCategories>
+    <thingSetMakerTags>
+      <li>RewardStandardLowFreq</li>
+    </thingSetMakerTags>
+  </ThingDef>
+
+
+</Defs>

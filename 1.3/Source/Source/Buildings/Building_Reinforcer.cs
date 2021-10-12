@@ -15,6 +15,7 @@ namespace InfiniteReinforce
     {
         protected CompPowerTrader power = null;
         protected CompThingContainer container = null;
+        protected CompReinforceFuel fuel = null;
 
         public bool PowerOn
         {
@@ -28,15 +29,11 @@ namespace InfiniteReinforce
             }
         }
         public ThingWithComps HoldingItem => ContainerComp?.ContainedThing as ThingWithComps;
-        //{
-        //    get
-        //    {
-        //        ThingWithComps res;
-        //        res = ContainerComp?.ContainedThing as ThingWithComps;
-        //        if (res is MinifiedThing) return res.GetInnerIfMinified() as ThingWithComps;
-        //        return res;
-        //    }
-        //}
+        public float Fuel => FuelComp?.Fuel ?? -1f;
+        public bool AlwaysSuccess => FuelComp?.AlwaysSuccess ?? false;
+        public List<ReinforceSpecialOption> SpecialOptions => FuelComp?.Props?.SpecialOptions;
+        public bool ApplyMultiplier => FuelComp?.ApplyMultiplier ?? true;
+        public IEnumerable<ThingDef> FuelThing => FuelComp?.Props.fuelFilter.AllowedThingDefs;
 
         public CompThingContainer ContainerComp
         {
@@ -47,6 +44,15 @@ namespace InfiniteReinforce
             }
         }
 
+
+        public CompReinforceFuel FuelComp
+        {
+            get
+            {
+                if (fuel == null) fuel = this.TryGetComp<CompReinforceFuel>();
+                return fuel;
+            }
+        }
 
         public override void ExposeData()
         {
@@ -73,6 +79,15 @@ namespace InfiniteReinforce
                 SoundDefOf.ClickReject.PlayOneShotOnCamera();
             }
         }
+
+        public void SetFuelRandom()
+        {
+            if (FuelComp != null)
+            {
+                FuelComp.Refuel(Rand.Range(0, FuelComp.GetFuelCountToFullyRefuel()));
+            }
+        }
+
 
         public override IEnumerable<Gizmo> GetGizmos()
         {
@@ -119,4 +134,20 @@ namespace InfiniteReinforce
 
 
     }
+
+    public class ReinforcerComparer : IEqualityComparer<Building_Reinforcer>
+    {
+        public bool Equals(Building_Reinforcer x, Building_Reinforcer y)
+        {
+            return x.def == y.def;
+        }
+
+        public int GetHashCode(Building_Reinforcer obj)
+        {
+            return base.GetHashCode();
+        }
+
+        
+    }
+
 }

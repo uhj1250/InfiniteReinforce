@@ -30,7 +30,9 @@
       <Plasteel>75</Plasteel>
       <ComponentSpacer>1</ComponentSpacer>
     </costList>
-    <researchPrerequisites><li>MicroelectronicsBasics</li></researchPrerequisites>
+    <researchPrerequisites>
+      <li>MicroelectronicsBasics</li>
+    </researchPrerequisites>
     <constructionSkillPrerequisite>8</constructionSkillPrerequisite>
     <statBases>
       <MaxHitPoints>300</MaxHitPoints>
@@ -71,5 +73,107 @@
       <li>PlaceWorker_PreventInteractionSpotOverlap</li>
     </placeWorkers>
   </ThingDef>
+
+  <ThingDef ParentName="BuildingBase">
+    <defName>AncientReinforcer</defName>
+    <label>ancient equipment reinforcer</label>
+    <description>An ancient reinforcer.&#10;&#10;Can use reinforcer mechanite.</description>
+    <thingClass>InfiniteReinforce.Building_Reinforcer</thingClass>
+    <thingCategories>
+      <li>BuildingsSpecial</li>
+    </thingCategories>
+    <graphicData>
+      <texPath>Things/Building/AncientReinforcer/AncientReinforcer</texPath>
+      <graphicClass>Graphic_Multi</graphicClass>
+      <shadowData>
+        <volume>(2.9,0.6,1.9)</volume>
+      </shadowData>
+      <drawSize>(3, 2)</drawSize>
+    </graphicData>
+    <drawerType>MapMeshAndRealTime</drawerType>
+    <drawGUIOverlay>true</drawGUIOverlay>
+    <defaultPlacingRot>South</defaultPlacingRot>
+    <altitudeLayer>Building</altitudeLayer>
+    <passability>PassThroughOnly</passability>
+    <pathCost>42</pathCost>
+    <blockWind>true</blockWind>
+    <fillPercent>0.5</fillPercent>
+    <canOverlapZones>false</canOverlapZones>
+    <castEdgeShadows>true</castEdgeShadows>
+    <selectable>true</selectable>
+    <costList>
+      <Steel>250</Steel>
+      <Plasteel>75</Plasteel>
+      <ComponentSpacer>1</ComponentSpacer>
+    </costList>
+    <researchPrerequisites>
+      <li>MicroelectronicsBasics</li>
+    </researchPrerequisites>
+    <constructionSkillPrerequisite>8</constructionSkillPrerequisite>
+    <statBases>
+      <MaxHitPoints>250</MaxHitPoints>
+      <WorkToBuild>25000</WorkToBuild>
+      <Mass>75</Mass>
+      <Flammability>0.1</Flammability>
+      <Beauty>-5</Beauty>
+    </statBases>
+    <size>(3, 2)</size>
+    <interactionCellOffset>(0,0,2)</interactionCellOffset>
+    <hasInteractionCell>true</hasInteractionCell>
+    <building>
+      <destroySound>BuildingDestroyed_Metal_Big</destroySound>
+    </building>
+    <minifiedDef>MinifiedThing</minifiedDef>
+    <tickerType>Normal</tickerType>
+    <inspectorTabs>
+      <li>ITab_Storage</li>
+    </inspectorTabs>
+    <surfaceType>Item</surfaceType>
+    <comps>
+      <li Class="CompProperties_Power">
+        <compClass>CompPowerTrader</compClass>
+        <basePowerConsumption>250</basePowerConsumption>
+      </li>
+      <li Class="InfiniteReinforce.CompProperties_ReinforceFuel">
+        <fuelCapacity>5.0</fuelCapacity>
+        <fuelConsumptionPerReinforce>1.0</fuelConsumptionPerReinforce>
+        <alwaysSuccess>true</alwaysSuccess>
+        <applyMultiplier>false</applyMultiplier>
+        <SpecialOptions>
+          <li Class="InfiniteReinforce.SpecialOption_Repiar"/>
+        </SpecialOptions>
+        <effectClass>InfiniteReinforce.ReinforcerEffect_Discount</effectClass>
+        <initialFuelPercent>0</initialFuelPercent>
+        <autoRefuelPercent>100</autoRefuelPercent>
+        <fuelConsumptionRate>0</fuelConsumptionRate>
+        <drawOutOfFuelOverlay>false</drawOutOfFuelOverlay>
+        <allowRefuelIfNotEmpty>true</allowRefuelIfNotEmpty>
+        <factorByDifficulty>false</factorByDifficulty>
+        <fuelFilter>
+          <thingDefs>
+            <li>MechReinforcer</li>
+          </thingDefs>
+        </fuelFilter>
+      </li>
+      <li Class="CompProperties_Flickable"/>
+      <li Class="CompProperties_ThingContainer">
+        <compClass>InfiniteReinforce.CompReinforcerContainer</compClass>
+        <containedThingOffset>(0,0,1)</containedThingOffset>
+        <stackLimit>1</stackLimit>
+      </li>
+      <li Class="CompProperties_Glower">
+        <glowRadius>4.5</glowRadius>
+        <glowColor>(239,133,50,0)</glowColor>
+      </li>
+    </comps>
+    <placeWorkers>
+      <li>PlaceWorker_PreventInteractionSpotOverlap</li>
+    </placeWorkers>
+    <thingSetMakerTags>
+      <li>RewardStandardLowFreq</li>
+    </thingSetMakerTags>
+  </ThingDef>
+
+
 
 </Defs>

@@ -1,12 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
+  <IR.Title>Infinite Reinforce - 무한강화</IR.Title>
 
   <IR.Reinforce>강화</IR.Reinforce>
   <IR.ReinforceDesc>아이템을 강화합니다.</IR.ReinforceDesc>
   <IR.TakeOut>꺼내기</IR.TakeOut>
   <IR.TakeOutDesc>아이템을 꺼냅니다.</IR.TakeOutDesc>
   <IR.Empty>비어있음</IR.Empty>
-  <IR.InsertItem>{0}를 강화기에 넣기</IR.InsertItem>
+  <IR.InsertItem>{0}를 {1}에 넣기</IR.InsertItem>
+  <IR.InsertFuel>{0}에 연료 보충</IR.InsertFuel>
   <IR.ReinforcedCount>{0}번 강화됨</IR.ReinforcedCount>
   <IR.NotEnough>자원부족</IR.NotEnough>
   <IR.Success>성공</IR.Success>
@@ -25,5 +27,18 @@
   <IR.MajorDamage>심각한 손상</IR.MajorDamage>
   <IR.Explosion>폭발</IR.Explosion>
   <IR.Destruction>파괴</IR.Destruction>
+  <IR.Repair>수리</IR.Repair>
+  <IR.ReinforceFlag>강화 모드</IR.ReinforceFlag>
+  <IR.ReinforceFlagDesc>이 장비는 해당 모드로 강화되었습니다.</IR.ReinforceFlagDesc>
+
+
+  <IR.Config_Baby>응애 모드</IR.Config_Baby>
+  <IR.Config_BabyDesc>자원 요구량 상승을 조절하려면 활성화 하세요.</IR.Config_BabyDesc>
+  <IR.Config_CostIncrement>비용 상승량 배율</IR.Config_CostIncrement>
+  <IR.Config_Weenie>겁쟁이 모드</IR.Config_Weenie>
+  <IR.Config_WeenieDesc>실패 확률을 조절하려면 활성화 하세요.</IR.Config_WeenieDesc>
+  <IR.Config_FailureChance>실패 확률 배율</IR.Config_FailureChance>
+  <IR.Config_SuperWeenie>수퍼 겁쟁이 모드</IR.Config_SuperWeenie>
+  <IR.Config_SuperWeenieDesc>장비가 즉시 파괴되지 않습니다.</IR.Config_SuperWeenieDesc>
 
 </LanguageData>

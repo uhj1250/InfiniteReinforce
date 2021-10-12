@@ -1,11 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
+  <IR.Title>Infinite Reinforce</IR.Title>
+
   <IR.Reinforce>Reinforce</IR.Reinforce>
   <IR.ReinforceDesc>Reinforce the item.</IR.ReinforceDesc>
   <IR.TakeOut>Take out</IR.TakeOut>
   <IR.TakeOutDesc>Take out the item.</IR.TakeOutDesc>
   <IR.Empty>Empty</IR.Empty>
-  <IR.InsertItem>Insert {0} into reinforcer</IR.InsertItem>
+  <IR.InsertItem>Insert {0} into {1}</IR.InsertItem>
+  <IR.InsertFuel>Refuel {0}</IR.InsertFuel>
   <IR.ReinforcedCount>Reinforced {0} times</IR.ReinforcedCount>
   <IR.NotEnough>Not enough resources</IR.NotEnough>
   <IR.Success>Success</IR.Success>
@@ -24,4 +27,18 @@
   <IR.MajorDamage>Serious damage</IR.MajorDamage>
   <IR.Explosion>Explosion</IR.Explosion>
   <IR.Destruction>Destruction</IR.Destruction>
+  <IR.Repair>repair</IR.Repair>
+  <IR.ReinforceFlag>Reinforce flags</IR.ReinforceFlag>
+  <IR.ReinforceFlagDesc>This equipment reinforced at this flags.</IR.ReinforceFlagDesc>
+
+  <IR.Config_Baby>Baby mode</IR.Config_Baby>
+  <IR.Config_BabyDesc>Enable to setting cost increment.</IR.Config_BabyDesc>
+  <IR.Config_CostIncrement>Cost increment multiplier</IR.Config_CostIncrement>
+  <IR.Config_Weenie>Weenie mode</IR.Config_Weenie>
+  <IR.Config_WeenieDesc>Enable to setting failure chance.</IR.Config_WeenieDesc>
+  <IR.Config_FailureChance>Failure chance multiplier</IR.Config_FailureChance>
+  <IR.Config_SuperWeenie>Super weenie mode</IR.Config_SuperWeenie>
+  <IR.Config_SuperWeenieDesc>No instant equipment destroy.</IR.Config_SuperWeenieDesc>
+
+
 </LanguageData>
