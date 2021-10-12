@@ -549,7 +549,7 @@ namespace InfiniteReinforce
             Rect rowRight = rect.RightHalf();
             Color costColor = stackcount < cost ? Color.red : Color.green;
             Widgets.DefLabelWithIcon(rect, def);
-            GUI.Label(rowRight, stackcount + ", Required".Translate().CapitalizeFirst() + ": " + cost + " ", fontright);
+            GUI.Label(rowRight, stackcount + ", " + "Required".Translate().CapitalizeFirst() + ": " + cost + " ", fontright);
 
             GUI.color = costColor;
             Widgets.DrawHighlight(rect);
