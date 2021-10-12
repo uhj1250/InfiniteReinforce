@@ -21,6 +21,13 @@
 	</InfiniteReinforce.ReinforceableStatDef>
 
 	<InfiniteReinforce.ReinforceableStatDef>
+		<defName>Recoil</defName>
+		<reversal>true</reversal>
+		<isGeneric>false</isGeneric>
+		<workerClass>InfiniteReinforce.ReinforceableWorker_OnlyRangedWeapon</workerClass>
+	</InfiniteReinforce.ReinforceableStatDef>
+
+	<InfiniteReinforce.ReinforceableStatDef>
 		<defName>SwayFactor</defName>
 		<reversal>true</reversal>
 		<isGeneric>false</isGeneric>
