@@ -1,25 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
 
 <Defs>
-	<InfiniteReinforce.ReinforceCostDef>
-		<defName>MeleeWeapon_MonoSwordBladelink</defName>
-        <costList>
-            <MeleeWeapon_MonoSword>1</MeleeWeapon_MonoSword>
-        </costList>
-	</InfiniteReinforce.ReinforceCostDef>
-
-	<InfiniteReinforce.ReinforceCostDef>
-		<defName>MeleeWeapon_ZeusHammerBladelink</defName>
-        <costList>
-            <MeleeWeapon_Zeushammer>1</MeleeWeapon_Zeushammer>
-        </costList>
-	</InfiniteReinforce.ReinforceCostDef>
-    
-	<InfiniteReinforce.ReinforceCostDef>
-		<defName>MeleeWeapon_PlasmaSwordBladelink</defName>
-        <costList>
-            <MeleeWeapon_PlasmaSword>1</MeleeWeapon_PlasmaSword>
-        </costList>
-	</InfiniteReinforce.ReinforceCostDef>
 
 </Defs>

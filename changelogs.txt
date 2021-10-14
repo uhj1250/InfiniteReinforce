@@ -1,3 +1,6 @@
+Version 1.0.0.6
+ - Fixed dependency error.
+
 Version 1.0.0.5
  - Biocoded weapons can be used as material.
  - Minor bug fixes.
