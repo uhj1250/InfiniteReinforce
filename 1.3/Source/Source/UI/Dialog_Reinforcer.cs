@@ -157,7 +157,7 @@ namespace InfiniteReinforce
             }
             else
             {
-                resourcethings = TradeUtility.AllLaunchableThingsForTrade(building.Map).Where(x => costlist.Exists(y => y.thingDef == x.def));
+                resourcethings = ReinforceUtility.AllThingsNearBeacon(building.Map).Where(x => costlist.Exists(y => y.thingDef == x.def));//TradeUtility.AllLaunchableThingsForTrade(building.Map).Where(x => costlist.Exists(y => y.thingDef == x.def));
                 if (!costlist.NullOrEmpty())
                 {
                     foreach (ThingDefCountClass cost in costlist)

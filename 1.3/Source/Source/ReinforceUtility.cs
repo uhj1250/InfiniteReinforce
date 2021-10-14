@@ -241,5 +241,29 @@ namespace InfiniteReinforce
 
         }
 
+        public static IEnumerable<Thing> AllThingsNearBeacon(Map map)
+        {
+            HashSet<Thing> yieldedThings = new HashSet<Thing>();
+            foreach (Building_OrbitalTradeBeacon item in Building_OrbitalTradeBeacon.AllPowered(map))
+            {
+                foreach (IntVec3 tradeableCell in item.TradeableCells)
+                {
+                    List<Thing> thingList = tradeableCell.GetThingList(map);
+                    yieldedThings.AddRange(thingList);
+                    //for (int i = 0; i < thingList.Count; i++)
+                    //{
+                    //    Thing thing = thingList[i];
+                    //    if (thing.def.category == ThingCategory.Item && PlayerSellableNow(thing, trader) && !yieldedThings.Contains(thing))
+                    //    {
+                    //        yieldedThings.Add(thing);
+                    //        yield return thing;
+                    //    }
+                    //}
+                }
+            }
+            return yieldedThings;
+        }
+
+
     }
 }

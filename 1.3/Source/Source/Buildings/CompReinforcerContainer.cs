@@ -23,6 +23,11 @@ namespace InfiniteReinforce
             return !Empty && thingDef.IsReinforcable();
         }
 
+        public override string CompInspectStringExtra()
+        {
+            return ("Contents".Translate() + ": " + (Empty ? ((string)"Nothing".Translate()) : ContainedThing.LabelCap)).Trim();
+        }
+
 
     }
 }
