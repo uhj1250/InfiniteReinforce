@@ -28,6 +28,6 @@ namespace InfiniteReinforce
             return ("Contents".Translate() + ": " + (Empty ? ((string)"Nothing".Translate()) : ContainedThing.LabelCap)).Trim();
         }
 
-
+    
     }
 }

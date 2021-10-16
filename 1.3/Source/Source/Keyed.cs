@@ -41,15 +41,43 @@ namespace InfiniteReinforce
             switch (flag)
             {
                 case IRDifficultFlag.None:
-                default:
-                    return "None";
+                    return "None".Translate();
                 case IRDifficultFlag.Baby:
-                    return "Baby";
+                    return Baby;
                 case IRDifficultFlag.Weenie:
-                    return "Weenie";
+                    return Weenie;
+                case IRDifficultFlag.Baby | IRDifficultFlag.Weenie:
+                    return WeenieBaby;
                 case IRDifficultFlag.SuperWeenie:
                 case IRDifficultFlag.Weenie | IRDifficultFlag.SuperWeenie:
-                    return "SuperWeenie";
+                    return SuperWeenie;
+                case IRDifficultFlag.Baby | IRDifficultFlag.SuperWeenie:
+                case IRDifficultFlag.Baby | IRDifficultFlag.Weenie | IRDifficultFlag.SuperWeenie:
+                    return SuperWeenieBaby;
+                case IRDifficultFlag.Baby | IRDifficultFlag.Badass:
+                    return Badassbaby;
+                case IRDifficultFlag.Baby | IRDifficultFlag.Ironman:
+                case IRDifficultFlag.Baby | IRDifficultFlag.Badass | IRDifficultFlag.Ironman:
+                    return IronmanBaby;
+                case IRDifficultFlag.Pro:
+                    return Pro;
+                case IRDifficultFlag.Pro | IRDifficultFlag.Weenie:
+                    return ProWeenie;
+                case IRDifficultFlag.Pro | IRDifficultFlag.SuperWeenie:
+                case IRDifficultFlag.Pro | IRDifficultFlag.Weenie | IRDifficultFlag.SuperWeenie:
+                    return ProSuperWeenie;
+                case IRDifficultFlag.Pro | IRDifficultFlag.Badass:
+                    return ProBadass;
+                case IRDifficultFlag.Pro | IRDifficultFlag.Ironman:
+                case IRDifficultFlag.Pro | IRDifficultFlag.Badass | IRDifficultFlag.Ironman:
+                    return ProIronman;
+                case IRDifficultFlag.Badass:
+                    return Badass;
+                case IRDifficultFlag.Ironman:
+                case IRDifficultFlag.Badass | IRDifficultFlag.Ironman:
+                    return Ironman;
+                default:
+                    return Cheater;
             }
         }
 
@@ -85,7 +113,27 @@ namespace InfiniteReinforce
         public static readonly string Config_FailureChance = "IR.Config_FailureChance".Translate();
         public static readonly string Config_SuperWeenie = "IR.Config_SuperWeenie".Translate();
         public static readonly string Config_SuperWeenieDesc = "IR.Config_SuperWeenieDesc".Translate();
-
+        public static readonly string Config_Pro = "IR.Config_Pro".Translate();
+        public static readonly string Config_ProDesc = "IR.Config_ProDesc".Translate();
+        public static readonly string Config_Badass = "IR.Config_Badass".Translate();
+        public static readonly string Config_BadassDesc = "IR.Config_BadassDesc".Translate();
+        public static readonly string Config_Ironman = "IR.Config_Ironman".Translate();
+        public static readonly string Config_IronmanDesc = "IR.Config_IronmanDesc".Translate();
+        public static readonly string Baby = "IR.Baby".Translate();
+        public static readonly string Weenie = "IR.Weenie".Translate();
+        public static readonly string WeenieBaby = "IR.WeenieBaby".Translate();
+        public static readonly string SuperWeenie = "IR.SuperWeenie".Translate();
+        public static readonly string SuperWeenieBaby = "IR.SuperWeenieBaby".Translate();
+        public static readonly string Pro = "IR.Pro".Translate();
+        public static readonly string ProWeenie = "IR.ProWeenie".Translate();
+        public static readonly string ProSuperWeenie = "IR.ProSuperWeenie".Translate();
+        public static readonly string ProBadass = "IR.ProBadass".Translate();
+        public static readonly string ProIronman = "IR.ProIronman".Translate();
+        public static readonly string Badass = "IR.Badass".Translate();
+        public static readonly string Badassbaby = "IR.Badassbaby".Translate();
+        public static readonly string Ironman = "IR.Ironman".Translate();
+        public static readonly string IronmanBaby = "IR.IronmanBaby".Translate();
+        public static readonly string Cheater = "IR.Cheater".Translate();
     }
 
 }

@@ -17,9 +17,9 @@
   <IR.ReinforceStatPart>Reinforced: x</IR.ReinforceStatPart>
   <IR.Materials>Materials</IR.Materials>
   <IR.FailedLetter>Reinforce Failed</IR.FailedLetter>
-  <IR.FailedDamaged>{0} had damaged.</IR.FailedDamaged>
-  <IR.FailedExplosion>{0} had exploded.</IR.FailedExplosion>
-  <IR.FailedDestroy>{0} had destroyed.</IR.FailedDestroy>
+  <IR.FailedDamaged>{0} is damaged.</IR.FailedDamaged>
+  <IR.FailedExplosion>{0} is exploded.</IR.FailedExplosion>
+  <IR.FailedDestroy>{0} is destroyed.</IR.FailedDestroy>
   <IR.FailureChance>Chance of failure</IR.FailureChance>
   <IR.FailureOutcome>Failure outcome</IR.FailureOutcome>
   <IR.Failure>Failure</IR.Failure>
@@ -32,13 +32,33 @@
   <IR.ReinforceFlagDesc>This equipment reinforced at this flags.</IR.ReinforceFlagDesc>
 
   <IR.Config_Baby>Baby mode</IR.Config_Baby>
-  <IR.Config_BabyDesc>Enable to setting cost increment.</IR.Config_BabyDesc>
+  <IR.Config_BabyDesc>Enable to decrease cost increment.</IR.Config_BabyDesc>
   <IR.Config_CostIncrement>Cost increment multiplier</IR.Config_CostIncrement>
   <IR.Config_Weenie>Weenie mode</IR.Config_Weenie>
-  <IR.Config_WeenieDesc>Enable to setting failure chance.</IR.Config_WeenieDesc>
+  <IR.Config_WeenieDesc>Enable to decrease failure chance.</IR.Config_WeenieDesc>
   <IR.Config_FailureChance>Failure chance multiplier</IR.Config_FailureChance>
   <IR.Config_SuperWeenie>Super weenie mode</IR.Config_SuperWeenie>
   <IR.Config_SuperWeenieDesc>No instant equipment destroy.</IR.Config_SuperWeenieDesc>
+  <IR.Config_Pro>Pro mode</IR.Config_Pro>
+  <IR.Config_ProDesc>Enable to increase cost increment.</IR.Config_ProDesc>
+  <IR.Config_Badass>Badass mode</IR.Config_Badass>
+  <IR.Config_BadassDesc>Enable to increase failure chance.</IR.Config_BadassDesc>
+  <IR.Config_Ironman>Ironman mode</IR.Config_Ironman>
+  <IR.Config_IronmanDesc>The equipment will always be damaged.</IR.Config_IronmanDesc>
 
-
+  <IR.Baby>Baby</IR.Baby>
+  <IR.Weenie>Weenie</IR.Weenie>
+  <IR.WeenieBaby>Weenie baby</IR.WeenieBaby>
+  <IR.SuperWeenie>Super weenie</IR.SuperWeenie>
+  <IR.SuperWeenieBaby>Super weenie baby</IR.SuperWeenieBaby>
+  <IR.Pro>Pro</IR.Pro>
+  <IR.ProWeenie>Pro weenie</IR.ProWeenie>
+  <IR.ProSuperWeenie>Pro super weenie</IR.ProSuperWeenie>
+  <IR.ProBadass>Pro badass</IR.ProBadass>
+  <IR.ProIronman>Pro ironman</IR.ProIronman>
+  <IR.Badass>Badass</IR.Badass>
+  <IR.Badassbaby>Badass baby</IR.Badassbaby>
+  <IR.Ironman>Ironman</IR.Ironman>
+  <IR.IronmanBaby>Ironbaby</IR.IronmanBaby>
+  <IR.Cheater>Cheater</IR.Cheater>
 </LanguageData>

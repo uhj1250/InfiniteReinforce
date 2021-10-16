@@ -25,19 +25,26 @@ namespace InfiniteReinforce
         Baby = 1,
         Weenie = 2,
         SuperWeenie = 4,
+        Pro = 8,
+        Badass = 16,
+        Ironman = 32,
+        
+
     }
 
     public class IRConfig : ModSettings
     {
         public const int FailureResultCount = 5;
 
-        public static readonly int[] DefaultWeights = new int[] { 50, 25, 10, 5, 1 };
-        public static readonly int[] SuperWeenieWeights = new int[] { 50, 25, 11, 5, 0 };
+        public static readonly int[] DefaultWeights = new int[] { 59, 25, 10, 5, 1 };
+        public static readonly int[] SuperWeenieWeights = new int[] { 60, 25, 10, 5, 0 };
+        public static readonly int[] IronmanWeights = new int[] { 0, 60, 25, 10, 5 };
 
         public static int[] BaseWeights
         {
             get
             {
+                if (IronMode) return IronmanWeights;
                 if (SuperWeenieMode) return SuperWeenieWeights;
                  return DefaultWeights;
             }
@@ -45,6 +52,9 @@ namespace InfiniteReinforce
         public static bool BabyMode = false;
         public static bool WeenieMode = false;
         public static bool SuperWeenieMode = false;
+        public static bool ProMode = false;
+        public static bool BadassMode = false;
+        public static bool IronMode = false;
         public static float CostIncrementMultiplier = 1.0f;
         public static float FailureChanceMultiplier = 1.0f;
 
@@ -89,21 +99,61 @@ namespace InfiniteReinforce
             Listing_Standard listmain = new Listing_Standard();
             listmain.Begin(inRect.ContractedBy(4f));
 
+            Rect tmpRect = listmain.GetRect(24f);
 
-            listmain.CheckboxLabeled(Keyed.Config_Baby, ref IRConfig.BabyMode, Keyed.Config_BabyDesc);
+            Widgets.CheckboxLabeled(tmpRect.LeftHalf() ,Keyed.Config_Baby, ref IRConfig.BabyMode);
+            TooltipHandler.TipRegion(tmpRect.LeftHalf(), Keyed.Config_BabyDesc);
+
             if (IRConfig.BabyMode)
             {
+                if (IRConfig.CostIncrementMultiplier > 1.0f) IRConfig.CostIncrementMultiplier = 1.0f;
                 listmain.Label(Keyed.Config_CostIncrement + String.Format(" {0:P2}",IRConfig.CostIncrementMultiplier));
                 IRConfig.CostIncrementMultiplier = listmain.Slider(IRConfig.CostIncrementMultiplier, 0, 1.0f);
+                IRConfig.ProMode = false;
             }
-            listmain.CheckboxLabeled(Keyed.Config_Weenie, ref IRConfig.WeenieMode, Keyed.Config_WeenieDesc);
+
+            Widgets.CheckboxLabeled(tmpRect.RightHalf(), Keyed.Config_Pro, ref IRConfig.ProMode);
+            TooltipHandler.TipRegion(tmpRect.RightHalf(), Keyed.Config_ProDesc);
+
+            if (IRConfig.ProMode)
+            {
+                if (IRConfig.CostIncrementMultiplier < 1.0f) IRConfig.CostIncrementMultiplier = 1.0f;
+                listmain.Label(Keyed.Config_CostIncrement + String.Format(" {0:P2}", IRConfig.CostIncrementMultiplier));
+                IRConfig.CostIncrementMultiplier = listmain.Slider(IRConfig.CostIncrementMultiplier, 1.0f, 10.0f);
+                IRConfig.BabyMode = false;
+            }
+
+            tmpRect = listmain.GetRect(24f);
+
+            Widgets.CheckboxLabeled(tmpRect.LeftHalf(),Keyed.Config_Weenie, ref IRConfig.WeenieMode);
+            TooltipHandler.TipRegion(tmpRect.LeftHalf(), Keyed.Config_WeenieDesc);
+
+
             if (IRConfig.WeenieMode)
             {
+                IRConfig.BadassMode = false;
+                IRConfig.IronMode = false;
+                if (IRConfig.FailureChanceMultiplier > 1.0f) IRConfig.FailureChanceMultiplier = 1.0f;
                 listmain.Label(Keyed.Config_FailureChance + String.Format(" {0:P2}", IRConfig.FailureChanceMultiplier));
                 IRConfig.FailureChanceMultiplier = listmain.Slider(IRConfig.FailureChanceMultiplier, 0, 1.0f);
 
                 listmain.CheckboxLabeled(Keyed.Config_SuperWeenie, ref IRConfig.SuperWeenieMode, Keyed.Config_SuperWeenieDesc);
             }
+
+            Widgets.CheckboxLabeled(tmpRect.RightHalf(), Keyed.Config_Badass, ref IRConfig.BadassMode);
+            TooltipHandler.TipRegion(tmpRect.RightHalf(), Keyed.Config_BadassDesc);
+
+            if (IRConfig.BadassMode)
+            {
+                IRConfig.WeenieMode = false;
+                IRConfig.SuperWeenieMode = false;
+                if (IRConfig.FailureChanceMultiplier < 1.0f) IRConfig.FailureChanceMultiplier = 1.0f;
+                listmain.Label(Keyed.Config_FailureChance + String.Format(" {0:P2}", IRConfig.FailureChanceMultiplier));
+                IRConfig.FailureChanceMultiplier = listmain.Slider(IRConfig.FailureChanceMultiplier, 1.0f, 10.0f);
+
+                listmain.CheckboxLabeled(Keyed.Config_Ironman, ref IRConfig.IronMode, Keyed.Config_IronmanDesc);
+            }
+
 
             listmain.End();
         }

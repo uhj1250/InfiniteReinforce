@@ -40,7 +40,7 @@ namespace InfiniteReinforce
         public float CostMultiplierOf(int reinforcedcount)
         {
             float factor = 1.0f;
-            if (IRConfig.BabyMode) factor *= IRConfig.CostIncrementMultiplier;
+            if (IRConfig.BabyMode | IRConfig.ProMode) factor *= IRConfig.CostIncrementMultiplier;
             int qc = 0;
             if (parent.TryGetQuality(out QualityCategory quality)) qc = (int)quality - 2;
 
@@ -50,7 +50,7 @@ namespace InfiniteReinforce
         public float CostMultiplierOf(int start, int dest)
         {
             float factor = 1.0f;
-            if (IRConfig.BabyMode) factor *= IRConfig.CostIncrementMultiplier;
+            if (IRConfig.BabyMode | IRConfig.ProMode) factor *= IRConfig.CostIncrementMultiplier;
             int qc = 0;
             if (parent.TryGetQuality(out QualityCategory quality)) qc = (int)quality - 2 - discount;
             start += qc;
@@ -198,9 +198,12 @@ namespace InfiniteReinforce
 
         protected void Reinforced()
         {
-            if (IRConfig.WeenieMode) difficult |= IRDifficultFlag.Weenie;
+            if (IRConfig.WeenieMode && IRConfig.FailureChanceMultiplier < 1.0f) difficult |= IRDifficultFlag.Weenie;
+            else if (IRConfig.BadassMode && IRConfig.FailureChanceMultiplier > 1.0f) difficult |= IRDifficultFlag.Badass;
             if (IRConfig.SuperWeenieMode) difficult |= IRDifficultFlag.SuperWeenie;
-            if (IRConfig.BabyMode) difficult |= IRDifficultFlag.Baby;
+            else if (IRConfig.IronMode) difficult |= IRDifficultFlag.Ironman;
+            if (IRConfig.BabyMode && IRConfig.CostIncrementMultiplier < 1.0f) difficult |= IRDifficultFlag.Baby;
+            else if (IRConfig.ProMode && IRConfig.CostIncrementMultiplier > 1.0f) difficult |= IRDifficultFlag.Pro;
             reinforced++;
         }
 

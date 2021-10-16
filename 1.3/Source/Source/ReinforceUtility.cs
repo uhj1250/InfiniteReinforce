@@ -66,6 +66,14 @@ namespace InfiniteReinforce
             return 0;
         }
 
+
+        public static int GetReinforcedCount(this Thing thing)
+        {
+            ThingWithComps thingwithcomp = thing as ThingWithComps;
+            if (thingwithcomp != null) return thingwithcomp.GetReinforcedCount();
+            return 0;
+        }
+
         public static bool TryReinforce(this ThingWithComps thing, StatDef stat, int level = 1)
         {
             ThingComp_Reinforce comp = thing.GetReinforceComp();
@@ -145,13 +153,18 @@ namespace InfiniteReinforce
             return ReinforceableStatDef.offsetPerLevelDefault;
         }
 
-        public static void CountThingInCollection(this IEnumerable<Thing> things, ref List<ThingDefCountClass> list)
+        public static void CountThingInCollection(this IEnumerable<Thing> things, ref List<ThingDefCountClass> list, ThingDef stuff = null)
         {
             if (!things.EnumerableNullOrEmpty()) foreach (Thing thing in things)
             {
+                if (thing.CannotUseAsMaterial()) continue;
                 for (int i = 0; i < list.Count; i++)
                 {
-                    if (thing.def == list[i].thingDef) list[i].count += thing.stackCount;
+                    if (stuff != null && thing.Stuff != null)
+                        {
+                            if (stuff == thing.Stuff) list[i].count += thing.stackCount;
+                        }
+                    else if (thing.def == list[i].thingDef) list[i].count += thing.stackCount;
                 }
             }
         }
@@ -186,15 +199,19 @@ namespace InfiniteReinforce
             }
         }
 
-        public static void EliminateThingOfType(this IEnumerable<Thing> things, ThingDef def, int cost)
+        public static void EliminateThingOfType(this IEnumerable<Thing> things, ThingDef def, int cost, ThingDef stuff = null)
         {
             while (cost > 0)
             {
                 Thing thing = null;
                 foreach (Thing t in things)
                 {
-                    if (t.Spawned && t.def == def)
+                    if (t.Spawned && t.def == def && !t.CannotUseAsMaterial())
                     {
+                        if (stuff != null && stuff != t.Stuff)
+                        {
+                            continue;
+                        }
                         thing = t;
                         break;
                     }
@@ -212,8 +229,8 @@ namespace InfiniteReinforce
 
         public static float GetFailureChance(this ThingComp_Reinforce comp, float multiply)
         {
-            if (IRConfig.WeenieMode) multiply *= IRConfig.FailureChanceMultiplier;
-            return Mathf.Min(50f, comp.ReinforcedCount) * multiply;
+            if (IRConfig.WeenieMode | IRConfig.BadassMode) multiply *= IRConfig.FailureChanceMultiplier;
+            return Mathf.Min(99.99f , Mathf.Min(50f, comp.ReinforcedCount) * multiply);
         }
 
         public static bool RollFailure(this ThingComp_Reinforce comp, out float rolled, int totalweight, float multiply)
@@ -225,7 +242,7 @@ namespace InfiniteReinforce
 
         public static int[] GetFailureWeights(this ThingComp_Reinforce comp, out int totalweight)
         {
-            totalweight = 100;
+            totalweight = IRConfig.BaseWeights.Sum();
             return IRConfig.BaseWeights;
         }
 
@@ -264,6 +281,13 @@ namespace InfiniteReinforce
             return yieldedThings;
         }
 
+        public static bool CannotUseAsMaterial(this Thing thing)
+        {
+            if (thing.GetReinforcedCount() > 0) return true;
+            if (thing.TryGetQuality(out QualityCategory qc)) return qc > QualityCategory.Excellent;            
+
+            return false;
+        }
 
     }
 }

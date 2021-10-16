@@ -13,6 +13,14 @@ namespace InfiniteReinforce
 {
     public class Dialog_Reinforcer : Window
     {
+        public enum CostMode
+        {
+            SameThing = 0,
+            Material = 1,
+            Fuel = 2
+        }
+
+        public const int CostModeCount = 3;
         public const float FontHeight = 22f;
         public const int BaseReinforceTicks = 120;
 
@@ -32,10 +40,12 @@ namespace InfiniteReinforce
         protected Func<bool> reinforceaction;
         protected List<StatDef> statlist = new List<StatDef>();
         protected IEnumerable<Thing> resourcethings;
-        protected List<ThingDefCountClass> costlist;
+        protected List<ThingDefCountClass>[] costlist = new List<ThingDefCountClass>[CostModeCount];
         protected List<ThingDefCountClass> thingcountcache = new List<ThingDefCountClass>();
         protected List<string> reinforcehistory = new List<string>();
         protected string reinforcehistorycache;
+        protected CostMode costMode; 
+
 
         protected ThingWithComps thing => building?.HoldingItem;
 
@@ -81,9 +91,9 @@ namespace InfiniteReinforce
             if (thing != null)
             {
                 BuildCostList();
+                costMode = InitialCostMode();
                 UpdateThingList();
             }
-
         }
 
         public void BuildStatList()
@@ -103,78 +113,85 @@ namespace InfiniteReinforce
 
         public void BuildCostList()
         {
-            if (building.Fuel > 0)
+
+            //Build same thing
+            if (costlist[(int)CostMode.SameThing] == null) costlist[(int)CostMode.SameThing] = new List<ThingDefCountClass>();
+            costlist[(int)CostMode.SameThing].Clear();
+            costlist[(int)CostMode.SameThing].Add(new ThingDefCountClass(thing.def, 1));
+
+            //Build material cost
+            ReinforceCostDef costDef = DefDatabase<ReinforceCostDef>.GetNamedSilentFail(thing.def.defName);
+            if (costlist[(int)CostMode.Material] == null) costlist[(int)CostMode.Material] = new List<ThingDefCountClass>();
+            costlist[(int)CostMode.Material].Clear();
+            if (costDef != null)
             {
-                if (costlist == null) costlist = new List<ThingDefCountClass>();
-                else costlist.Clear();
-                costlist.Add(new ThingDefCountClass(building.FuelThing.FirstOrDefault(), 1));
+                if (!costDef.costList.NullOrEmpty()) costlist[(int)CostMode.Material].AddRange(costDef.costList);
             }
             else
             {
-                ReinforceCostDef costDef = DefDatabase<ReinforceCostDef>.GetNamedSilentFail(thing.def.defName);
-                if (!costlist.NullOrEmpty()) costlist.Clear();
-                if (costDef != null)
+                if (!thing.def.costList.NullOrEmpty()) costlist[(int)CostMode.Material].AddRange(thing.def.CostList);
+                if (thing.Stuff != null)
                 {
-                    costlist = costDef.costList;
-                    if (costlist == null) costlist = new List<ThingDefCountClass>();
-                }
-                else
-                {
-                    costlist = thing.def.CostList;
-                    if (costlist == null) costlist = new List<ThingDefCountClass>();
-                    if (thing.Stuff != null)
+                    ThingDefCountClass stuff = costlist[(int)CostMode.Material].FirstOrDefault(x => x.thingDef == thing.Stuff);
+                    if (stuff != null)
                     {
-                        ThingDefCountClass stuff = costlist.FirstOrDefault(x => x.thingDef == thing.Stuff);
-                        if (stuff != null)
-                        {
-                            stuff.count += thing.def.costStuffCount;
-                        }
-                        else
-                        {
-                            costlist.Add(new ThingDefCountClass(thing.Stuff, thing.def.CostStuffCount));
-                        }
+                        stuff.count += thing.def.costStuffCount;
                     }
-                }
-                if (costlist.NullOrEmpty())
-                {
-                    costlist.Add(new ThingDefCountClass(thing.def, 1));
+                    else
+                    {
+                        costlist[(int)CostMode.Material].Add(new ThingDefCountClass(thing.Stuff, thing.def.CostStuffCount));
+                    }
                 }
             }
 
-
+            //Build fuel cost
+            if (costlist[(int)CostMode.Fuel] == null) costlist[(int)CostMode.Fuel] = new List<ThingDefCountClass>();
+            costlist[(int)CostMode.Fuel].Clear();
+            if (building.Fuel > 0)
+            {
+                costlist[(int)CostMode.Fuel].Add(new ThingDefCountClass(building.FuelThing.FirstOrDefault(), 1));
+            }
         }
 
         public void UpdateThingList()
         {
             thingcountcache.Clear();
-            if (building.Fuel > 0)
+            if (costMode == CostMode.Fuel && building.Fuel > 0)
             {
                 IEnumerable<ThingDef> fuelthings = building.FuelThing;
                 if (!fuelthings.EnumerableNullOrEmpty()) foreach(ThingDef def in fuelthings)
-                    {
+                    { 
                         thingcountcache.Add(new ThingDefCountClass(def, (int)building.Fuel));
                     }
             }
             else
             {
-                resourcethings = ReinforceUtility.AllThingsNearBeacon(building.Map).Where(x => costlist.Exists(y => y.thingDef == x.def));//TradeUtility.AllLaunchableThingsForTrade(building.Map).Where(x => costlist.Exists(y => y.thingDef == x.def));
-                if (!costlist.NullOrEmpty())
+                if (costMode == CostMode.Fuel) costMode = InitialCostMode();
+                resourcethings = ReinforceUtility.AllThingsNearBeacon(building.Map).Where(x => costlist[(int)costMode].Exists(y => y.thingDef == x.def));//TradeUtility.AllLaunchableThingsForTrade(building.Map).Where(x => costlist.Exists(y => y.thingDef == x.def));
+                if (!costlist[(int)costMode].NullOrEmpty())
                 {
-                    foreach (ThingDefCountClass cost in costlist)
+                    foreach (ThingDefCountClass cost in costlist[(int)costMode])
                     {
-
                         thingcountcache.Add(new ThingDefCountClass(cost.thingDef, 0));
                     }
                 }
 
-                resourcethings.CountThingInCollection(ref thingcountcache);
+                if (costMode == CostMode.SameThing) resourcethings.CountThingInCollection(ref thingcountcache, thing.Stuff);
+                else resourcethings.CountThingInCollection(ref thingcountcache);
             }
+        }
+
+        public CostMode InitialCostMode()
+        {
+            if (building.Fuel > 0) return CostMode.Fuel;
+            if (costlist[(int)CostMode.Material].NullOrEmpty()) return CostMode.SameThing;
+            return CostMode.Material;
         }
 
         public int CostOf(int index)
         {
-            if (!building.ApplyMultiplier) return costlist[index].count;
-            return (int)(costlist[index].count * comp.CostMultiplier);
+            if (costMode == CostMode.Fuel && !building.ApplyMultiplier) return costlist[(int)costMode][index].count;
+            return (int)(costlist[(int)costMode][index].count * comp.CostMultiplier);
         }
 
         public void ResetProgress()
@@ -186,7 +203,7 @@ namespace InfiniteReinforce
 
         public void RemoveIngredients()
         {
-            if (building.Fuel > 0)
+            if (costMode == CostMode.Fuel && building.Fuel > 0)
             {
                 building.FuelComp.ConsumeOnce();
                 if (building.Fuel <= 0) BuildCostList();
@@ -195,9 +212,10 @@ namespace InfiniteReinforce
             }
             else
             {
-                for (int i = 0; i < costlist.Count; i++)
+                for (int i = 0; i < costlist[(int)costMode].Count; i++)
                 {
-                    resourcethings.EliminateThingOfType(costlist[i].thingDef, CostOf(i));
+                    if (costMode == CostMode.SameThing) resourcethings.EliminateThingOfType(costlist[(int)costMode][i].thingDef, CostOf(i), thing.Stuff);
+                    else resourcethings.EliminateThingOfType(costlist[(int)costMode][i].thingDef, CostOf(i));
                 }
             }
             UpdateThingList();
@@ -205,9 +223,9 @@ namespace InfiniteReinforce
 
         public bool CheckIngredients()
         {
-            for(int i=0; i<costlist.Count; i++)
+            for(int i=0; i<costlist[(int)costMode].Count; i++)
             {
-                int count = thingcountcache.FirstOrDefault(x => x.thingDef == costlist[i].thingDef)?.count ?? 0;
+                int count = thingcountcache.FirstOrDefault(x => x.thingDef == costlist[(int)costMode][i].thingDef)?.count ?? 0;
                 if (count < CostOf(i)) return false;
             }
             return true;
@@ -431,7 +449,36 @@ namespace InfiniteReinforce
             Listing_Standard listmain = new Listing_Standard();
             listmain.Begin(rect);
 
-            GUI.Label(listmain.GetRect(FontHeight), Keyed.Materials, fontleft);
+            Rect resourceLabelRect = listmain.GetRect(FontHeight);
+            Rect costModeRect = new Rect(resourceLabelRect.xMax - FontHeight, resourceLabelRect.y, FontHeight, FontHeight);
+            GUI.Label(resourceLabelRect, Keyed.Materials, fontleft);
+            for (int i=0; i< CostModeCount; i++)
+            {
+                if (!costlist[i].NullOrEmpty())
+                {
+                    ThingDef firstdef = costlist[i].FirstOrDefault().thingDef;
+                    if (Widgets.ButtonImage(costModeRect, firstdef.uiIcon, true))
+                    {
+                        if (onprogress)
+                        {
+                            SoundDefOf.ClickReject.PlayOneShotOnCamera();
+                        }
+                        else
+                        {
+                            costMode = (CostMode)i;
+                            UpdateThingList();
+                            SoundDefOf.Click.PlayOneShotOnCamera();
+                        }
+                    }
+                    if (i == (int)costMode) Widgets.DrawHighlight(costModeRect);
+                }
+
+
+                costModeRect.x -= FontHeight;
+            }
+
+
+
             ResourceInfo(listmain.GetRect(FontHeight * 8 + 8f));
 
             GUI.Label(listmain.GetRect(FontHeight), Keyed.FailureOutcome, fontleft);
@@ -448,14 +495,14 @@ namespace InfiniteReinforce
 
             Rect failureRect = listmain.GetRect(FontHeight);
 
-            float chance = building.AlwaysSuccess ? 0 : comp.GetFailureChance((float)building.MaxHitPoints / building.HitPoints);
+            float chance = (costMode == CostMode.Fuel && building.AlwaysSuccess) ? 0 : comp.GetFailureChance((float)building.MaxHitPoints / building.HitPoints);
             GUI.color = Color.Lerp(Color.green,Color.red, chance/50f);
             GUI.Box(failureRect, "");
             GUI.Label(failureRect, " " + Keyed.FailureChance, fontleft);
             GUI.Label(failureRect, String.Format(" {0:0.00}%", chance), fontright);
             GUI.color = Color.white;
 
-            if (building.Fuel > 0)
+            if (costMode == CostMode.Fuel && building.Fuel > 0)
             {
                 if (!building.FuelComp.Props.SpecialOptions.NullOrEmpty())
                 {

@@ -18,6 +18,6 @@
 		<li>latta.infusion</li>
 		<li>CETeam.CombatExtended</li>
 	</loadAfter>
-	<packageId>O.inf.reinforce</packageId>
+	<packageId>O.inf.reinforce.tmp</packageId>
 	<description>Infinite reinforcement(requires infinite resource)</description>
 </ModMetaData>

@@ -33,12 +33,34 @@
 
 
   <IR.Config_Baby>응애 모드</IR.Config_Baby>
-  <IR.Config_BabyDesc>자원 요구량 상승을 조절하려면 활성화 하세요.</IR.Config_BabyDesc>
+  <IR.Config_BabyDesc>자원 요구량 상승을 감소시키려면 활성화 하세요.</IR.Config_BabyDesc>
   <IR.Config_CostIncrement>비용 상승량 배율</IR.Config_CostIncrement>
   <IR.Config_Weenie>겁쟁이 모드</IR.Config_Weenie>
-  <IR.Config_WeenieDesc>실패 확률을 조절하려면 활성화 하세요.</IR.Config_WeenieDesc>
+  <IR.Config_WeenieDesc>실패 확률을 감소시키려면 활성화 하세요.</IR.Config_WeenieDesc>
   <IR.Config_FailureChance>실패 확률 배율</IR.Config_FailureChance>
   <IR.Config_SuperWeenie>수퍼 겁쟁이 모드</IR.Config_SuperWeenie>
   <IR.Config_SuperWeenieDesc>장비가 즉시 파괴되지 않습니다.</IR.Config_SuperWeenieDesc>
+  <IR.Config_Pro>프로 모드</IR.Config_Pro>
+  <IR.Config_ProDesc>자원 요구량 상승을 증가시키려면 활성화 하세요.</IR.Config_ProDesc>
+  <IR.Config_Badass>상남자 모드</IR.Config_Badass>
+  <IR.Config_BadassDesc>실패 확률을 증가시키려면 활성화 하세요.</IR.Config_BadassDesc>
+  <IR.Config_Ironman>철인 모드</IR.Config_Ironman>
+  <IR.Config_IronmanDesc>장비가 항상 손상됩니다.</IR.Config_IronmanDesc>
+
+  <IR.Baby>응애</IR.Baby>
+  <IR.Weenie>겁쟁이</IR.Weenie>
+  <IR.WeenieBaby>겁쟁이 응애</IR.WeenieBaby>
+  <IR.SuperWeenie>수퍼 겁쟁이</IR.SuperWeenie>
+  <IR.SuperWeenieBaby>수퍼 겁쟁이 응애</IR.SuperWeenieBaby>
+  <IR.Pro>프로</IR.Pro>
+  <IR.ProWeenie>프로 겁쟁이</IR.ProWeenie>
+  <IR.ProSuperWeenie>프로 수퍼 겁쟁이</IR.ProSuperWeenie>
+  <IR.ProBadass>프로 상남자</IR.ProBadass>
+  <IR.ProIronman>프로 철인</IR.ProIronman>
+  <IR.Badass>상남자</IR.Badass>
+  <IR.Badassbaby>응애 상남자</IR.Badassbaby>
+  <IR.Ironman>철인</IR.Ironman>
+  <IR.IronmanBaby>응애 철인</IR.IronmanBaby>
+  <IR.Cheater>치터</IR.Cheater>
 
 </LanguageData>
