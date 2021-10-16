@@ -17,7 +17,7 @@ namespace InfiniteReinforce
         protected CompThingContainer container = null;
         protected CompReinforceFuel fuel = null;
 
-        public bool PowerOn
+        public virtual bool PowerOn
         {
             get
             {
@@ -29,10 +29,10 @@ namespace InfiniteReinforce
             }
         }
         public ThingWithComps HoldingItem => ContainerComp?.ContainedThing as ThingWithComps;
-        public float Fuel => FuelComp?.Fuel ?? -1f;
-        public bool AlwaysSuccess => FuelComp?.AlwaysSuccess ?? false;
+        public virtual float Fuel => FuelComp?.Fuel ?? -1f;
+        public virtual bool AlwaysSuccess => FuelComp?.AlwaysSuccess ?? false;
         public List<ReinforceSpecialOption> SpecialOptions => FuelComp?.Props?.SpecialOptions;
-        public bool ApplyMultiplier => FuelComp?.ApplyMultiplier ?? true;
+        public virtual bool ApplyMultiplier => FuelComp?.ApplyMultiplier ?? true;
         public IEnumerable<ThingDef> FuelThing => FuelComp?.Props.fuelFilter.AllowedThingDefs;
 
         public CompThingContainer ContainerComp
@@ -45,7 +45,7 @@ namespace InfiniteReinforce
         }
 
 
-        public CompReinforceFuel FuelComp
+        public virtual CompReinforceFuel FuelComp
         {
             get
             {
@@ -62,12 +62,12 @@ namespace InfiniteReinforce
         }
 
 
-        public void InsertItem(ThingWithComps item)
+        public virtual void InsertItem(ThingWithComps item)
         {
             ContainerComp.innerContainer.Take(item);
         }
 
-        public void ExtractItem()
+        public virtual void ExtractItem()
         {
             
             if (ContainerComp.innerContainer.TryDropAll(InteractionCell, Map, ThingPlaceMode.Near))
@@ -80,7 +80,7 @@ namespace InfiniteReinforce
             }
         }
 
-        public void SetFuelRandom()
+        public virtual void SetFuelRandom()
         {
             if (FuelComp != null)
             {

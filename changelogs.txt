@@ -1,7 +1,10 @@
+Version 1.0.0.8
+ - Fixed the ancient reinforcer with mechanite never get failed.
+
 Version 1.0.0.7
  - Added material selection mode
  - Added more difficult modes.
- 
+
 Version 1.0.0.6
  - Fixed dependency error.
 

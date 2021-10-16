@@ -254,7 +254,7 @@ namespace InfiniteReinforce
             if (thing != null)
             {
                 int[] weights = comp.GetFailureWeights(out int totalweight);
-                success = building.AlwaysSuccess || !comp.RollFailure(out float rolled, totalweight, building.MaxHitPoints / building.HitPoints);
+                success = (costMode == CostMode.Fuel && building.AlwaysSuccess) || !comp.RollFailure(out float rolled, totalweight, building.MaxHitPoints / building.HitPoints);
                 RemoveIngredients();
                 if (success ?? false)
                 {
