@@ -40,7 +40,7 @@
   <IR.Config_FailureChance>실패 확률 배율</IR.Config_FailureChance>
   <IR.Config_SuperWeenie>수퍼 겁쟁이 모드</IR.Config_SuperWeenie>
   <IR.Config_SuperWeenieDesc>장비가 즉시 파괴되지 않습니다.</IR.Config_SuperWeenieDesc>
-  <IR.Config_Pro>프로 모드</IR.Config_Pro>
+  <IR.Config_Pro>고인물 모드</IR.Config_Pro>
   <IR.Config_ProDesc>자원 요구량 상승을 증가시키려면 활성화 하세요.</IR.Config_ProDesc>
   <IR.Config_Badass>상남자 모드</IR.Config_Badass>
   <IR.Config_BadassDesc>실패 확률을 증가시키려면 활성화 하세요.</IR.Config_BadassDesc>
@@ -52,11 +52,11 @@
   <IR.WeenieBaby>겁쟁이 응애</IR.WeenieBaby>
   <IR.SuperWeenie>수퍼 겁쟁이</IR.SuperWeenie>
   <IR.SuperWeenieBaby>수퍼 겁쟁이 응애</IR.SuperWeenieBaby>
-  <IR.Pro>프로</IR.Pro>
-  <IR.ProWeenie>프로 겁쟁이</IR.ProWeenie>
-  <IR.ProSuperWeenie>프로 수퍼 겁쟁이</IR.ProSuperWeenie>
-  <IR.ProBadass>프로 상남자</IR.ProBadass>
-  <IR.ProIronman>프로 철인</IR.ProIronman>
+  <IR.Pro>고인물</IR.Pro>
+  <IR.ProWeenie>겁쟁이 고인물</IR.ProWeenie>
+  <IR.ProSuperWeenie>수퍼 겁쟁이 고인물</IR.ProSuperWeenie>
+  <IR.ProBadass>상남자 고인물</IR.ProBadass>
+  <IR.ProIronman>고인물 철인</IR.ProIronman>
   <IR.Badass>상남자</IR.Badass>
   <IR.Badassbaby>응애 상남자</IR.Badassbaby>
   <IR.Ironman>철인</IR.Ironman>
