@@ -1,5 +1,8 @@
+Version 1.0.0.10
+ - Fixes for lower better stats.
+
 Version 1.0.0.9
- - Removed damage multiplier option of ranged weapons on CE
+ - Removed damage multiplier option of ranged weapons on CE.
 
 Version 1.0.0.8
  - Fixed the ancient reinforcer with mechanite never get failed.

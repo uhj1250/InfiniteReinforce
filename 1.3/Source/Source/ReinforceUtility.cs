@@ -16,6 +16,7 @@ namespace InfiniteReinforce
         public static List<StatDef> ReinforcableStats;
         public static List<ReinforceableStatDef> WhiteList;
         public static List<ReinforceDef> ReinforceDefs = DefDatabase<ReinforceDef>.AllDefs.ToList();
+        public static Dictionary<StatDef, bool> LowerBetter = null;
 
 
         public static ThingComp_Reinforce GetReinforceComp(this ThingWithComps thing)
@@ -248,14 +249,30 @@ namespace InfiniteReinforce
 
         public static bool LowerIsBetter(this StatDef stat)
         {
-            string deflower = stat.defName.ToLower();
+            if (LowerBetter == null)
+            {
+                LowerBetter = new Dictionary<StatDef, bool>();
+                List<StatDef> statlist = DefDatabase<StatDef>.AllDefsListForReading;
+                for(int i=0; i<statlist.Count; i++)
+                {
+                    LowerBetter.Add(statlist[i], LowerIsBetter(statlist[i].defName));
+                }
+            }
+
+            return LowerBetter.TryGetValue(stat, false);
+        }
+
+        public static bool LowerIsBetter(string defName)
+        {
+            ReinforceableStatDef def = DefDatabase<ReinforceableStatDef>.GetNamedSilentFail(defName);
+            if (def != null && def.reversal) return true;
+
+            string deflower = defName.ToLower();
 
             if (deflower.Contains("delay")
                 || deflower.Contains("flammability")
                 || deflower.Contains("cooldown")) return true;
-
             return false;
-
         }
 
         public static IEnumerable<Thing> AllThingsNearBeacon(Map map)

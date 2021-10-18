@@ -39,15 +39,16 @@ namespace InfiniteReinforce
                 ThingComp_Reinforce comp = thing.GetReinforceComp();
                 if (comp != null)
                 {
-                    if (!stat.LowerIsBetter())
+                    float factor = comp.GetCustomFactor(ReinforceDefOf.Reinforce_EquippedStatOffset);
+                    if (factor > 1.0f && !stat.LowerIsBetter())
                     {
-                        if (__result < 0) __result /= comp.GetCustomFactor(ReinforceDefOf.Reinforce_EquippedStatOffset);
-                        else __result *= comp.GetCustomFactor(ReinforceDefOf.Reinforce_EquippedStatOffset);
+                        if (__result < 0) __result /= factor;
+                        else __result *= factor;
                     }
                     else
                     {
-                        if (__result < 0) __result *= comp.GetCustomFactor(ReinforceDefOf.Reinforce_EquippedStatOffset);
-                        else __result /= comp.GetCustomFactor(ReinforceDefOf.Reinforce_EquippedStatOffset);
+                        if (__result < 0) __result *= factor;
+                        else __result /= factor;
                     }
 
                 }

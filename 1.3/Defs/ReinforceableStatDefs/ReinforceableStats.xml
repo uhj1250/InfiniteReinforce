@@ -5,6 +5,24 @@
 		<defName>Mass</defName>
 		<reversal>true</reversal>
 	</InfiniteReinforce.ReinforceableStatDef>
+	
+	<InfiniteReinforce.ReinforceableStatDef>
+		<defName>ToxicSensitivity</defName>
+		<reversal>true</reversal>
+		<isGeneric>false</isGeneric>
+	</InfiniteReinforce.ReinforceableStatDef>
+	
+	<InfiniteReinforce.ReinforceableStatDef>
+		<defName>IncomingDamageFactor</defName>
+		<reversal>true</reversal>
+		<isGeneric>false</isGeneric>
+	</InfiniteReinforce.ReinforceableStatDef>
+
+	<InfiniteReinforce.ReinforceableStatDef>
+		<defName>PawnTrapSpringChance</defName>
+		<reversal>true</reversal>
+		<isGeneric>false</isGeneric>
+	</InfiniteReinforce.ReinforceableStatDef>
 
 	<InfiniteReinforce.ReinforceableStatDef>
 		<defName>RangedWeapon_DamageMultiplier</defName>
