@@ -99,7 +99,10 @@ namespace InfiniteReinforce
 
         public static bool IsReinforcable(this StatCategoryDef category)
         {
-            return category == StatCategoryDefOf.Weapon || category == StatCategoryDefOf.Apparel;
+            return category == StatCategoryDefOf.Weapon 
+                || category == StatCategoryDefOf.Apparel 
+                || category == StatCategoryDefOf.Weapon_Ranged 
+                || category == StatCategoryDefOf.Weapon_Melee;
         }
 
         public static bool IsStatAppliable(this StatDef stat, ThingWithComps thing)
@@ -119,13 +122,13 @@ namespace InfiniteReinforce
             {
                 return true;
             }
-            else if (stat.category == StatCategoryDefOf.Weapon)
+            else if (stat.category.defName.ToLower().Contains("weapon"))
             {
                 deflower = stat.defName.ToLower();
                 if (thing.def.IsWeapon)
                 {
-                    if (thing.def.IsRangedWeapon && deflower.Contains("range")) return true;
-                    else if (thing.def.IsMeleeWeapon && deflower.Contains("melee")) return true;
+                    if (thing.def.IsRangedWeapon && (stat.category == StatCategoryDefOf.Weapon_Ranged || deflower.Contains("range"))) return true;
+                    else if (thing.def.IsMeleeWeapon && (stat.category == StatCategoryDefOf.Weapon_Melee || deflower.Contains("melee"))) return true;
                 }
                 //else if (thing is Building_Turret)
                 //{

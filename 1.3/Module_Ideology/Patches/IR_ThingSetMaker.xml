@@ -43,7 +43,7 @@
 		<xpath>Defs/ThingSetMakerDef[defName="MapGen_AncientComplex_SecurityCrate"]/root/options</xpath>
 		<value>
 			<li>
-				<weight>0.1</weight>
+				<weight>0.5</weight>
 				<thingSetMaker Class="ThingSetMaker_StackCount">
 					<fixedParams>
 						<filter>
