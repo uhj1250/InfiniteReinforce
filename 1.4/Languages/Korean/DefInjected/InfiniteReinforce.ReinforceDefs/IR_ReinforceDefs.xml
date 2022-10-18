@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <Reinforce_Hitpoint.label>내구도</Reinforce_Hitpoint.label>
+  <Reinforce_Reloadable.label>용량</Reinforce_Reloadable.label>
+  <Reinforce_InfusionSlot.label>마법부여 슬롯</Reinforce_InfusionSlot.label>
+  <Reinforce_EquippedStatOffset.label>착용 시 능력치 변경치</Reinforce_EquippedStatOffset.label>
+  
+  
+
+</LanguageData>

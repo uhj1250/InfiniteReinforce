@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Patch>
+	<Operation Class="PatchOperationAdd">
+		<xpath>Defs/ComplexDef[defName="AncientComplex"]/threats</xpath>
+		<value>
+			<li>
+				<def>AncientReinforcer</def>
+				<maxPerComplex>1</maxPerComplex>
+      			<chancePerComplex>0.40</chancePerComplex>
+			</li>
+		</value>
+	</Operation>
+</Patch>

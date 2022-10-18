@@ -11,6 +11,7 @@ using InfiniteReinforce.UI;
 
 namespace InfiniteReinforce
 {
+
     public class Dialog_Reinforcer : Window
     {
         public enum CostMode
@@ -31,20 +32,20 @@ namespace InfiniteReinforce
                 return BaseReinforceTicks * building.MaxHitPoints / building.HitPoints;
             }
         }
+        public bool? Succession => Instance.Succession;
 
         protected Building_Reinforcer building;
-        protected float progress = 0f;
-        protected bool onprogress = false;
-        protected bool? success = null;
+        protected Building_Reinforcer.ReinforceInstance Instance => building.Instance;
+        protected float Progress => building.Progress;
         protected int? selectedindex = null;
-        protected Func<bool> reinforceaction;
+        //protected Func<bool> reinforceaction;
         protected List<StatDef> statlist = new List<StatDef>();
         protected IEnumerable<Thing> resourcethings;
         protected List<ThingDefCountClass>[] costlist = new List<ThingDefCountClass>[CostModeCount];
         protected List<ThingDefCountClass> thingcountcache = new List<ThingDefCountClass>();
-        protected List<string> reinforcehistory = new List<string>();
-        protected string reinforcehistorycache;
-        protected CostMode costMode; 
+        protected CostMode costMode;
+
+        private Vector2 optionscroll;
 
 
         protected ThingWithComps thing => building?.HoldingItem;
@@ -84,8 +85,7 @@ namespace InfiniteReinforce
         public void ChangeBuilding(Building_Reinforcer building)
         {
             this.building = building;
-            ResetProgress();
-            success = null;
+            compcache = null;
             selectedindex = null;
             BuildStatList();
             if (thing != null)
@@ -194,19 +194,17 @@ namespace InfiniteReinforce
             return (int)(costlist[(int)costMode][index].count * comp.CostMultiplier);
         }
 
-        public void ResetProgress()
-        {
-            progress = 0f;
-            onprogress = false;
-            StatsReportUtility.Notify_QuickSearchChanged();
-        }
 
         public void RemoveIngredients()
         {
             if (costMode == CostMode.Fuel && building.Fuel > 0)
             {
                 building.FuelComp.ConsumeOnce();
-                if (building.Fuel <= 0) BuildCostList();
+                if (building.Fuel <= 0)
+                {
+                    costMode = CostMode.Material;
+                    BuildCostList();
+                }
                 ReinforcerEffect effect = building.FuelComp.Props.Effect;
                 if (effect != null && effect.Apply(comp)) effect.DoEffect(building, comp);
             }
@@ -214,8 +212,8 @@ namespace InfiniteReinforce
             {
                 for (int i = 0; i < costlist[(int)costMode].Count; i++)
                 {
-                    if (costMode == CostMode.SameThing) resourcethings.EliminateThingOfType(costlist[(int)costMode][i].thingDef, CostOf(i), thing.Stuff);
-                    else resourcethings.EliminateThingOfType(costlist[(int)costMode][i].thingDef, CostOf(i));
+                    if (costMode == CostMode.SameThing) building.InsertMaterials(resourcethings.GetThingsOfType(costlist[(int)costMode][i].thingDef, CostOf(i), thing.Stuff));
+                    else building.InsertMaterials(resourcethings.GetThingsOfType(costlist[(int)costMode][i].thingDef, CostOf(i)));
                 }
             }
             UpdateThingList();
@@ -231,16 +229,14 @@ namespace InfiniteReinforce
             return true;
         }
 
-        public void Reinforce(Func<bool> action, int index, string resultstring)
+        public void Reinforce(Func<bool> action, int index)
         {
             UpdateThingList();
             if (CheckIngredients())
             {
-                onprogress = true;
+                RemoveIngredients();
                 selectedindex = index;
-                reinforceaction = action;
-                reinforcehistorycache = resultstring;
-                ReinforceDefOf.Reinforce_Progress.PlayOneShotOnCamera();
+                action();
             }
             else 
             {
@@ -248,101 +244,34 @@ namespace InfiniteReinforce
             }
         }
 
-        public bool Reinforced()
-        {
-            ResetProgress();
-            if (thing != null)
-            {
-                int[] weights = comp.GetFailureWeights(out int totalweight);
-                success = (costMode == CostMode.Fuel && building.AlwaysSuccess) || !comp.RollFailure(out float rolled, totalweight, building.MaxHitPoints / building.HitPoints);
-                RemoveIngredients();
-                if (success ?? false)
-                {
-                    reinforceaction();
-                    reinforcehistory.Add(reinforcehistorycache.CapitalizeFirst());
-                    ReinforceDefOf.Reinforce_Success.PlayOneShotOnCamera();
-                    return true;
-                }
-                else
-                {
-                    ReinforceFailureResult effect = FailureEffect(totalweight, weights);
-                    reinforcehistory.Add(Keyed.Failed.CapitalizeFirst() + " - " + effect.Translate());
-                    return false;
-                }
-            }
-            success = null;
-            return false;
-        }
-
-        public ReinforceFailureResult FailureEffect(float totalweight, int[] weights)
-        {
-            float sum = 0;
-            float rand = Rand.Range(0, totalweight);
-
-            for (int i=0; i<weights.Length; i++)
-            {
-                sum += weights[i];
-                if (rand < sum)
-                {
-                    DoFailureEffect((ReinforceFailureResult)i);
-                    return (ReinforceFailureResult)i;
-                }
-            }
-            return ReinforceFailureResult.None;
-        }
-
-        public void DoFailureEffect(ReinforceFailureResult res)
-        {
-            switch (res)
-            {
-                case ReinforceFailureResult.None:
-                default:
-                    ReinforceDefOf.Reinforce_FailedMinor.PlayOneShotOnCamera();
-                    break;
-                case ReinforceFailureResult.DamageLittle:
-                    DamageThing(Rand.Range(1, 10));
-                    if (!thing?.Destroyed ?? false) Find.LetterStack.ReceiveLetter(Keyed.FailedLetter, Keyed.FailedDamaged(thing.Label), LetterDefOf.NegativeEvent, building);
-                    break;
-                case ReinforceFailureResult.DamageLarge:
-                    DamageThing(Rand.Range(10, 60));
-                    if (!thing?.Destroyed ?? false) Find.LetterStack.ReceiveLetter(Keyed.FailedLetter, Keyed.FailedDamaged(thing.Label), LetterDefOf.NegativeEvent, building);
-                    break;
-                case ReinforceFailureResult.Explosion:
-                    Find.LetterStack.ReceiveLetter(Keyed.FailedLetter, Keyed.FailedExplosion(building.Label), LetterDefOf.NegativeEvent, building);
-                    Explosion();
-                    break;
-                case ReinforceFailureResult.Destroy:
-                    Find.LetterStack.ReceiveLetter(Keyed.FailedLetter, Keyed.FailedDestroy(thing.Label), LetterDefOf.Death, building);
-                    thing.Destroy(DestroyMode.Vanish);
-                    ReinforceDefOf.Reinforce_FailedCritical.PlayOneShotOnCamera();
-                    break;
-            }
-
-
-        }
-
-        public void DamageThing(float damage)
-        {
-            if (thing.HitPoints <= damage)
-            {
-                Find.LetterStack.ReceiveLetter(Keyed.FailedLetter, Keyed.FailedDestroy(thing.Label), LetterDefOf.Death, building);
-                ReinforceDefOf.Reinforce_FailedCritical.PlayOneShotOnCamera();
-                thing.Destroy(DestroyMode.Vanish);
-            }
-            else
-            {
-                if (damage > 10) ReinforceDefOf.Reinforce_FailedNormal.PlayOneShotOnCamera();
-                else ReinforceDefOf.Reinforce_FailedMinor.PlayOneShotOnCamera();
-                thing.HitPoints -= (int)damage;
-            }
-        }
-
-        public void Explosion()
-        { 
-            DamageThing(Rand.Range(30, 80));
-            building.HitPoints = Math.Max((int)(building.HitPoints * Rand.Range(0.65f,0.90f)), 1);
-            GenExplosion.DoExplosion(building.Position, building.Map, Rand.Range(1, 3), DamageDefOf.Bomb, building, Rand.Range(50, 120));
-        }
+        //public bool Reinforced()
+        //{
+        //    ResetProgress();
+        //    if (thing != null)
+        //    {
+        //        int[] weights = comp.GetFailureWeights(out int totalweight);
+        //        success = (costMode == CostMode.Fuel && building.AlwaysSuccess) || !comp.RollFailure(out float rolled, totalweight, building.MaxHitPoints / building.HitPoints);
+        //        if(reinforcehistory.Count > 30)
+        //        {
+        //            reinforcehistory.RemoveAt(0);
+        //        }
+        //        if (success ?? false)
+        //        {
+        //            reinforceaction();
+        //            reinforcehistory.Add(reinforcehistorycache.CapitalizeFirst());
+        //            ReinforceDefOf.Reinforce_Success.PlayOneShotOnCamera();
+        //            return true;
+        //        }
+        //        else
+        //        {
+        //            ReinforceFailureResult effect = FailureEffect(totalweight, weights);
+        //            reinforcehistory.Add(Keyed.Failed.CapitalizeFirst() + " - " + effect.Translate());
+        //            return false;
+        //        }
+        //    }
+        //    success = null;
+        //    return false;
+        //}
 
         public static void ToggleWindow(Building_Reinforcer building)
         {
@@ -373,7 +302,6 @@ namespace InfiniteReinforce
                 preventCameraMotion = false;
                 draggable = true;
                 doCloseX = true;
-                forcePause = true;
                 return new Vector2(width, height);
             }
         }
@@ -409,18 +337,17 @@ namespace InfiniteReinforce
                 RightSection(rightRect);
             }
 
-            if (onprogress) progress++;
-            Widgets.FillableBar(progressRect, progress / ReinforceTicks);
-            if (progress > ReinforceTicks)
-            {
-                success = Reinforced();
-            }
-            if (success == true)
+            Widgets.FillableBar(progressRect, Progress);
+            //if (progress > ReinforceTicks)
+            //{
+            //    success = Reinforced();
+            //}
+            if (Succession == true)
             {
                 progressRect.DrawBinkTexture(Color.cyan, Color.black);
                 GUI.Label(progressRect, Keyed.Success, fontcenter);
             }
-            else if (success == false)
+            else if (Succession == false)
             {
                 progressRect.DrawBinkTexture(Color.red, Color.black);
                 GUI.Label(progressRect, Keyed.Failed, fontcenter);
@@ -459,13 +386,14 @@ namespace InfiniteReinforce
                     ThingDef firstdef = costlist[i].FirstOrDefault().thingDef;
                     if (Widgets.ButtonImage(costModeRect, firstdef.uiIcon, true))
                     {
-                        if (onprogress)
+                        if (building.OnProgress)
                         {
                             SoundDefOf.ClickReject.PlayOneShotOnCamera();
                         }
                         else
                         {
                             costMode = (CostMode)i;
+                            BuildCostList();
                             UpdateThingList();
                             SoundDefOf.Click.PlayOneShotOnCamera();
                         }
@@ -491,25 +419,30 @@ namespace InfiniteReinforce
         protected void RightSection(Rect rect)
         {
             Listing_Standard listmain = new Listing_Standard();
-            listmain.Begin(rect);
-
-            Rect failureRect = listmain.GetRect(FontHeight);
+            Rect outRect = new Rect(rect.x, rect.y + FontHeight, rect.width, rect.height - FontHeight);
+            Rect inRect = new Rect(rect.x, rect.y + FontHeight, rect.width - 20f, FontHeight * (statlist.Count + ReinforceUtility.ReinforceDefs.Count(x => x.Worker.Appliable(thing)) + (building?.FuelComp?.Props?.SpecialOptions?.Count ?? 0)));
+            Rect failureRect = new Rect(rect.x, rect.y, rect.width, FontHeight);
 
             float chance = (costMode == CostMode.Fuel && building.AlwaysSuccess) ? 0 : comp.GetFailureChance((float)building.MaxHitPoints / building.HitPoints);
-            GUI.color = Color.Lerp(Color.green,Color.red, chance/50f);
+            GUI.color = Color.Lerp(Color.green, Color.red, chance / 50f);
             GUI.Box(failureRect, "");
             GUI.Label(failureRect, " " + Keyed.FailureChance, fontleft);
             GUI.Label(failureRect, String.Format(" {0:0.00}%", chance), fontright);
             GUI.color = Color.white;
 
+            Widgets.BeginScrollView(outRect, ref optionscroll, inRect);
+            listmain.Begin(inRect);
+
+
             if (costMode == CostMode.Fuel && building.Fuel > 0)
             {
                 if (!building.FuelComp.Props.SpecialOptions.NullOrEmpty())
                 {
-                    List<ReinforceSpecialOption> options = building.FuelComp.Props.SpecialOptions;
+                    List<IReinforceSpecialOption> options = building.FuelComp.Props.SpecialOptions;
                     for (int i=0; i<options.Count; i++)
                     {
                         SpecialOption(listmain.GetRect(FontHeight), options[i],i);
+                        
                     }
                 }
             }
@@ -521,11 +454,12 @@ namespace InfiniteReinforce
             for (int i=0; i<ReinforceUtility.ReinforceDefs.Count; i++)
             {
                 ReinforceDef def = ReinforceUtility.ReinforceDefs[i];
-                if (def.Worker.Appliable(thing)) CustomOption(listmain.GetRect(FontHeight), def, i);
+                if (!def.disable && def.Worker.Appliable(thing)) CustomOption(listmain.GetRect(FontHeight), def, i);
             }
             
             
             listmain.End();
+            Widgets.EndScrollView();
         }
         
 
@@ -561,9 +495,9 @@ namespace InfiniteReinforce
 
             listmain.Begin(rect.ContractedBy(4f));
 
-            for (int i = reinforcehistory.Count - 1; i >= 0; i--)
+            for (int i = Instance.History.Count - 1; i >= 0; i--)
             {
-                listmain.Label(reinforcehistory[i]);
+                listmain.Label(Instance.History[i]);
             }
 
             listmain.End();
@@ -581,7 +515,15 @@ namespace InfiniteReinforce
             Widgets.DrawMenuSection(rect);
             Listing_Standard listmain = new Listing_Standard();
             listmain.Begin(rect.ContractedBy(4f));
-
+            if (costMode == CostMode.SameThing)
+            {
+                QualityRange temp = IRConfig.MaterialQualityRange;
+                Widgets.QualityRange(listmain.GetRect(FontHeight), 1, ref IRConfig.MaterialQualityRange);
+                if (temp != IRConfig.MaterialQualityRange)
+                {
+                    UpdateThingList();
+                }
+            }
             for (int i = 0; i < thingcountcache.Count; i++)
             {
                 Rect row = listmain.GetRect(FontHeight);
@@ -631,31 +573,30 @@ namespace InfiniteReinforce
             listmain.End();
         }
 
-        protected void SpecialOption(Rect rect, ReinforceSpecialOption option, int index)
+        protected void SpecialOption(Rect rect, IReinforceSpecialOption option, int index)
         {
             string left = option.LabelLeft(comp);
-            OptionRow(rect, option.Reinforce(comp), index, left, left, option.LabelRight(comp), !option.Enable(thing));
+            OptionRow(rect, delegate { Reinforce(delegate { return Instance.TryReinforce(option, costMode == CostMode.Fuel && building.AlwaysSuccess); }, index); }, left, option.LabelRight(comp), !option.Enable(thing));
         }
 
         protected void StatOption(Rect rect, StatDef stat, int index)
         {
-            int level = Rand.Range(1, 25);
             OptionRow(rect, 
                 delegate
                 {
-                    return comp.ReinforceStat(stat, level); 
+                    Reinforce(delegate { return Instance.TryReinforce(stat, costMode == CostMode.Fuel && building.AlwaysSuccess); }, index);
                 }
-                , index, stat.label + " +" + level * stat.GetOffsetPerLevel()*100 + "%", stat.label + " +" + comp.GetReinforcedCount(stat));
+                , stat.label + " +" + comp.GetReinforcedCount(stat));
         }
 
         protected void CustomOption(Rect rect, ReinforceDef def, int index)
         {
             int level = Rand.Range(def.levelRange.min, def.levelRange.max);
-            OptionRow(rect, def.Worker.Reinforce(comp, level), index, def.Worker.ResultString(level), def.Worker.LeftLabel(comp), def.Worker.RightLabel(comp));
+            OptionRow(rect, delegate { Reinforce(delegate { return Instance.TryReinforce(def, costMode == CostMode.Fuel && building.AlwaysSuccess); }, index); }, def.Worker.LeftLabel(comp), def.Worker.RightLabel(comp));
         }
 
         
-        protected void OptionRow(Rect rect, Func<bool> action, int index, string resultstring, string leftlabel, string rightlabel = null, bool disable = false)
+        protected void OptionRow(Rect rect, Action action, string leftlabel, string rightlabel = null, bool disable = false)
         {
             Rect iconRect = new Rect(rect.x, rect.y, rect.height, rect.height);
             Rect labelRect = new Rect(rect.x + iconRect.width, rect.y, rect.width - iconRect.width, rect.height);
@@ -664,18 +605,17 @@ namespace InfiniteReinforce
             GUI.Label(labelRect, "  " + leftlabel.CapitalizeFirst(), fontleft);
             if (rightlabel != null) GUI.Label(labelRect, rightlabel.CapitalizeFirst() + "  ", fontright);
 
-            UpgradeButton(iconRect, action, index, resultstring, disable);
+            UpgradeButton(iconRect, action, disable);
         }
 
-        protected void UpgradeButton(Rect rect, Func<bool> action, int index, string resultstring, bool disable = false)
+        protected void UpgradeButton(Rect rect, Action action, bool disable = false)
         {
 
-            if (!disable && !onprogress)
+            if (!disable && !building.OnProgress)
             {
                 if (Widgets.ButtonImage(rect, IconCache.Upgrade, Color.white, Color.gray))
                 {
-                    success = null;
-                    Reinforce(action, index, resultstring);
+                    action();
                 }
             }
             else

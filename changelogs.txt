@@ -1,3 +1,16 @@
+Version 1.1.0.0
+ - 1.4 Compatible
+ - Fixes for some stats.
+ - Reinforcer updates:
+    Now reinforcing requires processing time.
+     - Reinforcers are no longer working in pause mode.
+     - If you don't like this, instant option is in the mod settings.
+    Reinforcers have histories individually.
+    Added quality range bar.
+    Added scrolls at reinforce options.
+    Fixed UI issues.
+ - Max hitpoints option is disabled when using Infusion 2 mod due to incompatibility.
+
 Version 1.0.1.0
  - Support RimWorld 1.3.3159
  - Ancient reinforcer and reinforcer mechanite will be appear more frequently at ancient complex.

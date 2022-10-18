@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Patch>
+	<Operation Class="PatchOperationAdd">
+		<xpath>Defs/InfiniteReinforce.ReinforceableStatDef[defName="RangedWeapon_DamageMultiplier"]</xpath>
+		<value>
+			<disable>true</disable>
+		</value>
+	</Operation>
+</Patch>

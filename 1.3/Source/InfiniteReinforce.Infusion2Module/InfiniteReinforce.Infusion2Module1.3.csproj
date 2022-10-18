@@ -59,9 +59,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Source\InfiniteReinforce.csproj">
+    <ProjectReference Include="..\Source\InfiniteReinforce1.3.csproj">
       <Project>{9c75f111-28cc-4db1-96a1-bb3e60ed3526}</Project>
-      <Name>InfiniteReinforce</Name>
+      <Name>InfiniteReinforce1.3</Name>
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
