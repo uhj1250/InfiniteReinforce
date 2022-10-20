@@ -103,6 +103,7 @@
     <Compile Include="ReinforceWorkers\ReinforceWorker.cs" />
     <Compile Include="ReinforceWorkers\ReinforceWorker_EquippedStatOffsets.cs" />
     <Compile Include="ReinforceWorkers\ReinforceWorker_MaxHitPoint.cs" />
+    <Compile Include="ReinforceWorkers\ReinforceWorker_Range.cs" />
     <Compile Include="ReinforceWorkers\ReinforceWorker_Rechargeable.cs" />
     <Compile Include="Buildings\SpecialOption_Repiar.cs" />
     <Compile Include="UI\Dialog_Reinforcer.cs" />

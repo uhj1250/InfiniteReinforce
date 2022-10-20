@@ -54,4 +54,46 @@
 		<isGeneric>false</isGeneric>
 	</InfiniteReinforce.ReinforceableStatDef>
 
+	<InfiniteReinforce.ReinforceableStatDef>
+		<defName>AccuracyTouch</defName>
+		<offsetPerLevel>0.005</offsetPerLevel>
+		<isGeneric>false</isGeneric>
+	</InfiniteReinforce.ReinforceableStatDef>
+	
+	<InfiniteReinforce.ReinforceableStatDef>
+		<defName>AccuracyShort</defName>
+		<offsetPerLevel>0.005</offsetPerLevel>
+		<isGeneric>false</isGeneric>
+	</InfiniteReinforce.ReinforceableStatDef>
+	
+	<InfiniteReinforce.ReinforceableStatDef>
+		<defName>AccuracyMedium</defName>
+		<offsetPerLevel>0.005</offsetPerLevel>
+		<isGeneric>false</isGeneric>
+	</InfiniteReinforce.ReinforceableStatDef>
+	
+	<InfiniteReinforce.ReinforceableStatDef>
+		<defName>AccuracyLong</defName>
+		<offsetPerLevel>0.005</offsetPerLevel>
+		<isGeneric>false</isGeneric>
+	</InfiniteReinforce.ReinforceableStatDef>
+
+	<InfiniteReinforce.ReinforceableStatDef>
+		<defName>ArmorRating_Sharp</defName>
+		<offsetPerLevel>0.005</offsetPerLevel>
+		<isGeneric>false</isGeneric>
+	</InfiniteReinforce.ReinforceableStatDef>
+
+	<InfiniteReinforce.ReinforceableStatDef>
+		<defName>ArmorRating_Blunt</defName>
+		<offsetPerLevel>0.005</offsetPerLevel>
+		<isGeneric>false</isGeneric>
+	</InfiniteReinforce.ReinforceableStatDef>
+
+	<InfiniteReinforce.ReinforceableStatDef>
+		<defName>ArmorRating_Heat</defName>
+		<offsetPerLevel>0.005</offsetPerLevel>
+		<isGeneric>false</isGeneric>
+	</InfiniteReinforce.ReinforceableStatDef>
+
 </Defs>

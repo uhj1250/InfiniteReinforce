@@ -24,4 +24,14 @@
 		<levelRange>1~25</levelRange>
 		<offsetPerLevel>0.005</offsetPerLevel>
 	</InfiniteReinforce.ReinforceDef>
+
+	<InfiniteReinforce.ReinforceDef>
+		<defName>Reinforce_Range</defName>
+		<label>weapon range</label>
+		<workerClass>InfiniteReinforce.ReinforceWorker_Range</workerClass>
+		<levelRange>0~5</levelRange>
+		<offsetPerLevel>0.025</offsetPerLevel>
+	</InfiniteReinforce.ReinforceDef>
+
+
 </Defs>

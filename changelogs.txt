@@ -1,5 +1,12 @@
+Version 1.1.0.1
+ - Accuracy increments are cut in half.
+ - Armor rating increments are cut in half.
+ - Add range reinforcement.(Does not display)
+
+
 Version 1.1.0.0
  - 1.4 Compatible
+ - Final 1.3 update
  - Fixes for some stats.
  - Reinforcer updates:
     Now reinforcing requires processing time.

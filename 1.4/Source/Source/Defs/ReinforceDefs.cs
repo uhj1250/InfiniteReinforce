@@ -30,7 +30,7 @@ namespace InfiniteReinforce
                 return workercache;
             }
         }
-
+        
         protected ReinforceWorker workercache;
 
     }

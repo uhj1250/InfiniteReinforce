@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,8 +16,8 @@ namespace InfiniteReinforce
 
         protected int reinforced = 0;
         protected int discount = 0;
-        protected Dictionary<StatDef, float> statboost = new Dictionary<StatDef, float>();
-        protected Dictionary<StatDef, int> reinforcedcount = new Dictionary<StatDef, int>();
+        protected Dictionary<StatDef, float> statboost = new Dictionary<StatDef, float>(new StatDefComparer());
+        protected Dictionary<StatDef, int> reinforcedcount = new Dictionary<StatDef, int>(new StatDefComparer());
         protected Dictionary<ReinforceDef, float> custom = new Dictionary<ReinforceDef, float>();
         protected Dictionary<ReinforceDef, int> customcount = new Dictionary<ReinforceDef, int>();
         protected IRDifficultFlag difficult;
@@ -90,8 +91,8 @@ namespace InfiniteReinforce
             Scribe_Collections.Look(ref reinforcedcount, "reinforcedcount", LookMode.Def, LookMode.Value);
             Scribe_Collections.Look(ref custom, "custom", LookMode.Def, LookMode.Value);
             Scribe_Collections.Look(ref customcount, "customcount", LookMode.Def, LookMode.Value);
-            if (statboost == null) statboost = new Dictionary<StatDef, float>();
-            if (reinforcedcount == null) reinforcedcount = new Dictionary<StatDef, int>();
+            if (statboost == null) statboost = new Dictionary<StatDef, float>(new StatDefComparer());
+            if (reinforcedcount == null) reinforcedcount = new Dictionary<StatDef, int>(new StatDefComparer());
             if (custom == null) custom = new Dictionary<ReinforceDef, float>();
             if (customcount == null) customcount = new Dictionary<ReinforceDef, int>();
         }
@@ -211,6 +212,24 @@ namespace InfiniteReinforce
         public void AddDiscount(int count)
         {
             discount += count;
+        }
+
+        public class StatDefComparer : IEqualityComparer<StatDef>
+        {
+            public bool Equals(StatDef x, StatDef y)
+            {
+                if (x != null && y != null)
+                {
+                    return x.defName.Equals(y.defName);
+                }
+
+                return false;
+            }
+
+            public int GetHashCode(StatDef obj)
+            {
+                return base.GetHashCode();
+            }
         }
 
     }

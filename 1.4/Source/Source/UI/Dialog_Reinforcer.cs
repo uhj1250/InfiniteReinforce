@@ -531,7 +531,7 @@ namespace InfiniteReinforce
             }
             listmain.End();
         }
-
+        
         protected void ResourceRow(Rect rect, ThingDef def, int stackcount, int cost)
         {
             Rect rowleft = rect.LeftHalf();

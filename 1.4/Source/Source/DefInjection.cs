@@ -38,12 +38,37 @@ namespace InfiniteReinforce
                 if (def != null)
                 {
                     if (def.disable) continue;
-                    if (!def.reversal) stats[i].parts.Add(new StatPart_Reinforce());
-                    else stats[i].parts.Add(new StatPart_Reinforce_Reversal());
+                    if (!def.reversal)
+                    {
+                        StatPart_Reinforce statpart = new StatPart_Reinforce();
+                        statpart.parentStat = stats[i];
+                        stats[i].parts.Add(statpart);
+                    }
+                    else
+                    {
+                        StatPart_Reinforce statpart = new StatPart_Reinforce_Reversal();
+                        statpart.parentStat = stats[i];
+                        stats[i].parts.Add(statpart);
+                    }
                 }
-                else if (deflower.Contains("cooldown")) stats[i].parts.Add(new StatPart_Reinforce_Reversal());
-                else if (deflower.Contains("delay")) stats[i].parts.Add(new StatPart_Reinforce_Reversal());
-                else stats[i].parts.Add(new StatPart_Reinforce());
+                else if (deflower.Contains("cooldown"))
+                {
+                    StatPart_Reinforce statpart = new StatPart_Reinforce_Reversal();
+                    statpart.parentStat = stats[i];
+                    stats[i].parts.Add(statpart);
+                }
+                else if (deflower.Contains("delay"))
+                {
+                    StatPart_Reinforce statpart = new StatPart_Reinforce_Reversal();
+                    statpart.parentStat = stats[i];
+                    stats[i].parts.Add(statpart);
+                }
+                else
+                {
+                    StatPart_Reinforce statpart = new StatPart_Reinforce();
+                    statpart.parentStat = stats[i];
+                    stats[i].parts.Add(statpart);
+                }
             }
             ReinforceUtility.ReinforcableStats = stats;
             ReinforceUtility.WhiteList = whitelist;

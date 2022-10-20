@@ -17,7 +17,7 @@ namespace InfiniteReinforce
         public const int BaseReinforceTicks = 720;
         
         protected static readonly Vector2 BarSize = new Vector2(0.55f, 0.1f);
-        protected static readonly Color BarColor = new Color(0.9f, 0.85f, 0.2f);
+        protected static readonly Color BarColor = new Color(0.0f, 0.80f, 0.80f);
         protected static readonly Material BarUnfilledMat = SolidColorMaterials.SimpleSolidColorMaterial(new Color(0.3f, 0.3f, 0.3f), false);
         protected CompPowerTrader power = null;
         protected CompThingContainer container = null;
