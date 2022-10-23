@@ -2,7 +2,10 @@ Version 1.1.0.1
  - Accuracy increments are cut in half.
  - Armor rating increments are cut in half.
  - Add range reinforcement.(Does not display)
-
+    The range reinforcement has a large divergence.
+    Not displayed in stats currently.
+    Also range indicators will not reflect this, but pawns will shoot over it.
+ - Can insert a pawn's holding weapon into a reinforcer.
 
 Version 1.1.0.0
  - 1.4 Compatible

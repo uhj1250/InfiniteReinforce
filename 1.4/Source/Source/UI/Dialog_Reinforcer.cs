@@ -562,7 +562,7 @@ namespace InfiniteReinforce
             temp = listmain.GetRect(FontHeight);
             GUI.Label(temp, Keyed.MajorDamage, fontleft);
             GUI.Label(temp, (float)weights[2] / totalweight*100 + "%", fontright);
-
+            
             temp = listmain.GetRect(FontHeight);
             GUI.Label(temp, Keyed.Explosion, fontleft);
             GUI.Label(temp, (float)weights[3] / totalweight*100 + "%", fontright);

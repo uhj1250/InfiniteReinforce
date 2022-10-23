@@ -28,7 +28,7 @@ namespace InfiniteReinforce
         private List<Thing> insertedmaterials = new List<Thing>();
         protected Sustainer sustainer = null;
         public int ReinforceTicks => BaseReinforceTicks + (ItemReinforceComp?.ReinforcedCount ?? 0) * 30;
-
+        
         public virtual bool PowerOn
         {
             get

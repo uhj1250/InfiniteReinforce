@@ -13,6 +13,7 @@ namespace InfiniteReinforce
     public static class ReinforceDefOf
     {
         public static readonly JobDef InsertEquipmentToReinforcer;
+        public static readonly JobDef InsertEquipmentToReinforcerDirectly;
         public static readonly SoundDef Reinforce_Success;
         public static readonly SoundDef Reinforce_FailedCritical;
         public static readonly SoundDef Reinforce_FailedNormal;

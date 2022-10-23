@@ -97,6 +97,7 @@
     <Compile Include="Configurations\IRMod.cs" />
     <Compile Include="DefInjection.cs" />
     <Compile Include="Defs\ReinforceDefs.cs" />
+    <Compile Include="JobDrivers\JobDriver_InsertitemtoReinforcerDirectly.cs" />
     <Compile Include="Reflect.cs" />
     <Compile Include="ReinforceWorkers\ReinforceableWorker.cs" />
     <Compile Include="ReinforceWorkers\ReinforceableWorker_Basics.cs" />
@@ -109,7 +110,7 @@
     <Compile Include="UI\Dialog_Reinforcer.cs" />
     <Compile Include="Keyed.cs" />
     <Compile Include="Patches\Harmony.cs" />
-    <Compile Include="JobDriver_InsertItemtoReinforcer.cs" />
+    <Compile Include="JobDrivers\JobDriver_InsertItemtoReinforcer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Defs\ReinforceableDef.cs" />
     <Compile Include="ReinforceDefOf.cs" />

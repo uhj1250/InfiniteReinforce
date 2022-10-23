@@ -40,7 +40,6 @@ namespace InfiniteReinforce
             if (thing != null)
             {
                 __result *= thing.GetReinforceCustomFactor(ReinforceDefOf.Reinforce_Range);
-                Log.Message("Range: " + __result + "Factor" + thing.GetReinforceCustomFactor(ReinforceDefOf.Reinforce_Range) + thing.def.defName);
             }
     
             
