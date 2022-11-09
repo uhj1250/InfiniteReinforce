@@ -15,6 +15,7 @@
   <IR.Failed>Failed</IR.Failed>
   <IR.History>History</IR.History>
   <IR.ReinforceStatPart>Reinforced: x</IR.ReinforceStatPart>
+  <IR.ReinforceStatPartReversal>Reinforced: /</IR.ReinforceStatPartReversal>
   <IR.Materials>Materials</IR.Materials>
   <IR.FailedLetter>Reinforce Failed</IR.FailedLetter>
   <IR.FailedDamaged>{0} is damaged.</IR.FailedDamaged>

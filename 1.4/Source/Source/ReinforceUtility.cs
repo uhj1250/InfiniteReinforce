@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 using RimWorld;
 using Verse;
 using UnityEngine;
-
+using Verse.AI.Group;
 
 namespace InfiniteReinforce
 {
@@ -19,6 +19,12 @@ namespace InfiniteReinforce
         Custom
     }
 
+    public enum CostMode
+    {
+        SameThing = 0,
+        Material = 1,
+        Fuel = 2
+    }
 
     public static class ReinforceUtility
     {
@@ -26,7 +32,7 @@ namespace InfiniteReinforce
         public static List<ReinforceableStatDef> WhiteList;
         public static List<ReinforceDef> ReinforceDefs = DefDatabase<ReinforceDef>.AllDefs.ToList();
         public static Dictionary<StatDef, bool> LowerBetter = null;
-
+        
 
         public static ThingComp_Reinforce GetReinforceComp(this ThingWithComps thing)
         {
@@ -182,7 +188,7 @@ namespace InfiniteReinforce
             }
         }
 
-        public static void ElminateThingsOfType(this Map map, ThingDef def, int cost)
+        public static void EliminateThingsOfType(this Map map, ThingDef def, int cost)
         {
             while (cost > 0)
             {
@@ -306,11 +312,21 @@ namespace InfiniteReinforce
         public static bool CannotUseAsMaterial(this Thing thing)
         {
             if (thing.GetReinforcedCount() > 0) return true;
-            if (thing.TryGetQuality(out QualityCategory qc)) return !IRConfig.MaterialQualityRange.Includes(qc);          
-            
+            if (thing.def.IsWeapon || thing.def.IsApparel)
+            {
+                if (thing.TryGetQuality(out QualityCategory qc))
+                {
+                    float hp = (float)thing.HitPoints / thing.MaxHitPoints;
+                    return !IRConfig.MaterialQualityRange.Includes(qc) || !IRConfig.DurabilityRange.Includes(hp);
+                }
+                else
+                {
+                    float hp = (float)thing.HitPoints / thing.MaxHitPoints;
+                    return !IRConfig.DurabilityRange.Includes(hp);
+                }
+            }
             return false;
         }
-
     }
 
 

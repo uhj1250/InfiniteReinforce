@@ -55,18 +55,24 @@ namespace InfiniteReinforce
                                         }
                                     }
                             }
+                            if (RefuelWorkGiverUtility.CanRefuel(pawn, reinforcer))
+                            {
+                                opts.AddDistinct(MakeReinforcerRefuelMenu(pawn, reinforcer));
+                            }
+
+
                         }
                         else
                         {
                             if (canRefuel) for (int i = 0; i < refuelables.Count; i++)
                                 {
 
-                                    if (thing is Building_Reinforcer && refuelables.Contains(thing))
-                                    {
-                                        opts.AddDistinct(MakeReinforcerRefuelMenu(pawn, thing as Building_Reinforcer));
-                                        isFuel = true;
-                                        break;
-                                    }
+                                    //if (thing is Building_Reinforcer && refuelables.Contains(thing))
+                                    //{
+                                    //    opts.AddDistinct(MakeReinforcerRefuelMenu(pawn, thing as Building_Reinforcer));
+                                    //    isFuel = true;
+                                    //    break;
+                                    //}
 
                                     if (refuelables[i].FuelThing?.Contains(thing.def) ?? false)
                                     {

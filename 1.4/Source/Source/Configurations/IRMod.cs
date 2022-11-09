@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Verse;
 using RimWorld;
 using UnityEngine;
+using Verse.AI;
 
 namespace InfiniteReinforce
 {
@@ -59,14 +60,14 @@ namespace InfiniteReinforce
         public static float CostIncrementMultiplier = 1.0f;
         public static float FailureChanceMultiplier = 1.0f;
         public static QualityRange MaterialQualityRange = new QualityRange(QualityCategory.Awful,QualityCategory.Excellent);
-
-
+        public static FloatRange DurabilityRange = new FloatRange { min = 0f, max = 1f };
+        
         public void ResetDefault()
         {
             CostIncrementMultiplier = 1.0f;
             FailureChanceMultiplier = 1.0f;
         }
-
+        
         public override void ExposeData()
         {
             Scribe_Values.Look(ref BabyMode, "BabyMode", false, true);
@@ -75,6 +76,7 @@ namespace InfiniteReinforce
             Scribe_Values.Look(ref CostIncrementMultiplier, "CostIncrementMultiplier", 1.0f, true);
             Scribe_Values.Look(ref FailureChanceMultiplier, "FailureChanceMultiplier", 1.0f, true);
             Scribe_Values.Look(ref MaterialQualityRange, "MaterialQualityRange", new QualityRange(QualityCategory.Awful, QualityCategory.Excellent), true);
+            Scribe_Values.Look(ref DurabilityRange, "DurabilityRange", new FloatRange { min = 0f, max = 1f }, true);
             Scribe_Values.Look(ref InstantReinforce, "InstantReinforce", false, true);
 
 

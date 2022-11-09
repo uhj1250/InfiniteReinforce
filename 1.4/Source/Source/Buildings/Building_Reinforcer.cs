@@ -514,7 +514,7 @@ namespace InfiniteReinforce
                 return false;
             }
 
-
+            
             public void Tick(float progression)
             {
                 progress += progression;

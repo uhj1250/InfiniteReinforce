@@ -15,6 +15,7 @@
   <IR.Failed>실패함</IR.Failed>
   <IR.History>강화기록</IR.History>
   <IR.ReinforceStatPart>강화됨: x</IR.ReinforceStatPart>
+  <IR.ReinforceStatPartReversal>강화됨: /</IR.ReinforceStatPartReversal>
   <IR.Materials>재료</IR.Materials>
   <IR.FailedLetter>강화 실패</IR.FailedLetter>
   <IR.FailedDamaged>{0}이(가) 손상되었습니다.</IR.FailedDamaged>

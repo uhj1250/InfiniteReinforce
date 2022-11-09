@@ -38,6 +38,10 @@ namespace InfiniteReinforce
 
     public class StatPart_Reinforce_Reversal : StatPart_Reinforce
     {
+        public override string ExplanationPart(StatRequest req)
+        {
+            return Keyed.ReinforceStatPartReversal + GetFactor(req) * 100 + "%";
+        }
         public override void TransformValue(StatRequest req, ref float val)
         {
             val /= GetFactor(req);

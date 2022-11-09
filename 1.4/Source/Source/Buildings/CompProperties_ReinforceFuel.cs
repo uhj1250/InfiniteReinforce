@@ -60,16 +60,14 @@ namespace InfiniteReinforce
         {
             get
             {
-                if (Fuel > 0) return Props.alwaysSuccess;
-                return false;
+                return Props.alwaysSuccess;
             }
         }
         public bool ApplyMultiplier
         {
             get
             {
-                if (Fuel > 0) return Props.applyMultiplier;
-                return true;
+                return Props.applyMultiplier;
             }
         }
         

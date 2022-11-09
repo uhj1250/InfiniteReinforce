@@ -92,6 +92,7 @@ namespace InfiniteReinforce
         public static readonly string Failed = "IR.Failed".Translate();
         public static readonly string History = "IR.History".Translate();
         public static readonly string ReinforceStatPart = "IR.ReinforceStatPart".Translate();
+        public static readonly string ReinforceStatPartReversal = "IR.ReinforceStatPartReversal".Translate();
         public static readonly string Materials = "IR.Materials".Translate();
         public static readonly string FailedLetter = "IR.FailedLetter".Translate();
         public static readonly string FailureChance = "IR.FailureChance".Translate();

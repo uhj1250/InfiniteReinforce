@@ -14,12 +14,6 @@ namespace InfiniteReinforce
 
     public class Dialog_Reinforcer : Window
     {
-        public enum CostMode
-        {
-            SameThing = 0,
-            Material = 1,
-            Fuel = 2
-        }
 
         public const int CostModeCount = 3;
         public const float FontHeight = 22f;
@@ -94,6 +88,7 @@ namespace InfiniteReinforce
                 costMode = InitialCostMode();
                 UpdateThingList();
             }
+            StatsReportUtility.Notify_QuickSearchChanged();
         }
 
         public void BuildStatList()
@@ -147,7 +142,7 @@ namespace InfiniteReinforce
             //Build fuel cost
             if (costlist[(int)CostMode.Fuel] == null) costlist[(int)CostMode.Fuel] = new List<ThingDefCountClass>();
             costlist[(int)CostMode.Fuel].Clear();
-            if (building.Fuel > 0)
+            if (building.FuelComp != null)
             {
                 costlist[(int)CostMode.Fuel].Add(new ThingDefCountClass(building.FuelThing.FirstOrDefault(), 1));
             }
@@ -156,7 +151,7 @@ namespace InfiniteReinforce
         public void UpdateThingList()
         {
             thingcountcache.Clear();
-            if (costMode == CostMode.Fuel && building.Fuel > 0)
+            if (costMode == CostMode.Fuel && building.FuelComp != null)
             {
                 IEnumerable<ThingDef> fuelthings = building.FuelThing;
                 if (!fuelthings.EnumerableNullOrEmpty()) foreach(ThingDef def in fuelthings)
@@ -200,11 +195,11 @@ namespace InfiniteReinforce
             if (costMode == CostMode.Fuel && building.Fuel > 0)
             {
                 building.FuelComp.ConsumeOnce();
-                if (building.Fuel <= 0)
-                {
-                    costMode = CostMode.Material;
-                    BuildCostList();
-                }
+                //if (building.Fuel <= 0)
+                //{
+                //    costMode = CostMode.Material;
+                //    BuildCostList();
+                //}
                 ReinforcerEffect effect = building.FuelComp.Props.Effect;
                 if (effect != null && effect.Apply(comp)) effect.DoEffect(building, comp);
             }
@@ -434,7 +429,7 @@ namespace InfiniteReinforce
             listmain.Begin(inRect);
 
 
-            if (costMode == CostMode.Fuel && building.Fuel > 0)
+            if (costMode == CostMode.Fuel && building.FuelComp != null)
             {
                 if (!building.FuelComp.Props.SpecialOptions.NullOrEmpty())
                 {
@@ -492,9 +487,9 @@ namespace InfiniteReinforce
         {
             Widgets.DrawMenuSection(rect);
             Listing_Standard listmain = new Listing_Standard();
-
+            
             listmain.Begin(rect.ContractedBy(4f));
-
+            
             for (int i = Instance.History.Count - 1; i >= 0; i--)
             {
                 listmain.Label(Instance.History[i]);
@@ -515,11 +510,13 @@ namespace InfiniteReinforce
             Widgets.DrawMenuSection(rect);
             Listing_Standard listmain = new Listing_Standard();
             listmain.Begin(rect.ContractedBy(4f));
-            if (costMode == CostMode.SameThing)
+            if (thingcountcache.Exists(x => x.thingDef.IsWeapon || x.thingDef.IsApparel))
             {
                 QualityRange temp = IRConfig.MaterialQualityRange;
                 Widgets.QualityRange(listmain.GetRect(FontHeight), 1, ref IRConfig.MaterialQualityRange);
-                if (temp != IRConfig.MaterialQualityRange)
+                FloatRange temp2 = IRConfig.DurabilityRange;
+                Widgets.FloatRange(listmain.GetRect(FontHeight), 2, ref IRConfig.DurabilityRange, 0f, 1f, "HitPoints",ToStringStyle.PercentZero);
+                if (temp != IRConfig.MaterialQualityRange || temp2 != IRConfig.DurabilityRange)
                 {
                     UpdateThingList();
                 }
@@ -576,23 +573,26 @@ namespace InfiniteReinforce
         protected void SpecialOption(Rect rect, IReinforceSpecialOption option, int index)
         {
             string left = option.LabelLeft(comp);
-            OptionRow(rect, delegate { Reinforce(delegate { return Instance.TryReinforce(option, costMode == CostMode.Fuel && building.AlwaysSuccess); }, index); }, left, option.LabelRight(comp), !option.Enable(thing));
+            bool alwayssuccess = costMode == CostMode.Fuel && building.AlwaysSuccess;
+            OptionRow(rect, delegate { Reinforce(delegate { return Instance.TryReinforce(option, alwayssuccess); }, index); }, left, option.LabelRight(comp), !option.Enable(thing));
         }
 
         protected void StatOption(Rect rect, StatDef stat, int index)
         {
+            bool alwayssuccess = costMode == CostMode.Fuel && building.AlwaysSuccess;
             OptionRow(rect, 
                 delegate
                 {
-                    Reinforce(delegate { return Instance.TryReinforce(stat, costMode == CostMode.Fuel && building.AlwaysSuccess); }, index);
+                    Reinforce(delegate { return Instance.TryReinforce(stat, alwayssuccess); }, index);
                 }
                 , stat.label + " +" + comp.GetReinforcedCount(stat));
         }
 
         protected void CustomOption(Rect rect, ReinforceDef def, int index)
         {
+            bool alwayssuccess = costMode == CostMode.Fuel && building.AlwaysSuccess;
             int level = Rand.Range(def.levelRange.min, def.levelRange.max);
-            OptionRow(rect, delegate { Reinforce(delegate { return Instance.TryReinforce(def, costMode == CostMode.Fuel && building.AlwaysSuccess); }, index); }, def.Worker.LeftLabel(comp), def.Worker.RightLabel(comp));
+            OptionRow(rect, delegate { Reinforce(delegate { return Instance.TryReinforce(def, alwayssuccess); }, index); }, def.Worker.LeftLabel(comp), def.Worker.RightLabel(comp));
         }
 
         
