@@ -398,7 +398,6 @@ namespace InfiniteReinforce
             private float progressmultiplier = 1.0f;
             private Building_Reinforcer parent;
             private bool? successed = null;
-            private ThingComp_Reinforce compcache;
             protected List<string> reinforcehistory = new List<string>();
             protected Queue<Reinforcement> reinforcementqueue = new Queue<Reinforcement>();
             
@@ -435,8 +434,7 @@ namespace InfiniteReinforce
             {
                 get
                 {
-                    if (compcache == null) compcache = parent.HoldingItem.TryGetComp<ThingComp_Reinforce>();
-                    return compcache;
+                    return parent.ItemReinforceComp;
                 }
             }
 
@@ -610,7 +608,7 @@ namespace InfiniteReinforce
                     float rolled = 100f; float chance = 0f;
                     int[] weights = Comp.GetFailureWeights(out int totalweight);
                     successed = reinforcement.alwaysSuccess || !Comp.RollFailure(out rolled,out chance, totalweight, parent.MaxHitPoints / (parent.HitPoints*reinforcement.ProgressMultiplier));
-                    string chancestring = String.Format("{0:0}/{1:0}", rolled,chance);
+                    string chancestring = String.Format("{0:0.0}/{1:0.0}", rolled,chance);
                     parent.ConsumeMaterials();
                     if (reinforcehistory.Count > 30)
                     {
@@ -651,6 +649,7 @@ namespace InfiniteReinforce
                         CleanUp();
                         ReinforceFailureResult effect = parent.FailureEffect(totalweight, weights);
                         reinforcehistory.Add(Keyed.Failed.CapitalizeFirst() + " - " + effect.Translate() + "  " + chancestring);
+                        if (reinforcehistory.Count > 30) reinforcehistory.RemoveAt(0);
                         return false;
                     }
                 }
@@ -678,7 +677,7 @@ namespace InfiniteReinforce
                 }
                 else
                 {
-                    Messages.Message(Keyed.NotEnough, MessageTypeDefOf.RejectInput);
+                    Messages.Message(Keyed.NotEnough, parent, MessageTypeDefOf.RejectInput);
                     Reset();
                     return false;
                 }
