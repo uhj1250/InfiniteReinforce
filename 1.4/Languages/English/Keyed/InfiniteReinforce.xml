@@ -21,7 +21,7 @@
   <IR.FailedDamaged>{0} is damaged.</IR.FailedDamaged>
   <IR.FailedExplosion>{0} is exploded.</IR.FailedExplosion>
   <IR.FailedDestroy>{0} is destroyed.</IR.FailedDestroy>
-  <IR.FailureChance>Chance of failure</IR.FailureChance>
+  <IR.FailureChance>Failure rate</IR.FailureChance>
   <IR.FailureOutcome>Failure outcome</IR.FailureOutcome>
   <IR.Failure>Failure</IR.Failure>
   <IR.MinorDamage>Minor damage</IR.MinorDamage>
