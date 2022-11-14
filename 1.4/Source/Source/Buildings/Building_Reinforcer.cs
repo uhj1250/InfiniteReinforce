@@ -8,14 +8,14 @@ using Verse;
 using Verse.Sound;
 using RimWorld;
 using UnityEngine;
-
+using System.Runtime.CompilerServices;
 
 namespace InfiniteReinforce
 {
     public class Building_Reinforcer : Building
     {
         public const int BaseReinforceTicks = 720;
-        
+
         protected static readonly Vector2 BarSize = new Vector2(0.55f, 0.1f);
         protected static readonly Color BarColor = new Color(0.0f, 0.80f, 0.80f);
         protected static readonly Material BarUnfilledMat = SolidColorMaterials.SimpleSolidColorMaterial(new Color(0.3f, 0.3f, 0.3f), false);
@@ -56,7 +56,7 @@ namespace InfiniteReinforce
         {
             get
             {
-                return Instance.Progress / ReinforceTicks;
+                return Instance.Progress / Instance.ProgressionTicks;
             }
         }
         public ThingWithComps HoldingItem => ContainerComp?.ContainedThing as ThingWithComps;
@@ -86,6 +86,7 @@ namespace InfiniteReinforce
                 return HitPoints / def.BaseMaxHitPoints;
             }
         }
+
 
         public ThingComp_Reinforce ItemReinforceComp
         {
@@ -125,7 +126,7 @@ namespace InfiniteReinforce
         public override void Tick()
         {
             base.Tick();
-            if (onprogress)
+            if (PowerOn && onprogress)
             {
                 Instance.Tick(ProgressPerTick);
             }
@@ -149,6 +150,14 @@ namespace InfiniteReinforce
                     rotation = Rot4.North
                 });
             }
+        }
+
+        public override string GetInspectStringLowPriority()
+        {
+            string res = base.GetInspectStringLowPriority();
+            if (OnProgress) res += "DurationLeft".Translate(((int)(Instance.ProgressionTicks/ProgressPerTick)).ToStringTicksToPeriod(allowSeconds: true, shortForm: true));
+            return res;
+            
         }
 
         public virtual void InsertItem(ThingWithComps item)
@@ -185,8 +194,7 @@ namespace InfiniteReinforce
             
             if (ContainerComp.innerContainer.TryDropAll(InteractionCell, Map, ThingPlaceMode.Near))
             {
-                ExtractAllMaterials();
-                Instance.CleanUp();
+                Instance.Reset();
             }
             else
             {
@@ -208,6 +216,7 @@ namespace InfiniteReinforce
             List<Gizmo> gizmos = base.GetGizmos().ToList();
             gizmos.Add(CreateReinforceGizmo());
             gizmos.Add(CreateExtractItemGizmo());
+            if (OnProgress) gizmos.Add(CreateCancelGizmo());
             return gizmos;
         }
 
@@ -252,6 +261,22 @@ namespace InfiniteReinforce
             };
             return gizmo;
         }
+
+        protected Gizmo CreateCancelGizmo()
+        {
+            Gizmo gizmo = new Command_Action
+            {
+                icon = ContentFinder<Texture2D>.Get("UI/Designators/Cancel", false),
+                defaultLabel = "Cancel".Translate(),
+                defaultDesc = "Cancel".Translate(),
+                action = delegate
+                {
+                    Instance.Reset();
+                }
+            };
+            return gizmo;
+        }
+
 
         public ReinforceFailureResult FailureEffect(float totalweight, int[] weights)
         {
@@ -324,18 +349,87 @@ namespace InfiniteReinforce
 
         public class ReinforceInstance : IExposable
         {
+            public struct Reinforcement : IExposable
+            {
+                public ReinforceType type;
+                public Type optiontype;
+                public Def reinforcedef;
+                public bool alwaysSuccess;
+                public float progressmultiplier;
+                public CostMode costMode;
+
+                public float ProgressMultiplier
+                {
+                    get
+                    {
+                        if (IRConfig.InstantReinforce) return 1.0f;
+                        return progressmultiplier;
+                    }
+                }
+
+                public void ExposeData()
+                {
+                    Scribe_Values.Look(ref type, "type", ReinforceType.None, true);
+                    Scribe_Values.Look(ref alwaysSuccess, "alwaysSuccess", false, true);
+                    Scribe_Values.Look(ref progressmultiplier, "progressmultiplier", 1.0f, true);
+                    Scribe_Values.Look(ref costMode, "costMode", CostMode.SameThing, true);
+                    switch (type)
+                    {
+                        case ReinforceType.Stat:
+                            StatDef statdef = (StatDef)reinforcedef;
+                            Scribe_Defs.Look(ref statdef, "reinforcedef");
+                            if (Scribe.mode == LoadSaveMode.LoadingVars) reinforcedef = statdef;
+                            break;
+                        case ReinforceType.Custom:
+                            ReinforceDef customdef = (ReinforceDef)reinforcedef;
+                            Scribe_Defs.Look(ref customdef, "reinforcedef");
+                            if (Scribe.mode == LoadSaveMode.LoadingVars) reinforcedef = customdef;
+                            break;
+                        case ReinforceType.Special:
+                            Scribe_Values.Look(ref optiontype, "optiontype");
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+
             private float progress;
-            private ReinforceType type;
+            private float progressmultiplier = 1.0f;
             private Building_Reinforcer parent;
-            private Def reinforcedef;
-            //private IReinforceSpecialOption option;
-            private Type optiontype;
             private bool? successed = null;
-            private bool alwaysSuccess = false;
             private ThingComp_Reinforce compcache;
             protected List<string> reinforcehistory = new List<string>();
+            protected Queue<Reinforcement> reinforcementqueue = new Queue<Reinforcement>();
             
-
+            public int QueueCount
+            {
+                get
+                {
+                    return reinforcementqueue.Count;
+                }
+            }
+            public float ProgressMultiplier
+            {
+                get
+                {
+                    if (IRConfig.InstantReinforce) return 1.0f;
+                    return progressmultiplier;
+                }
+                set
+                {
+                    progressmultiplier = value;
+                }
+            }
+            public float ProgressionTicks
+            {
+                get
+                {
+                    Reinforcement reinforcement = reinforcementqueue.FirstOrDefault();
+                    float multiply = reinforcement.alwaysSuccess ? 1.0f : reinforcement.progressmultiplier;
+                    return parent.ReinforceTicks * multiply;
+                }
+            }
             public bool? Succession => successed; 
             protected ThingComp_Reinforce Comp
             {
@@ -350,29 +444,20 @@ namespace InfiniteReinforce
             public void ExposeData()
             {
                 Scribe_Values.Look(ref progress, "progress", 0, true);
-                Scribe_Values.Look(ref type, "type", ReinforceType.None, true);
-                Scribe_Values.Look(ref alwaysSuccess, "alwaysSuccess", false, true);
-                switch (type)
-                {
-                    case ReinforceType.Stat:
-                        StatDef statdef = (StatDef)reinforcedef;
-                        Scribe_Defs.Look(ref statdef, "reinforcedef");
-                        if (Scribe.mode == LoadSaveMode.LoadingVars) reinforcedef = statdef;
-                        break;
-                    case ReinforceType.Custom:
-                        ReinforceDef customdef = (ReinforceDef)reinforcedef;
-                        Scribe_Defs.Look(ref customdef, "reinforcedef");
-                        if (Scribe.mode == LoadSaveMode.LoadingVars) reinforcedef = customdef;
-                        break;
-                    case ReinforceType.Special:
-                        Scribe_Values.Look(ref optiontype, "optiontype");
-                        break;
-                    default:
-                        break;
-                }
+                Scribe_Values.Look(ref progressmultiplier, "progressmultiplier", 1.0f, true);
                 Scribe_References.Look(ref parent, "parent", true);
                 Scribe_Collections.Look(ref reinforcehistory, "reinforcehistory", LookMode.Value);
-
+                if (Scribe.mode == LoadSaveMode.LoadingVars)
+                {
+                    List<Reinforcement> queuetemp = new List<Reinforcement>();
+                    Scribe_Collections.Look(ref queuetemp, "reinforcementqueue", LookMode.Deep);
+                    if (!queuetemp.NullOrEmpty()) reinforcementqueue.Concat(queuetemp);
+                }
+                else if (Scribe.mode == LoadSaveMode.Saving)
+                {
+                    List<Reinforcement> queuetemp = reinforcementqueue.ToList();
+                    Scribe_Collections.Look(ref queuetemp, "reinforcementqueue", LookMode.Deep);
+                }
             }
 
             public ReadOnlyCollection<string> History => reinforcehistory.AsReadOnly();
@@ -392,6 +477,36 @@ namespace InfiniteReinforce
                 }
             }
             
+            public List<string> QueuedReinforcements
+            {
+                get
+                {
+                    if (reinforcementqueue.EnumerableNullOrEmpty())
+                    {
+                        return null;
+                    }
+                    List<string> res = new List<string>();
+                    foreach(Reinforcement r in reinforcementqueue)
+                    {
+                        switch (r.type)
+                        {
+                            case ReinforceType.Stat:
+                            case ReinforceType.Custom:
+                                res.Add(r.reinforcedef.label);
+                                break;
+                            case ReinforceType.Special:
+                                res.Add(parent.SpecialOptions?.FirstOrDefault(x => x.GetType().Equals(r.optiontype))?.LabelLeft(null) ?? "Error");
+                                break;
+                            default:
+                                res.Add("Error");
+                                break;
+                        }
+                    }
+
+                    return res;
+                }
+            }
+
             protected bool Init()
             {
                 progress = 0f;
@@ -401,71 +516,101 @@ namespace InfiniteReinforce
 
             protected bool SetUp()
             {
-                parent.onprogress = true;
-                if (parent.sustainer == null || parent.sustainer.Ended) parent.sustainer = ReinforceDefOf.Reinforce_Progress.TrySpawnSustainer(parent);
-                return true;
+                if (!parent.onprogress)
+                {
+                    parent.onprogress = true;
+                    if (parent.sustainer == null || parent.sustainer.Ended) parent.sustainer = ReinforceDefOf.Reinforce_Progress.TrySpawnSustainer(parent);
+                    return InsertMaterials(reinforcementqueue.First());
+                }
+                else
+                {
+                    return true;
+                }
             }
 
             public void Reset()
             {
                 Init();
-                type = ReinforceType.None;
-                reinforcedef = null;
-                optiontype = null;
+                reinforcementqueue.Clear();
+                parent.ExtractAllMaterials();
+                CleanUp();
             }
 
             public bool CleanUp()
             {
                 progress = 0f;
-                optiontype = null;
-                reinforcedef = null;
-                parent.onprogress = false;
-                parent.sustainer?.End();
-                StatsReportUtility.Notify_QuickSearchChanged();
-                alwaysSuccess = false;
-                return true;
+
+                if (reinforcementqueue.Count > 0)
+                {
+                    return InsertMaterials(reinforcementqueue.First());
+                }
+                else
+                {
+                    parent.onprogress = false;
+                    parent.sustainer?.End();
+                    StatsReportUtility.Notify_QuickSearchChanged();
+                    return true;
+                }
             }
 
 
-            public bool TryReinforce(StatDef def, bool alwaysSuccess = false)
+            public bool TryReinforce(StatDef def, CostMode costmode, bool alwaysSuccess = false)
             {
-                Init();
-                type = ReinforceType.Stat;
-                reinforcedef = def;
-                this.alwaysSuccess = alwaysSuccess;
-                SetUp();
-                return true;
+                reinforcementqueue.Enqueue(new Reinforcement
+                {
+                    type = ReinforceType.Stat,
+                    reinforcedef = def,
+                    alwaysSuccess = alwaysSuccess,
+                    costMode = costmode,
+                    progressmultiplier = ProgressMultiplier
+                    
+                });
+                return SetUp();
             }
             
-            public bool TryReinforce(ReinforceDef def, bool alwaysSuccess = false)
+            public bool TryReinforce(ReinforceDef def, CostMode costmode, bool alwaysSuccess = false)
             {
-                Init();
-                type = ReinforceType.Custom;
-                reinforcedef = def;
-                this.alwaysSuccess = alwaysSuccess;
-                SetUp();
-                return true;
+                reinforcementqueue.Enqueue(new Reinforcement
+                {
+                    type = ReinforceType.Custom,
+                    reinforcedef = def,
+                    alwaysSuccess = alwaysSuccess,
+                    costMode = costmode,
+                    progressmultiplier = ProgressMultiplier
+                });
+                return SetUp();
             }
 
-            public bool TryReinforce<T>(T option, bool alwaysSuccess = false) where T : IReinforceSpecialOption
+            public bool TryReinforce<T>(T option, CostMode costmode, bool alwaysSuccess = false) where T : IReinforceSpecialOption
             {
-                Init();
-                type = ReinforceType.Special;
-                optiontype = option.GetType();
-                this.alwaysSuccess = alwaysSuccess;
-                SetUp();
-                return true;
+                reinforcementqueue.Enqueue(new Reinforcement
+                {
+                    type = ReinforceType.Special,
+                    optiontype = option.GetType(),
+                    alwaysSuccess = alwaysSuccess,
+                    costMode = costmode,
+                    progressmultiplier = ProgressMultiplier
+                });
+                return SetUp();
             }
 
 
             public bool CompleteReinforce()
             {
                 int level;
+                if (reinforcementqueue.EnumerableNullOrEmpty())
+                {
+                    Log.Error(parent.Label + ": Reinforcement queue is empty");
+                    return false;
+                }
+                Reinforcement reinforcement = reinforcementqueue.Dequeue();
 
                 if (parent.HoldingItem != null)
                 {
+                    float rolled = 100f; float chance = 0f;
                     int[] weights = Comp.GetFailureWeights(out int totalweight);
-                    successed = alwaysSuccess || !Comp.RollFailure(out float rolled, totalweight, parent.MaxHitPoints / parent.HitPoints);
+                    successed = reinforcement.alwaysSuccess || !Comp.RollFailure(out rolled,out chance, totalweight, parent.MaxHitPoints / (parent.HitPoints*reinforcement.ProgressMultiplier));
+                    string chancestring = String.Format("{0:0}/{1:0}", rolled,chance);
                     parent.ConsumeMaterials();
                     if (reinforcehistory.Count > 30)
                     {
@@ -473,24 +618,24 @@ namespace InfiniteReinforce
                     }
                     if (successed ?? false)
                     {
-                        switch (type)
+                        switch (reinforcement.type)
                         {
                             case ReinforceType.Stat:
                                 level = Rand.Range(1, 25);
-                                StatDef stat = (StatDef)reinforcedef;
+                                StatDef stat = (StatDef)reinforcement.reinforcedef;
                                 parent.ItemReinforceComp.ReinforceStat(stat, level);
-                                reinforcehistory.Add(stat.label + " +" + level * stat.GetOffsetPerLevel() * 100 + "%");
+                                reinforcehistory.Add(stat.label + " +" + level * stat.GetOffsetPerLevel() * 100 + "%  " + chancestring);
                                 break;
                             case ReinforceType.Special:
-                                IReinforceSpecialOption option = (IReinforceSpecialOption)Activator.CreateInstance(optiontype);
+                                IReinforceSpecialOption option = (IReinforceSpecialOption)Activator.CreateInstance(reinforcement.optiontype);
                                 option.Reinforce(parent.ItemReinforceComp)();
-                                reinforcehistory.Add(option.LabelLeft(parent.ItemReinforceComp));
+                                reinforcehistory.Add(option.LabelLeft(parent.ItemReinforceComp) + "  " + chancestring);
                                 break;
                             case ReinforceType.Custom:
-                                ReinforceDef def = ((ReinforceDef)reinforcedef);
+                                ReinforceDef def = ((ReinforceDef)reinforcement.reinforcedef);
                                 level = Rand.Range(def.levelRange.min, def.levelRange.max);
                                 def.Worker.Reinforce(parent.ItemReinforceComp, level)();
-                                reinforcehistory.Add(def.Worker.ResultString(level));
+                                reinforcehistory.Add(def.Worker.ResultString(level) + "  " + chancestring);
                                 break;
                             default:
                                 CleanUp();
@@ -505,7 +650,7 @@ namespace InfiniteReinforce
                     {
                         CleanUp();
                         ReinforceFailureResult effect = parent.FailureEffect(totalweight, weights);
-                        reinforcehistory.Add(Keyed.Failed.CapitalizeFirst() + " - " + effect.Translate());
+                        reinforcehistory.Add(Keyed.Failed.CapitalizeFirst() + " - " + effect.Translate() + "  " + chancestring);
                         return false;
                     }
                 }
@@ -518,11 +663,125 @@ namespace InfiniteReinforce
             public void Tick(float progression)
             {
                 progress += progression;
-                if (IRConfig.InstantReinforce || progress > parent.ReinforceTicks)
+                if (IRConfig.InstantReinforce || progress > ProgressionTicks)
                 {
                     successed = CompleteReinforce();
                 }
             }
+
+            protected bool InsertMaterials(Reinforcement reinforcement)
+            {
+                List<ThingDefCountClass> costlist = BuildCostList(reinforcement.costMode);
+                if (CheckAndInsertMaterials(costlist, reinforcement.costMode))
+                {
+                    return true;
+                }
+                else
+                {
+                    Messages.Message(Keyed.NotEnough, MessageTypeDefOf.RejectInput);
+                    Reset();
+                    return false;
+                }
+
+            }
+
+            protected bool CheckAndInsertMaterials(List<ThingDefCountClass> costlist, CostMode costMode)
+            {
+                if (costlist.NullOrEmpty()) return false;
+
+                if (costMode == CostMode.Fuel)
+                {
+                    if (parent.Fuel > 0)
+                    {
+                        parent.FuelComp.ConsumeOnce();
+                        ReinforcerEffect effect = parent.FuelComp.Props.Effect;
+                        if (effect != null && effect.Apply(parent.ItemReinforceComp)) effect.DoEffect(parent, parent.ItemReinforceComp);
+                        return true;
+                    }
+                    return false;
+                }
+                else
+                {
+                    IEnumerable<Thing> materials = ReinforceUtility.AllThingsNearBeacon(parent.Map, x => costlist.Exists(y => y.thingDef == x.def));
+                    List<Thing>[] thingtoinsert = new List<Thing>[costlist.Count];
+
+
+                    ThingDef stuff = costMode == CostMode.SameThing ? parent.HoldingItem.Stuff : null;
+
+
+                    for (int i=0; i < costlist.Count; i++)
+                    {
+                        if (materials.CountThingInCollection(costlist[i].thingDef, stuff) < CostOf(costlist, i, costMode)) return false;
+                    }
+                         
+                    for (int i = 0; i < costlist.Count; i++)
+                    {
+                        thingtoinsert[i] = materials.GetThingsOfType(costlist[i].thingDef, CostOf(costlist, i, costMode), stuff);
+                        if (thingtoinsert[i] == null) return false;
+                    }
+
+                    for (int i = 0; i < costlist.Count; i++)
+                    {
+                        parent.InsertMaterials(thingtoinsert[i]);
+                    }
+
+                    return true;
+                }
+            }
+
+            protected int CostOf(List<ThingDefCountClass> costlist, int index, CostMode costMode)
+            {
+                if (costMode == CostMode.Fuel && !parent.ApplyMultiplier) return costlist[index].count;
+                return (int)(costlist[index].count * parent.ItemReinforceComp.CostMultiplier);
+            }
+
+            protected List<ThingDefCountClass> BuildCostList(CostMode costmode)
+            {
+
+                List<ThingDefCountClass> costlist = new List<ThingDefCountClass>();
+
+                switch (costmode)
+                {
+                    case CostMode.SameThing:
+                        costlist.Add(new ThingDefCountClass(parent.HoldingItem.def, 1));
+                        break;
+                    case CostMode.Material:
+                        ReinforceCostDef costDef = DefDatabase<ReinforceCostDef>.GetNamedSilentFail(parent.HoldingItem.def.defName);
+                        if (costDef != null)
+                        {
+                            if (!costDef.costList.NullOrEmpty()) costlist.AddRange(costDef.costList);
+                        }
+                        else
+                        {
+                            if (!parent.HoldingItem.def.costList.NullOrEmpty()) costlist.AddRange(parent.HoldingItem.def.CostList);
+                            if (parent.HoldingItem.Stuff != null)
+                            {
+                                ThingDefCountClass stuff = costlist.FirstOrDefault(x => x.thingDef == parent.HoldingItem.Stuff);
+                                if (stuff != null)
+                                {
+                                    stuff.count += parent.HoldingItem.def.costStuffCount;
+                                }
+                                else
+                                {
+                                    costlist.Add(new ThingDefCountClass(parent.HoldingItem.Stuff, parent.HoldingItem.def.CostStuffCount));
+                                }
+                            }
+                        }
+                        break;
+                    case CostMode.Fuel:
+                        if (parent.FuelComp != null)
+                        {
+                            costlist.Add(new ThingDefCountClass(parent.FuelThing.FirstOrDefault(), 1));
+                        }
+                        break;
+                    default:
+                        Log.Error(parent.Label + parent.HoldingItem.Label + ": Wrong cost mode");
+                        return null;
+
+                }
+                return costlist;
+            }
+
 
         }
 

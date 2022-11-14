@@ -31,6 +31,9 @@
   <IR.Repair>수리</IR.Repair>
   <IR.ReinforceFlag>강화 모드</IR.ReinforceFlag>
   <IR.ReinforceFlagDesc>이 장비는 해당 모드로 강화되었습니다.</IR.ReinforceFlagDesc>
+  <IR.Queue>대기열</IR.Queue>
+  <IR.ProcTime>처리시간</IR.ProcTime>
+
 
 
   <IR.Config_Baby>응애 모드</IR.Config_Baby>

@@ -1,3 +1,8 @@
+Version 1.1.0.3
+ - Add queue.
+ - Can reduce failure chance with longer process time.
+ - record rolled/failure chance
+
 Version 1.1.0.2
  - Add hitpoint bar.
  - Minor bug fixes.

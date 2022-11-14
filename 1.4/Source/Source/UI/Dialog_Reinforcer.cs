@@ -31,7 +31,7 @@ namespace InfiniteReinforce
         protected Building_Reinforcer building;
         protected Building_Reinforcer.ReinforceInstance Instance => building.Instance;
         protected float Progress => building.Progress;
-        protected int? selectedindex = null;
+        //protected int? selectedindex = null;
         //protected Func<bool> reinforceaction;
         protected List<StatDef> statlist = new List<StatDef>();
         protected IEnumerable<Thing> resourcethings;
@@ -80,7 +80,6 @@ namespace InfiniteReinforce
         {
             this.building = building;
             compcache = null;
-            selectedindex = null;
             BuildStatList();
             if (thing != null)
             {
@@ -190,29 +189,29 @@ namespace InfiniteReinforce
         }
 
 
-        public void RemoveIngredients()
-        {
-            if (costMode == CostMode.Fuel && building.Fuel > 0)
-            {
-                building.FuelComp.ConsumeOnce();
-                //if (building.Fuel <= 0)
-                //{
-                //    costMode = CostMode.Material;
-                //    BuildCostList();
-                //}
-                ReinforcerEffect effect = building.FuelComp.Props.Effect;
-                if (effect != null && effect.Apply(comp)) effect.DoEffect(building, comp);
-            }
-            else
-            {
-                for (int i = 0; i < costlist[(int)costMode].Count; i++)
-                {
-                    if (costMode == CostMode.SameThing) building.InsertMaterials(resourcethings.GetThingsOfType(costlist[(int)costMode][i].thingDef, CostOf(i), thing.Stuff));
-                    else building.InsertMaterials(resourcethings.GetThingsOfType(costlist[(int)costMode][i].thingDef, CostOf(i)));
-                }
-            }
-            UpdateThingList();
-        }
+        //public void RemoveIngredients()
+        //{
+        //    if (costMode == CostMode.Fuel && building.Fuel > 0)
+        //    {
+        //        building.FuelComp.ConsumeOnce();
+        //        //if (building.Fuel <= 0)
+        //        //{
+        //        //    costMode = CostMode.Material;
+        //        //    BuildCostList();
+        //        //}
+        //        ReinforcerEffect effect = building.FuelComp.Props.Effect;
+        //        if (effect != null && effect.Apply(comp)) effect.DoEffect(building, comp);
+        //    }
+        //    else
+        //    {
+        //        for (int i = 0; i < costlist[(int)costMode].Count; i++)
+        //        {
+        //            if (costMode == CostMode.SameThing) building.InsertMaterials(resourcethings.GetThingsOfType(costlist[(int)costMode][i].thingDef, CostOf(i), thing.Stuff));
+        //            else building.InsertMaterials(resourcethings.GetThingsOfType(costlist[(int)costMode][i].thingDef, CostOf(i)));
+        //        }
+        //    }
+        //    UpdateThingList();
+        //}
 
         public bool CheckIngredients()
         {
@@ -226,12 +225,10 @@ namespace InfiniteReinforce
 
         public void Reinforce(Func<bool> action, int index)
         {
-            UpdateThingList();
             if (CheckIngredients())
             {
-                RemoveIngredients();
-                selectedindex = index;
                 action();
+                UpdateThingList();
             }
             else 
             {
@@ -333,11 +330,12 @@ namespace InfiniteReinforce
             }
 
             Widgets.FillableBar(progressRect, Progress);
-            //if (progress > ReinforceTicks)
-            //{
-            //    success = Reinforced();
-            //}
-            if (Succession == true)
+            
+            if (building.Instance.QueueCount > 0)
+            {
+                GUI.Label(progressRect, String.Format("{0:0.00 %}", Progress), fontcenter);
+            }
+            else if (Succession == true)
             {
                 progressRect.DrawBinkTexture(Color.cyan, Color.black);
                 GUI.Label(progressRect, Keyed.Success, fontcenter);
@@ -347,8 +345,6 @@ namespace InfiniteReinforce
                 progressRect.DrawBinkTexture(Color.red, Color.black);
                 GUI.Label(progressRect, Keyed.Failed, fontcenter);
             }
-
-
         }
         
         protected void LeftSection(Rect rect)
@@ -381,17 +377,10 @@ namespace InfiniteReinforce
                     ThingDef firstdef = costlist[i].FirstOrDefault().thingDef;
                     if (Widgets.ButtonImage(costModeRect, firstdef.uiIcon, true))
                     {
-                        if (building.OnProgress)
-                        {
-                            SoundDefOf.ClickReject.PlayOneShotOnCamera();
-                        }
-                        else
-                        {
-                            costMode = (CostMode)i;
-                            BuildCostList();
-                            UpdateThingList();
-                            SoundDefOf.Click.PlayOneShotOnCamera();
-                        }
+                        costMode = (CostMode)i;
+                        BuildCostList();
+                        UpdateThingList();
+                        SoundDefOf.Click.PlayOneShotOnCamera();
                     }
                     if (i == (int)costMode) Widgets.DrawHighlight(costModeRect);
                 }
@@ -404,9 +393,12 @@ namespace InfiniteReinforce
 
             ResourceInfo(listmain.GetRect(FontHeight * 8 + 8f));
 
-            GUI.Label(listmain.GetRect(FontHeight), Keyed.FailureOutcome, fontleft);
-            FailureInfo(listmain.GetRect(FontHeight * 5 + 8f));
+            GUI.Label(listmain.GetRect(FontHeight), Keyed.Queue, fontleft);
+            QueueInfo(listmain.GetRect(FontHeight * 5 + 8f));
 
+            //GUI.Label(listmain.GetRect(FontHeight), Keyed.FailureOutcome, fontleft);
+            //FailureInfo(listmain.GetRect(FontHeight * 5 + 8f));
+            
             listmain.End();
 
         }
@@ -418,12 +410,28 @@ namespace InfiniteReinforce
             Rect inRect = new Rect(rect.x, rect.y + FontHeight, rect.width - 20f, FontHeight * (statlist.Count + ReinforceUtility.ReinforceDefs.Count(x => x.Worker.Appliable(thing)) + (building?.FuelComp?.Props?.SpecialOptions?.Count ?? 0)));
             Rect failureRect = new Rect(rect.x, rect.y, rect.width, FontHeight);
 
-            float chance = (costMode == CostMode.Fuel && building.AlwaysSuccess) ? 0 : comp.GetFailureChance((float)building.MaxHitPoints / building.HitPoints);
+            float chance = (costMode == CostMode.Fuel && building.AlwaysSuccess) ? 0 : comp.GetFailureChance((float)building.MaxHitPoints / (building.HitPoints*building.Instance.ProgressMultiplier));
             GUI.color = Color.Lerp(Color.green, Color.red, chance / 50f);
             GUI.Box(failureRect, "");
-            GUI.Label(failureRect, " " + Keyed.FailureChance, fontleft);
-            GUI.Label(failureRect, String.Format(" {0:0.00}%", chance), fontright);
+            GUI.Label(failureRect, String.Format(Keyed.FailureChance + " {0:0.00}%", chance), fontright);
+            
             GUI.color = Color.white;
+            TooltipHandler.TipRegion(failureRect, FailureInfo());
+
+            Rect btnRect = new Rect(failureRect.x, failureRect.y, FontHeight, FontHeight);
+            if (Widgets.ButtonImage(btnRect, IconCache.Plus, true))
+            {
+                Instance.ProgressMultiplier = Mathf.Clamp(Instance.ProgressMultiplier + 0.25f, 1.0f, 10.0f);
+            }
+            btnRect.x += FontHeight;
+            if (Widgets.ButtonImage(btnRect, IconCache.Minus, true))
+            {
+                Instance.ProgressMultiplier = Mathf.Clamp(Instance.ProgressMultiplier - 0.25f, 1.0f, 10.0f);
+            }
+            failureRect.Set(rect.x + FontHeight*2, rect.y, rect.width - FontHeight*2, FontHeight);
+            GUI.Label(failureRect, String.Format(" " + Keyed.ProcTime + " x{0:0.00}", Instance.ProgressMultiplier), fontleft);
+
+
 
             Widgets.BeginScrollView(outRect, ref optionscroll, inRect);
             listmain.Begin(inRect);
@@ -469,7 +477,7 @@ namespace InfiniteReinforce
             Rect labelRect2 = new Rect(rect.x + iconRect.width, labelRect.y + rect.height/3, rect.width - iconRect.width, rect.height/3);
             Rect labelRect3 = new Rect(rect.x + iconRect.width, labelRect2.y + rect.height / 3, rect.width - iconRect.width, rect.height/3);
 
-
+            
             GUI.Box(rect, "", box);
             GUI.Box(iconRect, "", box);
 
@@ -542,31 +550,53 @@ namespace InfiniteReinforce
             GUI.color = Color.white;
         }
 
-        protected void FailureInfo(Rect rect)
+        protected string FailureInfo()
+        {
+            int[] weights = comp.GetFailureWeights(out int totalweight);
+            return String.Format(Keyed.Failure + (float)weights[0] / totalweight * 100 + "%" + "\n" +
+                Keyed.MinorDamage + (float)weights[1] / totalweight * 100 + "%" + "\n" +
+                Keyed.MajorDamage + (float)weights[2] / totalweight * 100 + "%" + "\n" +
+                Keyed.Explosion + (float)weights[3] / totalweight * 100 + "%" + "\n" +
+                Keyed.Destruction + (float)weights[4] / totalweight * 100 + "%" + "");
+
+            //Widgets.DrawMenuSection(rect);
+            //Listing_Standard listmain = new Listing_Standard();
+            //listmain.Begin(rect.ContractedBy(4f));
+            //Rect temp = listmain.GetRect(FontHeight);
+            //GUI.Label(temp, Keyed.Failure, fontleft);
+            //GUI.Label(temp, (float)weights[0]/totalweight*100 + "%", fontright);
+            //
+            //temp = listmain.GetRect(FontHeight);
+            //GUI.Label(temp, Keyed.MinorDamage, fontleft);
+            //GUI.Label(temp, (float)weights[1] / totalweight*100 + "%", fontright);
+            //
+            //temp = listmain.GetRect(FontHeight);
+            //GUI.Label(temp, Keyed.MajorDamage, fontleft);
+            //GUI.Label(temp, (float)weights[2] / totalweight*100 + "%", fontright);
+            //
+            //temp = listmain.GetRect(FontHeight);
+            //GUI.Label(temp, Keyed.Explosion, fontleft);
+            //GUI.Label(temp, (float)weights[3] / totalweight*100 + "%", fontright);
+            //
+            //temp = listmain.GetRect(FontHeight);
+            //GUI.Label(temp, Keyed.Destruction, fontleft);
+            //GUI.Label(temp, (float)weights[4] / totalweight*100 + "%", fontright);
+            //listmain.End();
+        }
+
+        protected void QueueInfo(Rect rect)
         {
             Widgets.DrawMenuSection(rect);
             Listing_Standard listmain = new Listing_Standard();
             listmain.Begin(rect.ContractedBy(4f));
-            int[] weights = comp.GetFailureWeights(out int totalweight);
-            Rect temp = listmain.GetRect(FontHeight);
-            GUI.Label(temp, Keyed.Failure, fontleft);
-            GUI.Label(temp, (float)weights[0]/totalweight*100 + "%", fontright);
+            List<string> queue = building.Instance.QueuedReinforcements;
+            if (!queue.NullOrEmpty()) for(int i=0; i< queue.Count; i++)
+            {
+                Rect temp = listmain.GetRect(FontHeight);
+                GUI.Label(temp, queue[i], fontleft);
+            }
 
-            temp = listmain.GetRect(FontHeight);
-            GUI.Label(temp, Keyed.MinorDamage, fontleft);
-            GUI.Label(temp, (float)weights[1] / totalweight*100 + "%", fontright);
 
-            temp = listmain.GetRect(FontHeight);
-            GUI.Label(temp, Keyed.MajorDamage, fontleft);
-            GUI.Label(temp, (float)weights[2] / totalweight*100 + "%", fontright);
-            
-            temp = listmain.GetRect(FontHeight);
-            GUI.Label(temp, Keyed.Explosion, fontleft);
-            GUI.Label(temp, (float)weights[3] / totalweight*100 + "%", fontright);
-
-            temp = listmain.GetRect(FontHeight);
-            GUI.Label(temp, Keyed.Destruction, fontleft);
-            GUI.Label(temp, (float)weights[4] / totalweight*100 + "%", fontright);
             listmain.End();
         }
 
@@ -574,16 +604,18 @@ namespace InfiniteReinforce
         {
             string left = option.LabelLeft(comp);
             bool alwayssuccess = costMode == CostMode.Fuel && building.AlwaysSuccess;
-            OptionRow(rect, delegate { Reinforce(delegate { return Instance.TryReinforce(option, alwayssuccess); }, index); }, left, option.LabelRight(comp), !option.Enable(thing));
+            CostMode costmode = costMode;
+            OptionRow(rect, delegate { Reinforce(delegate { return Instance.TryReinforce(option, costmode, alwayssuccess); }, index); }, left, option.LabelRight(comp), !option.Enable(thing));
         }
 
         protected void StatOption(Rect rect, StatDef stat, int index)
         {
             bool alwayssuccess = costMode == CostMode.Fuel && building.AlwaysSuccess;
+            CostMode costmode = costMode;
             OptionRow(rect, 
                 delegate
                 {
-                    Reinforce(delegate { return Instance.TryReinforce(stat, alwayssuccess); }, index);
+                    Reinforce(delegate { return Instance.TryReinforce(stat,costmode, alwayssuccess); }, index);
                 }
                 , stat.label + " +" + comp.GetReinforcedCount(stat));
         }
@@ -591,8 +623,9 @@ namespace InfiniteReinforce
         protected void CustomOption(Rect rect, ReinforceDef def, int index)
         {
             bool alwayssuccess = costMode == CostMode.Fuel && building.AlwaysSuccess;
+            CostMode costmode = costMode;
             int level = Rand.Range(def.levelRange.min, def.levelRange.max);
-            OptionRow(rect, delegate { Reinforce(delegate { return Instance.TryReinforce(def, alwayssuccess); }, index); }, def.Worker.LeftLabel(comp), def.Worker.RightLabel(comp));
+            OptionRow(rect, delegate { Reinforce(delegate { return Instance.TryReinforce(def,costmode, alwayssuccess); }, index); }, def.Worker.LeftLabel(comp), def.Worker.RightLabel(comp));
         }
 
         
@@ -609,9 +642,9 @@ namespace InfiniteReinforce
         }
 
         protected void UpgradeButton(Rect rect, Action action, bool disable = false)
-        {
+        {   
 
-            if (!disable && !building.OnProgress)
+            if (!disable && building.Instance.QueueCount < 5)
             {
                 if (Widgets.ButtonImage(rect, IconCache.Upgrade, Color.white, Color.gray))
                 {

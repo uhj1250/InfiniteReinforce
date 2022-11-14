@@ -31,6 +31,8 @@
   <IR.Repair>repair</IR.Repair>
   <IR.ReinforceFlag>Reinforce flags</IR.ReinforceFlag>
   <IR.ReinforceFlagDesc>This equipment reinforced at this flags.</IR.ReinforceFlagDesc>
+  <IR.Queue>Queue</IR.Queue>
+  <IR.ProcTime>Process time</IR.ProcTime>
 
   <IR.Config_Baby>Baby mode</IR.Config_Baby>
   <IR.Config_BabyDesc>Enable to decrease cost increment.</IR.Config_BabyDesc>

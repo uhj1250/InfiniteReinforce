@@ -105,6 +105,8 @@ namespace InfiniteReinforce
         public static readonly string Repair = "IR.Repair".Translate();
         public static readonly string ReinforceFlag = "IR.ReinforceFlag".Translate();
         public static readonly string ReinforceFlagDesc = "IR.ReinforceFlagDesc".Translate();
+        public static readonly string Queue = "IR.Queue".Translate();
+        public static readonly string ProcTime = "IR.ProcTime".Translate();
 
         public static readonly string Config_Baby = "IR.Config_Baby".Translate();
         public static readonly string Config_BabyDesc = "IR.Config_BabyDesc".Translate();

@@ -188,6 +188,24 @@ namespace InfiniteReinforce
             }
         }
 
+        public static int CountThingInCollection(this IEnumerable<Thing> things, ThingDef def, ThingDef stuff = null)
+        {
+            int res = 0;
+            if (!things.EnumerableNullOrEmpty()) foreach (Thing thing in things)
+                {
+                    if (thing.CannotUseAsMaterial()) continue;
+                    if (stuff != null && thing.Stuff != null)
+                    {
+                        if (stuff == thing.Stuff) res += thing.stackCount;
+                    }
+                    else if (thing.def == def) res += thing.stackCount;
+                }
+
+            return res;
+        }
+
+
+
         public static void EliminateThingsOfType(this Map map, ThingDef def, int cost)
         {
             while (cost > 0)
@@ -254,9 +272,9 @@ namespace InfiniteReinforce
             return Mathf.Min(99.99f , Mathf.Min(50f, comp.ReinforcedCount) * multiply);
         }
 
-        public static bool RollFailure(this ThingComp_Reinforce comp, out float rolled, int totalweight, float multiply)
+        public static bool RollFailure(this ThingComp_Reinforce comp, out float rolled, out float chance, int totalweight, float multiply)
         {
-            float chance = totalweight * comp.GetFailureChance(multiply)/100;
+            chance = totalweight * comp.GetFailureChance(multiply)/100;
             rolled = Rand.Range(0f, totalweight);
             return chance > rolled;
         }
@@ -295,7 +313,7 @@ namespace InfiniteReinforce
             return false;
         }
 
-        public static IEnumerable<Thing> AllThingsNearBeacon(Map map)
+        public static IEnumerable<Thing> AllThingsNearBeacon(Map map, Func<Thing, bool> predicate = null)
         {
             HashSet<Thing> yieldedThings = new HashSet<Thing>();
             foreach (Building_OrbitalTradeBeacon item in Building_OrbitalTradeBeacon.AllPowered(map))
@@ -306,7 +324,11 @@ namespace InfiniteReinforce
                     yieldedThings.AddRange(thingList);
                 }
             }
-            return yieldedThings;
+            if (predicate == null)
+            {
+                return yieldedThings;
+            }
+            else return yieldedThings.Where(predicate);
         }
 
         public static bool CannotUseAsMaterial(this Thing thing)
