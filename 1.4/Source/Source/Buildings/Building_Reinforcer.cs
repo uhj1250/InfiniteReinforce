@@ -155,7 +155,7 @@ namespace InfiniteReinforce
         public override string GetInspectStringLowPriority()
         {
             string res = base.GetInspectStringLowPriority();
-            if (OnProgress) res += "DurationLeft".Translate(((int)(Instance.ProgressionTicks/Instance.Progress)).ToStringTicksToPeriod(allowSeconds: true, shortForm: true));
+            if (OnProgress) res += "DurationLeft".Translate(((int)((Instance.ProgressionTicks - Instance.Progress)/ProgressPerTick)).ToStringTicksToPeriod(allowSeconds: true, shortForm: true));
             return res;
             
         }
