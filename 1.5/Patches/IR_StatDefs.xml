@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Patch>
+
+	<Operation Class="PatchOperationAdd">
+		<xpath>Defs/StatDef[defName="MarketValue"]/parts</xpath>
+		<value>
+			<li Class="InfiniteReinforce.StatPart_ReinforceCount">
+				<offsetPerCount>0.2</offsetPerCount>
+			</li>
+		</value>
+	</Operation>
+
+
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+			<li>Infusion 2</li>
+		</mods>
+		<nomatch Class="PatchOperationConditional">
+			<xpath>Defs/StatDef[defName="MaxHitPoints"]/parts</xpath>
+			<nomatch Class="PatchOperationAdd">
+				<xpath>Defs/StatDef[defName="MaxHitPoints"]</xpath>
+					<value>
+						<parts>
+							<li Class="InfiniteReinforce.StatPart_CustomReinforce">
+								<reinforceDef>Reinforce_Hitpoint</reinforceDef>
+							</li>
+						</parts>
+					</value>
+			</nomatch>
+			<match Class="PatchOperationAdd">
+				<xpath>Defs/StatDef[defName="MaxHitPoints"]/parts</xpath>
+				<value>
+					<li Class="InfiniteReinforce.StatPart_CustomReinforce">
+						<reinforceDef>Reinforce_Hitpoint</reinforceDef>
+					</li>
+				</value>
+			</match>
+		</nomatch>
+	</Operation>
+</Patch>

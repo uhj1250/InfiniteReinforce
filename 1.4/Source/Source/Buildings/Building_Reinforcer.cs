@@ -590,8 +590,9 @@ namespace InfiniteReinforce
                     progressmultiplier = ProgressMultiplier
                 });
                 return SetUp();
+                
             }
-
+            
 
             public bool CompleteReinforce()
             {
@@ -623,6 +624,7 @@ namespace InfiniteReinforce
                                 StatDef stat = (StatDef)reinforcement.reinforcedef;
                                 parent.ItemReinforceComp.ReinforceStat(stat, level);
                                 reinforcehistory.Add(stat.label + " +" + level * stat.GetOffsetPerLevel() * 100 + "%  " + chancestring);
+                                stat.Worker.TryClearCache();
                                 break;
                             case ReinforceType.Special:
                                 IReinforceSpecialOption option = (IReinforceSpecialOption)Activator.CreateInstance(reinforcement.optiontype);
@@ -727,7 +729,7 @@ namespace InfiniteReinforce
                     return true;
                 }
             }
-
+            
             protected int CostOf(List<ThingDefCountClass> costlist, int index, CostMode costMode)
             {
                 if (costMode == CostMode.Fuel && !parent.ApplyMultiplier) return costlist[index].count;
@@ -792,14 +794,29 @@ namespace InfiniteReinforce
         public bool Equals(Building_Reinforcer x, Building_Reinforcer y)
         {
             return x.def == y.def;
-        }
+        } 
 
         public int GetHashCode(Building_Reinforcer obj)
         {
             return base.GetHashCode();
         }
-
+        
         
     }
+
+
+    public class ReinDeer : IDisposable
+    {
+        public void Dispose()
+        {
+            
+        }
+        
+
+
+    }
+
+
+
 
 }

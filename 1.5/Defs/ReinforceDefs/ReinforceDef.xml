@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<Defs>
+	<InfiniteReinforce.ReinforceDef>
+		<defName>Reinforce_Hitpoint</defName>
+		<label>durability</label>
+		<workerClass>InfiniteReinforce.ReinforceWorker_MaxHitPoint</workerClass>
+		<levelRange>1~25</levelRange>
+		<offsetPerLevel>0.01</offsetPerLevel>
+	</InfiniteReinforce.ReinforceDef>
+
+	<InfiniteReinforce.ReinforceDef>
+		<defName>Reinforce_Reloadable</defName>
+		<label>capacity</label>
+		<workerClass>InfiniteReinforce.ReinforceWorker_Reloadable</workerClass>
+		<levelRange>1</levelRange>
+		<offsetPerLevel>1.00</offsetPerLevel>
+	</InfiniteReinforce.ReinforceDef>
+
+	<InfiniteReinforce.ReinforceDef>
+		<defName>Reinforce_EquippedStatOffset</defName>
+		<label>equipeed stat offset</label>
+		<workerClass>InfiniteReinforce.ReinforceWorker_EquippedStatOffsets</workerClass>
+		<levelRange>1~25</levelRange>
+		<offsetPerLevel>0.005</offsetPerLevel>
+	</InfiniteReinforce.ReinforceDef>
+
+	<InfiniteReinforce.ReinforceDef>
+		<defName>Reinforce_Range</defName>
+		<label>weapon range</label>
+		<workerClass>InfiniteReinforce.ReinforceWorker_Range</workerClass>
+		<levelRange>0~5</levelRange>
+		<offsetPerLevel>0.025</offsetPerLevel>
+	</InfiniteReinforce.ReinforceDef>
+
+
+</Defs>

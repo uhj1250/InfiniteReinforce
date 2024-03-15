@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<Defs>
+	<InfiniteReinforce.ReinforceableStatDef>
+		<defName>Mass</defName>
+		<reversal>true</reversal>
+	</InfiniteReinforce.ReinforceableStatDef>
+	
+	<InfiniteReinforce.ReinforceableStatDef>
+		<defName>MaxHitPoints</defName>
+		<disable>true</disable>
+		<isGeneric>true</isGeneric>
+	</InfiniteReinforce.ReinforceableStatDef>
+	
+	<InfiniteReinforce.ReinforceableStatDef>
+		<defName>ToxicSensitivity</defName>
+		<reversal>true</reversal>
+		<isGeneric>false</isGeneric>
+	</InfiniteReinforce.ReinforceableStatDef>
+	
+	<InfiniteReinforce.ReinforceableStatDef>
+		<defName>IncomingDamageFactor</defName>
+		<reversal>true</reversal>
+		<isGeneric>false</isGeneric>
+	</InfiniteReinforce.ReinforceableStatDef>
+
+	<InfiniteReinforce.ReinforceableStatDef>
+		<defName>PawnTrapSpringChance</defName>
+		<reversal>true</reversal>
+		<isGeneric>false</isGeneric>
+	</InfiniteReinforce.ReinforceableStatDef>
+
+	<InfiniteReinforce.ReinforceableStatDef>
+		<defName>RangedWeapon_DamageMultiplier</defName>
+		<offsetPerLevel>0.003</offsetPerLevel>
+		<isGeneric>false</isGeneric>
+	</InfiniteReinforce.ReinforceableStatDef>
+
+	<InfiniteReinforce.ReinforceableStatDef>
+		<defName>MeleeWeapon_DamageMultiplier</defName>
+		<offsetPerLevel>0.003</offsetPerLevel>
+		<isGeneric>false</isGeneric>
+	</InfiniteReinforce.ReinforceableStatDef>
+
+	<InfiniteReinforce.ReinforceableStatDef>
+		<defName>StuffEffectMultiplierArmor</defName>
+		<offsetPerLevel>0.002</offsetPerLevel>
+		<isGeneric>false</isGeneric>
+	</InfiniteReinforce.ReinforceableStatDef>
+
+	<InfiniteReinforce.ReinforceableStatDef>
+		<defName>MentalBreakThreshold</defName>
+		<reversal>true</reversal>
+		<isGeneric>false</isGeneric>
+	</InfiniteReinforce.ReinforceableStatDef>
+
+	<InfiniteReinforce.ReinforceableStatDef>
+		<defName>AccuracyTouch</defName>
+		<offsetPerLevel>0.005</offsetPerLevel>
+		<isGeneric>false</isGeneric>
+	</InfiniteReinforce.ReinforceableStatDef>
+	
+	<InfiniteReinforce.ReinforceableStatDef>
+		<defName>AccuracyShort</defName>
+		<offsetPerLevel>0.005</offsetPerLevel>
+		<isGeneric>false</isGeneric>
+	</InfiniteReinforce.ReinforceableStatDef>
+	
+	<InfiniteReinforce.ReinforceableStatDef>
+		<defName>AccuracyMedium</defName>
+		<offsetPerLevel>0.005</offsetPerLevel>
+		<isGeneric>false</isGeneric>
+	</InfiniteReinforce.ReinforceableStatDef>
+	
+	<InfiniteReinforce.ReinforceableStatDef>
+		<defName>AccuracyLong</defName>
+		<offsetPerLevel>0.005</offsetPerLevel>
+		<isGeneric>false</isGeneric>
+	</InfiniteReinforce.ReinforceableStatDef>
+
+	<InfiniteReinforce.ReinforceableStatDef>
+		<defName>ArmorRating_Sharp</defName>
+		<offsetPerLevel>0.005</offsetPerLevel>
+		<isGeneric>false</isGeneric>
+	</InfiniteReinforce.ReinforceableStatDef>
+
+	<InfiniteReinforce.ReinforceableStatDef>
+		<defName>ArmorRating_Blunt</defName>
+		<offsetPerLevel>0.005</offsetPerLevel>
+		<isGeneric>false</isGeneric>
+	</InfiniteReinforce.ReinforceableStatDef>
+
+	<InfiniteReinforce.ReinforceableStatDef>
+		<defName>ArmorRating_Heat</defName>
+		<offsetPerLevel>0.005</offsetPerLevel>
+		<isGeneric>false</isGeneric>
+	</InfiniteReinforce.ReinforceableStatDef>
+
+	<InfiniteReinforce.ReinforceableStatDef>
+		<defName>RangedWeapon_Cooldown</defName>
+		<offsetPerLevel>-0.003</offsetPerLevel>
+		<isGeneric>false</isGeneric>
+	</InfiniteReinforce.ReinforceableStatDef>
+</Defs>

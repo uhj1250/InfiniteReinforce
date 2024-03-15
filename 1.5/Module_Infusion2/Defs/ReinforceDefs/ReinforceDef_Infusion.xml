@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<Defs>
+	<InfiniteReinforce.ReinforceDef>
+		<defName>Reinforce_InfusionSlot</defName>
+		<label>infusion slot</label>
+		<workerClass>InfiniteReinforce.Infusion2Module.ReinforceWorker_InfusionSlot</workerClass>
+		<levelRange>1</levelRange>
+		<offsetPerLevel>0.20</offsetPerLevel>
+	</InfiniteReinforce.ReinforceDef>
+
+</Defs>

@@ -558,7 +558,7 @@ namespace InfiniteReinforce
                 Keyed.MajorDamage + (float)weights[2] / totalweight * 100 + "%" + "\n" +
                 Keyed.Explosion + (float)weights[3] / totalweight * 100 + "%" + "\n" +
                 Keyed.Destruction + (float)weights[4] / totalweight * 100 + "%" + "");
-
+            
             //Widgets.DrawMenuSection(rect);
             //Listing_Standard listmain = new Listing_Standard();
             //listmain.Begin(rect.ContractedBy(4f));
@@ -659,6 +659,13 @@ namespace InfiniteReinforce
                 }
                 GUI.color = Color.white;
             }
+        }
+
+        protected void DismentRow(Rect rect, Action action)
+        {
+
+
+
         }
 
     }
