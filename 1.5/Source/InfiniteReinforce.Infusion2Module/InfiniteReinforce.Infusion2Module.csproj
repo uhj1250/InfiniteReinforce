@@ -39,8 +39,10 @@
       <HintPath>..\..\..\..\..\RimWorldWin64_Data\Managed\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Infusion">
-      <HintPath>..\..\..\..\..\..\..\workshop\content\294100\2063008864\1.4\Base\Assemblies\Infusion.dll</HintPath>
+    <Reference Include="Infusion, Version=5.0.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\..\workshop\content\294100\2063008864\1.5\Base\Assemblies\Infusion.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
