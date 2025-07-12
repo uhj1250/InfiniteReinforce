@@ -81,7 +81,7 @@
             <clipFolderPath>Interact/Work/Machine/Loop</clipFolderPath>
           </li>
         </grains>      
-        <volumeRange>10~15</volumeRange>
+        <volumeRange>20~20</volumeRange>
         <onCamera>false</onCamera>
       </li>
     </subSounds>

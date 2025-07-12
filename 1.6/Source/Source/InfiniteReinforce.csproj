@@ -100,7 +100,6 @@
     <Compile Include="ReinforceWorkers\ReinforceWorker.cs" />
     <Compile Include="ReinforceWorkers\ReinforceWorker_EquippedStatOffsets.cs" />
     <Compile Include="ReinforceWorkers\ReinforceWorker_MaxHitPoint.cs" />
-    <Compile Include="ReinforceWorkers\ReinforceWorker_Range.cs" />
     <Compile Include="ReinforceWorkers\ReinforceWorker_Rechargeable.cs" />
     <Compile Include="Buildings\SpecialOption_Repiar.cs" />
     <Compile Include="UI\Dialog_Reinforcer.cs" />
@@ -110,9 +109,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Defs\ReinforceableDef.cs" />
     <Compile Include="ReinforceDefOf.cs" />
-    <Compile Include="Patches\Rimworld_Patch.cs" />
     <Compile Include="ReinforceUtility.cs" />
     <Compile Include="StatPart_Reinforce.cs" />
+    <Compile Include="UI\FloatMenuOptionProvider.cs" />
     <Compile Include="UI\ReinforceUIUtility.cs" />
     <Compile Include="UI\TextureCache.cs" />
     <Compile Include="ThingComp_Reinforce.cs" />

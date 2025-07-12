@@ -215,7 +215,8 @@ namespace InfiniteReinforce
 
         public bool CheckIngredients()
         {
-            for(int i=0; i<costlist[(int)costMode].Count; i++)
+            if (DebugSettings.godMode) return true;
+            for (int i=0; i<costlist[(int)costMode].Count; i++)
             {
                 int count = thingcountcache.FirstOrDefault(x => x.thingDef == costlist[(int)costMode][i].thingDef)?.count ?? 0;
                 if (count < CostOf(i)) return false;
@@ -617,7 +618,7 @@ namespace InfiniteReinforce
                 {
                     Reinforce(delegate { return Instance.TryReinforce(stat,costmode, alwayssuccess); }, index);
                 }
-                , stat.label + " +" + comp.GetReinforcedCount(stat));
+                , stat.label + " +" + comp.GetReinforcedCount(stat), null , comp.GetStatFactor(stat) < 0.01f);
         }
 
         protected void CustomOption(Rect rect, ReinforceDef def, int index)

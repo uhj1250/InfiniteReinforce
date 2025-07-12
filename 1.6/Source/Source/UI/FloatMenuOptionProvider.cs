@@ -1,19 +1,21 @@
-﻿using System.Linq;
-using HarmonyLib;
+﻿using LudeonTK;
 using RimWorld;
-using RimWorld.SketchGen;
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
 using Verse.AI;
-using static UnityEngine.GraphicsBuffer;
 
-namespace InfiniteReinforce
+namespace InfiniteReinforce.UI
 {
-    [HarmonyPatch(typeof(FloatMenuMakerMap), "AddHumanlikeOrders")]
-    public static class Rimworld_Patch_AddHumanlikeOrders
+    public class FloatMenuOptionProvider_Reinforcer : FloatMenuOptionProvider
     {
-        public static readonly TargetingParameters OnlyItems = new TargetingParameters {
+
+        public static readonly TargetingParameters OnlyItems = new TargetingParameters
+        {
             canTargetItems = true,
             canTargetPawns = false,
             canTargetBuildings = false,
@@ -23,22 +25,28 @@ namespace InfiniteReinforce
             mapObjectTargetsMustBeAutoAttackable = false
         };
 
+        protected override bool Drafted => true;
 
-        public static void Postfix(Vector3 clickPos, Pawn pawn, List<FloatMenuOption> opts)
+        protected override bool Undrafted => true;
+
+        protected override bool Multiselect => false;
+
+        public override IEnumerable<FloatMenuOption> GetOptionsFor(Thing clickedThing, FloatMenuContext context)
         {
+            Pawn pawn = context.FirstSelectedPawn;
+            Vector3 clickPos = context.clickPosition;
             var reinforcers = pawn.Map.listerBuildings.AllBuildingsColonistOfClass<Building_Reinforcer>().Where(x => x.HoldingItem == null).Distinct(new ReinforcerComparer()).ToList();
             var refuelables = pawn.Map.listerBuildings.AllBuildingsColonistOfClass<Building_Reinforcer>().Where(x => RefuelWorkGiverUtility.CanRefuel(pawn, x)).ToList();
-            IEnumerable<LocalTargetInfo> targets = GenUI.TargetsAt(clickPos, OnlyItems);
+            //IEnumerable<LocalTargetInfo> targets = GenUI.TargetsAt(clickPos, OnlyItems);
             
             bool canInsert = !reinforcers.NullOrEmpty();
             bool canRefuel = !refuelables.NullOrEmpty();
 
-            if (canInsert || canRefuel) foreach (LocalTargetInfo t in targets)
+            if (canInsert || canRefuel) //foreach (LocalTargetInfo t in targets)
                 {
                     bool isFuel = false;
-                   
-                    ThingWithComps thing = t.Thing as ThingWithComps;
 
+                    ThingWithComps thing = clickedThing as ThingWithComps;
                     if (thing != null)
                     {
                         if (thing is Building_Reinforcer)
@@ -51,13 +59,13 @@ namespace InfiniteReinforce
                                     {
                                         if (equipments[i].IsReinforcable())
                                         {
-                                            opts.AddDistinct(MakeInsertItemDirectlyMenu(pawn, equipments[i], reinforcer));
+                                            yield return MakeInsertItemDirectlyMenu(pawn, equipments[i], reinforcer);
                                         }
                                     }
                             }
                             if (RefuelWorkGiverUtility.CanRefuel(pawn, reinforcer))
                             {
-                                opts.AddDistinct(MakeReinforcerRefuelMenu(pawn, reinforcer));
+                                yield return MakeReinforcerRefuelMenu(pawn, reinforcer);
                             }
 
 
@@ -76,31 +84,37 @@ namespace InfiniteReinforce
 
                                     if (refuelables[i].FuelThing?.Contains(thing.def) ?? false)
                                     {
-                                        opts.AddDistinct(MakeRefuelMenu(pawn, t, refuelables.FirstOrDefault()));
+                                        yield return MakeRefuelMenu(pawn, thing, refuelables.FirstOrDefault());
                                         isFuel = true;
                                         break;
                                     }
                                 }
-                            if (isFuel) continue;
-
-                            if (canInsert)
+                            if (!isFuel)
                             {
-                                for (int i = 0; i < reinforcers.Count; i++)
+                                if (canInsert)
                                 {
-                                    if (thing != null)
+                                    for (int i = 0; i < reinforcers.Count; i++)
                                     {
-                                        if (reinforcers[i].ContainerComp.Accepts(thing))
+                                        if (thing != null)
                                         {
-                                            opts.AddDistinct(MakeReinforceMenu(pawn, thing, reinforcers[i]));
+                                            if (reinforcers[i].ContainerComp.Accepts(thing))
+                                            {
+                                                yield return MakeReinforceMenu(pawn, thing, reinforcers[i]);
+                                            }
                                         }
                                     }
                                 }
                             }
+
                         }
                     }
                 }
 
+
+
         }
+
+
 
         public static FloatMenuOption MakeReinforceMenu(Pawn pawn, LocalTargetInfo target, Building_Reinforcer reinforcer)
         {
@@ -151,9 +165,6 @@ namespace InfiniteReinforce
         }
 
 
+
     }
-
-
-
-
 }

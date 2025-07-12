@@ -276,6 +276,7 @@ namespace InfiniteReinforce
         {
             chance = totalweight * comp.GetFailureChance(multiply)/100;
             rolled = Rand.Range(0f, totalweight);
+            if (DebugSettings.godMode) return false;
             return chance > rolled;
         }
 
@@ -346,6 +347,19 @@ namespace InfiniteReinforce
             }
             return false;
         }
+
+        public static string GetStatParts(this StatDef stat)
+        {
+            if (stat.parts == null || stat.parts.Count == 0) return "None";
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < stat.parts.Count; i++)
+            {
+                sb.Append(stat.parts[i].GetType().Name + "\n");
+                if (i < stat.parts.Count - 1) sb.Append(", ");
+            }
+            return sb.ToString();
+        }
+
     }
 
 }

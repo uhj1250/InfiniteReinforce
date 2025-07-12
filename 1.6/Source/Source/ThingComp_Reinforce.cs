@@ -133,7 +133,7 @@ namespace InfiniteReinforce
 
         }
 
-        public override float GetStatFactor(StatDef def)
+        public new float GetStatFactor(StatDef def)
         {
             if (def != null)
             {

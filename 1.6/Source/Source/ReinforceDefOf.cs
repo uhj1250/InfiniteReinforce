@@ -22,10 +22,9 @@ namespace InfiniteReinforce
         public static readonly ThingDef MechReinforcer;
         public static readonly ThingDef AncientReinforcer;
 
-        public static readonly ReinforceDef Reinforce_Hitpoint;
+        //public static readonly ReinforceDef Reinforce_Hitpoint;
         public static readonly ReinforceDef Reinforce_Reloadable;
         public static readonly ReinforceDef Reinforce_EquippedStatOffset;
-        public static readonly ReinforceDef Reinforce_Range;
 
 
 

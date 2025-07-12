@@ -3,7 +3,7 @@
 <Defs>
 	<InfiniteReinforce.ReinforceableStatDef>
 		<defName>Mass</defName>
-		<reversal>true</reversal>
+		<offsetPerLevel>-0.01</offsetPerLevel>
 	</InfiniteReinforce.ReinforceableStatDef>
 	
 	<InfiniteReinforce.ReinforceableStatDef>
@@ -32,25 +32,19 @@
 
 	<InfiniteReinforce.ReinforceableStatDef>
 		<defName>RangedWeapon_DamageMultiplier</defName>
-		<offsetPerLevel>0.003</offsetPerLevel>
+		<offsetPerLevel>0.002</offsetPerLevel>
 		<isGeneric>false</isGeneric>
 	</InfiniteReinforce.ReinforceableStatDef>
 
 	<InfiniteReinforce.ReinforceableStatDef>
 		<defName>MeleeWeapon_DamageMultiplier</defName>
-		<offsetPerLevel>0.003</offsetPerLevel>
+		<offsetPerLevel>0.002</offsetPerLevel>
 		<isGeneric>false</isGeneric>
 	</InfiniteReinforce.ReinforceableStatDef>
 
 	<InfiniteReinforce.ReinforceableStatDef>
 		<defName>StuffEffectMultiplierArmor</defName>
 		<offsetPerLevel>0.002</offsetPerLevel>
-		<isGeneric>false</isGeneric>
-	</InfiniteReinforce.ReinforceableStatDef>
-
-	<InfiniteReinforce.ReinforceableStatDef>
-		<defName>MentalBreakThreshold</defName>
-		<reversal>true</reversal>
 		<isGeneric>false</isGeneric>
 	</InfiniteReinforce.ReinforceableStatDef>
 
@@ -98,7 +92,30 @@
 
 	<InfiniteReinforce.ReinforceableStatDef>
 		<defName>RangedWeapon_Cooldown</defName>
-		<offsetPerLevel>-0.003</offsetPerLevel>
+		<offsetPerLevel>0.004</offsetPerLevel>
+		<reversal>true</reversal>
 		<isGeneric>false</isGeneric>
 	</InfiniteReinforce.ReinforceableStatDef>
+	
+	<InfiniteReinforce.ReinforceableStatDef>
+		<defName>RangedWeapon_RangeMultiplier</defName>
+		<offsetPerLevel>0.003</offsetPerLevel>
+		<isGeneric>false</isGeneric>
+	</InfiniteReinforce.ReinforceableStatDef>
+
+	<InfiniteReinforce.ReinforceableStatDef>
+		<defName>RangedWeapon_WarmupMultiplier</defName>
+		<offsetPerLevel>0.004</offsetPerLevel>
+		<reversal>true</reversal>
+		<isGeneric>false</isGeneric>
+		<disable>true</disable>
+	</InfiniteReinforce.ReinforceableStatDef>
+
+	<InfiniteReinforce.ReinforceableStatDef>
+		<defName>RangedWeapon_ArmorPenetrationMultiplier</defName>
+		<offsetPerLevel>0.004</offsetPerLevel>
+		<isGeneric>false</isGeneric>
+	</InfiniteReinforce.ReinforceableStatDef>
+
+
 </Defs>

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using RimWorld;
 using Verse;
-
+using UnityEngine;
 
 
 namespace InfiniteReinforce
@@ -29,12 +29,13 @@ namespace InfiniteReinforce
             ThingWithComps thing = req.Thing as ThingWithComps;
             if (thing != null)
             {
-                return thing.GetReinforceStatFactor(parentStat);
+                return Mathf.Max(0.01f, thing.GetReinforceStatFactor(parentStat));
             }
             else return 1.0f;
         }
         
     }
+
 
     public class StatPart_Reinforce_Reversal : StatPart_Reinforce
     {
@@ -59,7 +60,7 @@ namespace InfiniteReinforce
             ThingWithComps thing = req.Thing as ThingWithComps;
             if (thing != null)
             {
-                return 1.0f + 0.2f*thing.GetReinforcedCount();
+                return 1.0f + offsetPerCount * thing.GetReinforcedCount();
             }
             else return 1.0f;
         }
@@ -79,8 +80,8 @@ namespace InfiniteReinforce
             else return 1.0f; 
 
         }
-
-
     }
     
+    
+
 }

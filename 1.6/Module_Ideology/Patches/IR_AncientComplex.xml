@@ -4,11 +4,10 @@
 	<Operation Class="PatchOperationAdd">
 		<xpath>Defs/ComplexLayoutDef[defName="AncientComplex"]/threats</xpath>
 		<value>
-			<li>
-				<def>AncientReinforcer</def>
+			<AncientReinforcer>
 				<maxPerComplex>1</maxPerComplex>
       			<chancePerComplex>0.40</chancePerComplex>
-			</li>
+			</AncientReinforcer>
 		</value>
 	</Operation>
 </Patch>

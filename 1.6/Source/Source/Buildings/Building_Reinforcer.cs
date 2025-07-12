@@ -359,6 +359,7 @@ namespace InfiniteReinforce
                 public bool alwaysSuccess;
                 public float progressmultiplier;
                 public CostMode costMode;
+                public bool instant;
 
                 public float ProgressMultiplier
                 {
@@ -554,7 +555,6 @@ namespace InfiniteReinforce
                 }
             }
 
-
             public bool TryReinforce(StatDef def, CostMode costmode, bool alwaysSuccess = false)
             {
                 reinforcementqueue.Enqueue(new Reinforcement
@@ -596,6 +596,8 @@ namespace InfiniteReinforce
                 
             }
             
+            
+
 
             public bool CompleteReinforce()
             {
@@ -667,7 +669,7 @@ namespace InfiniteReinforce
             public void Tick(float progression)
             {
                 progress += progression;
-                if (IRConfig.InstantReinforce || progress > ProgressionTicks)
+                if (IRConfig.InstantReinforce || progress > ProgressionTicks || DebugSettings.godMode)
                 {
                     successed = CompleteReinforce();
                 }
@@ -675,6 +677,7 @@ namespace InfiniteReinforce
 
             protected bool InsertMaterials(Reinforcement reinforcement)
             {
+                if (DebugSettings.godMode) return true;
                 List<ThingDefCountClass> costlist = BuildCostList(reinforcement.costMode);
                 if (CheckAndInsertMaterials(costlist, reinforcement.costMode))
                 {
@@ -741,7 +744,7 @@ namespace InfiniteReinforce
 
             protected List<ThingDefCountClass> BuildCostList(CostMode costmode)
             {
-
+                
                 List<ThingDefCountClass> costlist = new List<ThingDefCountClass>();
 
                 switch (costmode)

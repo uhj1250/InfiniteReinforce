@@ -50,7 +50,7 @@ namespace InfiniteReinforce
                         if (__result < 0) __result *= factor;
                         else __result /= factor;
                     }
-
+    
                 }
             }
         }

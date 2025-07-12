@@ -50,6 +50,7 @@ namespace InfiniteReinforce
                  return DefaultWeights;
             }
         }
+
         public static bool BabyMode = false;
         public static bool WeenieMode = false;
         public static bool SuperWeenieMode = false;
