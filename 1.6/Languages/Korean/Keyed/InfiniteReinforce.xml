@@ -1,0 +1,72 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <IR.Title>Infinite Reinforce - 무한강화</IR.Title>
+
+  <IR.Reinforce>강화</IR.Reinforce>
+  <IR.ReinforceDesc>아이템을 강화합니다.</IR.ReinforceDesc>
+  <IR.TakeOut>꺼내기</IR.TakeOut>
+  <IR.TakeOutDesc>아이템을 꺼냅니다.</IR.TakeOutDesc>
+  <IR.Empty>비어있음</IR.Empty>
+  <IR.InsertItem>{0}를 {1}에 넣기</IR.InsertItem>
+  <IR.InsertFuel>{0}에 연료 보충</IR.InsertFuel>
+  <IR.ReinforcedCount>{0}번 강화됨</IR.ReinforcedCount>
+  <IR.NotEnough>자원부족</IR.NotEnough>
+  <IR.Success>성공</IR.Success>
+  <IR.Failed>실패함</IR.Failed>
+  <IR.History>강화기록</IR.History>
+  <IR.ReinforceStatPart>강화됨: x</IR.ReinforceStatPart>
+  <IR.ReinforceStatPartReversal>강화됨: /</IR.ReinforceStatPartReversal>
+  <IR.Materials>재료</IR.Materials>
+  <IR.FailedLetter>강화 실패</IR.FailedLetter>
+  <IR.FailedDamaged>{0}이(가) 손상되었습니다.</IR.FailedDamaged>
+  <IR.FailedExplosion>{0}이(가) 폭발했습니다.</IR.FailedExplosion>
+  <IR.FailedDestroy>{0}이(가) 파괴되었습니다.</IR.FailedDestroy>
+  <IR.FailureChance>실패 확률</IR.FailureChance>
+  <IR.FailureOutcome>실패 효과</IR.FailureOutcome>
+  <IR.Failure>실패</IR.Failure>
+  <IR.MinorDamage>경미한 손상</IR.MinorDamage>
+  <IR.MajorDamage>심각한 손상</IR.MajorDamage>
+  <IR.Explosion>폭발</IR.Explosion>
+  <IR.Destruction>파괴</IR.Destruction>
+  <IR.Repair>수리</IR.Repair>
+  <IR.ReinforceFlag>강화 모드</IR.ReinforceFlag>
+  <IR.ReinforceFlagDesc>이 장비는 해당 모드로 강화되었습니다.</IR.ReinforceFlagDesc>
+  <IR.Queue>대기열</IR.Queue>
+  <IR.ProcTime>처리시간</IR.ProcTime>
+
+
+
+  <IR.Config_Baby>응애 모드</IR.Config_Baby>
+  <IR.Config_BabyDesc>자원 요구량 상승을 감소시키려면 활성화 하세요.</IR.Config_BabyDesc>
+  <IR.Config_CostIncrement>비용 상승량 배율</IR.Config_CostIncrement>
+  <IR.Config_Weenie>겁쟁이 모드</IR.Config_Weenie>
+  <IR.Config_WeenieDesc>실패 확률을 감소시키려면 활성화 하세요.</IR.Config_WeenieDesc>
+  <IR.Config_FailureChance>실패 확률 배율</IR.Config_FailureChance>
+  <IR.Config_SuperWeenie>수퍼 겁쟁이 모드</IR.Config_SuperWeenie>
+  <IR.Config_SuperWeenieDesc>장비가 즉시 파괴되지 않습니다.</IR.Config_SuperWeenieDesc>
+  <IR.Config_Pro>고인물 모드</IR.Config_Pro>
+  <IR.Config_ProDesc>자원 요구량 상승을 증가시키려면 활성화 하세요.</IR.Config_ProDesc>
+  <IR.Config_Badass>상남자 모드</IR.Config_Badass>
+  <IR.Config_BadassDesc>실패 확률을 증가시키려면 활성화 하세요.</IR.Config_BadassDesc>
+  <IR.Config_Ironman>철인 모드</IR.Config_Ironman>
+  <IR.Config_IronmanDesc>장비가 항상 손상됩니다.</IR.Config_IronmanDesc>
+  <IR.Config_InstantReinforce>즉시강화</IR.Config_InstantReinforce>
+  <IR.Config_InstantReinforceDesc>장비강화에 소모되는 시간을 없애버립니다.</IR.Config_InstantReinforceDesc>
+
+  <IR.Baby>응애</IR.Baby>
+  <IR.Weenie>겁쟁이</IR.Weenie>
+  <IR.WeenieBaby>겁쟁이 응애</IR.WeenieBaby>
+  <IR.SuperWeenie>수퍼 겁쟁이</IR.SuperWeenie>
+  <IR.SuperWeenieBaby>수퍼 겁쟁이 응애</IR.SuperWeenieBaby>
+  <IR.Pro>고인물</IR.Pro>
+  <IR.ProWeenie>겁쟁이 고인물</IR.ProWeenie>
+  <IR.ProSuperWeenie>수퍼 겁쟁이 고인물</IR.ProSuperWeenie>
+  <IR.ProBadass>상남자 고인물</IR.ProBadass>
+  <IR.ProIronman>고인물 철인</IR.ProIronman>
+  <IR.Badass>상남자</IR.Badass>
+  <IR.Badassbaby>응애 상남자</IR.Badassbaby>
+  <IR.Ironman>철인</IR.Ironman>
+  <IR.IronmanBaby>응애 철인</IR.IronmanBaby>
+  <IR.Cheater>치터</IR.Cheater>
+
+</LanguageData>

@@ -1,0 +1,69 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <IR.Title>Infinite Reinforce</IR.Title>
+
+  <IR.Reinforce>Reinforce</IR.Reinforce>
+  <IR.ReinforceDesc>Reinforce the item.</IR.ReinforceDesc>
+  <IR.TakeOut>Take out</IR.TakeOut>
+  <IR.TakeOutDesc>Take out the item.</IR.TakeOutDesc>
+  <IR.Empty>Empty</IR.Empty>
+  <IR.InsertItem>Insert {0} into {1}</IR.InsertItem>
+  <IR.InsertFuel>Refuel {0}</IR.InsertFuel>
+  <IR.ReinforcedCount>Reinforced {0} times</IR.ReinforcedCount>
+  <IR.NotEnough>Not enough resources</IR.NotEnough>
+  <IR.Success>Success</IR.Success>
+  <IR.Failed>Failed</IR.Failed>
+  <IR.History>History</IR.History>
+  <IR.ReinforceStatPart>Reinforced: x</IR.ReinforceStatPart>
+  <IR.ReinforceStatPartReversal>Reinforced: /</IR.ReinforceStatPartReversal>
+  <IR.Materials>Materials</IR.Materials>
+  <IR.FailedLetter>Reinforce Failed</IR.FailedLetter>
+  <IR.FailedDamaged>{0} is damaged.</IR.FailedDamaged>
+  <IR.FailedExplosion>{0} is exploded.</IR.FailedExplosion>
+  <IR.FailedDestroy>{0} is destroyed.</IR.FailedDestroy>
+  <IR.FailureChance>Failure rate</IR.FailureChance>
+  <IR.FailureOutcome>Failure outcome</IR.FailureOutcome>
+  <IR.Failure>Failure</IR.Failure>
+  <IR.MinorDamage>Minor damage</IR.MinorDamage>
+  <IR.MajorDamage>Serious damage</IR.MajorDamage>
+  <IR.Explosion>Explosion</IR.Explosion>
+  <IR.Destruction>Destruction</IR.Destruction>
+  <IR.Repair>repair</IR.Repair>
+  <IR.ReinforceFlag>Reinforce flags</IR.ReinforceFlag>
+  <IR.ReinforceFlagDesc>This equipment reinforced at this flags.</IR.ReinforceFlagDesc>
+  <IR.Queue>Queue</IR.Queue>
+  <IR.ProcTime>Process time</IR.ProcTime>
+
+  <IR.Config_Baby>Baby mode</IR.Config_Baby>
+  <IR.Config_BabyDesc>Enable to decrease cost increment.</IR.Config_BabyDesc>
+  <IR.Config_CostIncrement>Cost increment multiplier</IR.Config_CostIncrement>
+  <IR.Config_Weenie>Weenie mode</IR.Config_Weenie>
+  <IR.Config_WeenieDesc>Enable to decrease failure chance.</IR.Config_WeenieDesc>
+  <IR.Config_FailureChance>Failure chance multiplier</IR.Config_FailureChance>
+  <IR.Config_SuperWeenie>Super weenie mode</IR.Config_SuperWeenie>
+  <IR.Config_SuperWeenieDesc>No instant equipment destroy.</IR.Config_SuperWeenieDesc>
+  <IR.Config_Pro>Pro mode</IR.Config_Pro>
+  <IR.Config_ProDesc>Enable to increase cost increment.</IR.Config_ProDesc>
+  <IR.Config_Badass>Badass mode</IR.Config_Badass>
+  <IR.Config_BadassDesc>Enable to increase failure chance.</IR.Config_BadassDesc>
+  <IR.Config_Ironman>Ironman mode</IR.Config_Ironman>
+  <IR.Config_IronmanDesc>The equipment will always be damaged.</IR.Config_IronmanDesc>
+  <IR.Config_InstantReinforce>Instant Reinforcement</IR.Config_InstantReinforce>
+  <IR.Config_InstantReinforceDesc>Reinforces equipments without processing time.</IR.Config_InstantReinforceDesc>
+
+  <IR.Baby>Baby</IR.Baby>
+  <IR.Weenie>Weenie</IR.Weenie>
+  <IR.WeenieBaby>Weenie baby</IR.WeenieBaby>
+  <IR.SuperWeenie>Super weenie</IR.SuperWeenie>
+  <IR.SuperWeenieBaby>Super weenie baby</IR.SuperWeenieBaby>
+  <IR.Pro>Pro</IR.Pro>
+  <IR.ProWeenie>Pro weenie</IR.ProWeenie>
+  <IR.ProSuperWeenie>Pro super weenie</IR.ProSuperWeenie>
+  <IR.ProBadass>Pro badass</IR.ProBadass>
+  <IR.ProIronman>Pro ironman</IR.ProIronman>
+  <IR.Badass>Badass</IR.Badass>
+  <IR.Badassbaby>Badass baby</IR.Badassbaby>
+  <IR.Ironman>Ironman</IR.Ironman>
+  <IR.IronmanBaby>Ironbaby</IR.IronmanBaby>
+  <IR.Cheater>Cheater</IR.Cheater>
+</LanguageData>

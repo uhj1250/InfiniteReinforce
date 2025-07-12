@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+  <ComplexThreatDef>
+    <defName>AncientReinforcer</defName>
+    <workerClass>InfiniteReinforce.ComplexThreatWorker_AncientReinforcer</workerClass>
+  </ComplexThreatDef>
+
+</Defs>

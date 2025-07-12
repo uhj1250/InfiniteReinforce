@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<Defs>
+	<InfiniteReinforce.ReinforceableStatDef>
+		<defName>WornBulk</defName>
+		<reversal>true</reversal>
+		<isGeneric>false</isGeneric>
+	</InfiniteReinforce.ReinforceableStatDef>
+	
+	<InfiniteReinforce.ReinforceableStatDef>
+		<defName>Bulk</defName>
+		<reversal>true</reversal>
+		<isGeneric>true</isGeneric>
+	</InfiniteReinforce.ReinforceableStatDef>
+
+	<InfiniteReinforce.ReinforceableStatDef>
+		<defName>ShotSpread</defName>
+		<reversal>true</reversal>
+		<isGeneric>false</isGeneric>
+		<workerClass>InfiniteReinforce.ReinforceableWorker_OnlyRangedWeapon</workerClass>
+	</InfiniteReinforce.ReinforceableStatDef>
+
+	<InfiniteReinforce.ReinforceableStatDef>
+		<defName>Recoil</defName>
+		<reversal>true</reversal>
+		<isGeneric>false</isGeneric>
+		<workerClass>InfiniteReinforce.ReinforceableWorker_OnlyRangedWeapon</workerClass>
+	</InfiniteReinforce.ReinforceableStatDef>
+
+	<InfiniteReinforce.ReinforceableStatDef>
+		<defName>SwayFactor</defName>
+		<reversal>true</reversal>
+		<isGeneric>false</isGeneric>
+		<workerClass>InfiniteReinforce.ReinforceableWorker_OnlyRangedWeapon</workerClass>
+	</InfiniteReinforce.ReinforceableStatDef>
+
+	<InfiniteReinforce.ReinforceableStatDef>
+		<defName>MuzzleFlash</defName>
+		<reversal>true</reversal>
+		<isGeneric>false</isGeneric>
+		<workerClass>InfiniteReinforce.ReinforceableWorker_OnlyRangedWeapon</workerClass>
+	</InfiniteReinforce.ReinforceableStatDef>
+
+	<InfiniteReinforce.ReinforceableStatDef>
+		<defName>TicksBetweenBurstShots</defName>
+		<reversal>true</reversal>
+		<isGeneric>false</isGeneric>
+		<workerClass>InfiniteReinforce.ReinforceableWorker_OnlyBurstWeapon</workerClass>
+	</InfiniteReinforce.ReinforceableStatDef>
+
+	<InfiniteReinforce.ReinforceableStatDef>
+		<defName>BurstShotCount</defName>
+		<reversal>false</reversal>
+		<isGeneric>false</isGeneric>
+		<workerClass>InfiniteReinforce.ReinforceableWorker_OnlyBurstWeapon</workerClass>
+	</InfiniteReinforce.ReinforceableStatDef>
+
+	<InfiniteReinforce.ReinforceableStatDef>
+		<defName>MagazineCapacity</defName>
+		<reversal>false</reversal>
+		<isGeneric>false</isGeneric>
+		<workerClass>InfiniteReinforce.ReinforceableWorker_OnlyRangedWeapon</workerClass>
+	</InfiniteReinforce.ReinforceableStatDef>
+
+	<InfiniteReinforce.ReinforceableStatDef>
+		<defName>ReloadTime</defName>
+		<reversal>true</reversal>
+		<isGeneric>false</isGeneric>
+		<workerClass>InfiniteReinforce.ReinforceableWorker_OnlyRangedWeapon</workerClass>
+	</InfiniteReinforce.ReinforceableStatDef>
+
+</Defs>
