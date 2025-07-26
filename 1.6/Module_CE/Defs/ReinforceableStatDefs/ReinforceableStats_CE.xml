@@ -37,6 +37,7 @@
 	<InfiniteReinforce.ReinforceableStatDef>
 		<defName>MuzzleFlash</defName>
 		<reversal>true</reversal>
+		<disable>true</disable>
 		<isGeneric>false</isGeneric>
 		<workerClass>InfiniteReinforce.ReinforceableWorker_OnlyRangedWeapon</workerClass>
 	</InfiniteReinforce.ReinforceableStatDef>
@@ -57,7 +58,7 @@
 
 	<InfiniteReinforce.ReinforceableStatDef>
 		<defName>MagazineCapacity</defName>
-		<reversal>false</reversal>
+		<disable>true</disable>
 		<isGeneric>false</isGeneric>
 		<workerClass>InfiniteReinforce.ReinforceableWorker_OnlyRangedWeapon</workerClass>
 	</InfiniteReinforce.ReinforceableStatDef>
@@ -66,7 +67,22 @@
 		<defName>ReloadTime</defName>
 		<reversal>true</reversal>
 		<isGeneric>false</isGeneric>
+		<disable>true</disable>
 		<workerClass>InfiniteReinforce.ReinforceableWorker_OnlyRangedWeapon</workerClass>
 	</InfiniteReinforce.ReinforceableStatDef>
+
+	<InfiniteReinforce.ReinforceableStatDef>
+		<defName>OneHandedness</defName>
+		<disable>true</disable>
+		<isGeneric>false</isGeneric>
+		<workerClass>InfiniteReinforce.ReinforceableWorker_OnlyRangedWeapon</workerClass>
+	</InfiniteReinforce.ReinforceableStatDef>
+
+	<InfiniteReinforce.ReinforceableStatDef>
+		<defName>MeleeDamage</defName>
+		<disable>true</disable>
+		<isGeneric>false</isGeneric>
+	</InfiniteReinforce.ReinforceableStatDef>
+
 
 </Defs>

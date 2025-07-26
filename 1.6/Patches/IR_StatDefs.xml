@@ -10,4 +10,12 @@
 			</li>
 		</value>
 	</Operation>
+
+	<Operation Class="PatchOperationAdd">
+		<xpath>Defs/StatDef[defName="AimingDelayFactor"]/parts</xpath>
+		<value>
+			<li Class="InfiniteReinforce.StatPart_WarmUpMultiplier"/>
+		</value>
+	</Operation>
+
 </Patch>

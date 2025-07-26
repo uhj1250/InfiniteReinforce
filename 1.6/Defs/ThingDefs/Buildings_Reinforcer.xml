@@ -149,6 +149,7 @@
         <drawOutOfFuelOverlay>false</drawOutOfFuelOverlay>
         <allowRefuelIfNotEmpty>true</allowRefuelIfNotEmpty>
         <factorByDifficulty>false</factorByDifficulty>
+        <consumeFuelOnlyWhenUsed>true</consumeFuelOnlyWhenUsed>
         <fuelFilter>
           <thingDefs>
             <li>MechReinforcer</li>

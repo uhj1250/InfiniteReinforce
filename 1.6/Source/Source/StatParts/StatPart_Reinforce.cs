@@ -29,7 +29,7 @@ namespace InfiniteReinforce
             ThingWithComps thing = req.Thing as ThingWithComps;
             if (thing != null)
             {
-                return Mathf.Max(0.01f, thing.GetReinforceStatFactor(parentStat));
+                return Mathf.Max(0.001f, thing.GetReinforceStatFactor(parentStat));
             }
             else return 1.0f;
         }

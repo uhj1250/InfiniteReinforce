@@ -102,6 +102,7 @@
     <Compile Include="ReinforceWorkers\ReinforceWorker_MaxHitPoint.cs" />
     <Compile Include="ReinforceWorkers\ReinforceWorker_Rechargeable.cs" />
     <Compile Include="Buildings\SpecialOption_Repiar.cs" />
+    <Compile Include="StatParts\StatPart_WarmUpMultiplier.cs" />
     <Compile Include="UI\Dialog_Reinforcer.cs" />
     <Compile Include="Keyed.cs" />
     <Compile Include="Patches\Harmony.cs" />
@@ -110,7 +111,7 @@
     <Compile Include="Defs\ReinforceableDef.cs" />
     <Compile Include="ReinforceDefOf.cs" />
     <Compile Include="ReinforceUtility.cs" />
-    <Compile Include="StatPart_Reinforce.cs" />
+    <Compile Include="StatParts\StatPart_Reinforce.cs" />
     <Compile Include="UI\FloatMenuOptionProvider.cs" />
     <Compile Include="UI\ReinforceUIUtility.cs" />
     <Compile Include="UI\TextureCache.cs" />

@@ -108,7 +108,6 @@
 		<offsetPerLevel>0.004</offsetPerLevel>
 		<reversal>true</reversal>
 		<isGeneric>false</isGeneric>
-		<disable>true</disable>
 	</InfiniteReinforce.ReinforceableStatDef>
 
 	<InfiniteReinforce.ReinforceableStatDef>

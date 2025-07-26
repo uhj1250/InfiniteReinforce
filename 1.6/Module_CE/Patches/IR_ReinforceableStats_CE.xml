@@ -7,4 +7,48 @@
 			<disable>true</disable>
 		</value>
 	</Operation>
+	
+	<Operation Class="PatchOperationAdd">
+		<xpath>Defs/InfiniteReinforce.ReinforceableStatDef[defName="AccuracyTouch"]</xpath>
+		<value>
+			<disable>true</disable>
+		</value>
+	</Operation>
+	
+	<Operation Class="PatchOperationAdd">
+		<xpath>Defs/InfiniteReinforce.ReinforceableStatDef[defName="AccuracyShort"]</xpath>
+		<value>
+			<disable>true</disable>
+		</value>
+	</Operation>
+	
+	<Operation Class="PatchOperationAdd">
+		<xpath>Defs/InfiniteReinforce.ReinforceableStatDef[defName="AccuracyMedium"]</xpath>
+		<value>
+			<disable>true</disable>
+		</value>
+	</Operation>
+	
+	<Operation Class="PatchOperationAdd">
+		<xpath>Defs/InfiniteReinforce.ReinforceableStatDef[defName="AccuracyLong"]</xpath>
+		<value>
+			<disable>true</disable>
+		</value>
+	</Operation>
+	
+	<Operation Class="PatchOperationAdd">
+		<xpath>Defs/InfiniteReinforce.ReinforceableStatDef[defName="RangedWeapon_RangeMultiplier"]</xpath>
+		<value>
+			<disable>true</disable>
+		</value>
+	</Operation>
+	
+	
+	<Operation Class="PatchOperationAdd">
+		<xpath>Defs/InfiniteReinforce.ReinforceableStatDef[defName="RangedWeapon_ArmorPenetrationMultiplier"]</xpath>
+		<value>
+			<disable>true</disable>
+		</value>
+	</Operation>
+	
 </Patch>

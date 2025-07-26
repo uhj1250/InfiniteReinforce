@@ -1,3 +1,7 @@
+Version 1.1.0.8
+ - Disabled useless upgrades in CE
+ - Added ranged warmup multiplier (Thanks to 동덕여대 케챱조리학과)
+
 Version 1.1.0.7
  - 1.6 support
  - Infusion module removed
