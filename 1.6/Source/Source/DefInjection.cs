@@ -73,7 +73,7 @@ namespace InfiniteReinforce
             ReinforceUtility.ReinforcableStats = stats;
             ReinforceUtility.WhiteList = whitelist;
         }
-
+        
         public static bool ExcludedStatDefs(StatDef stat)
         {
             string deflower = stat.defName.ToLower();

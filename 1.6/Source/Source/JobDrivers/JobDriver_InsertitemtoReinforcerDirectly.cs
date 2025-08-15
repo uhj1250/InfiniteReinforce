@@ -11,34 +11,41 @@ using UnityEngine;
 
 namespace InfiniteReinforce
 {
+
     public class JobDriver_InsertItemtoReinforcerDirectly : JobDriver
     {
         public const int InsertTicks = 180;
+        private const TargetIndex item = TargetIndex.A;
+        private const TargetIndex reinforcer = TargetIndex.B;
 
         public override bool TryMakePreToilReservations(bool errorOnFailed)
         {
-            if (pawn.Reserve(job.GetTarget(TargetIndex.A), job, 1, -1, null, errorOnFailed))
+            if (pawn.Reserve(job.GetTarget(item), job, 1, -1, null, errorOnFailed))
             {
-                return pawn.Reserve(job.GetTarget(TargetIndex.B), job, 1, -1, null, errorOnFailed);
+                return pawn.Reserve(job.GetTarget(reinforcer), job, 1, -1, null, errorOnFailed);
             }
             return false;
         }
 
-        public ThingWithComps ThingtoInsert => job.GetTarget(TargetIndex.A).Thing as ThingWithComps;
-        public Building_Reinforcer Reinforcer => job.GetTarget(TargetIndex.B).Thing as Building_Reinforcer;
+        public ThingWithComps ThingtoInsert => job.GetTarget(item).Thing as ThingWithComps;
+        public Building_Reinforcer Reinforcer => job.GetTarget(reinforcer).Thing as Building_Reinforcer;
 
+        public static Job MakeJob(ThingWithComps item, Building_Reinforcer reinforcer)
+        {
+            return new Job(ReinforceDefOf.InsertEquipmentToReinforcerDirectly, item, reinforcer);
+        }
 
         protected override IEnumerable<Toil> MakeNewToils()
         {
-            yield return Toils_Goto.GotoThing(TargetIndex.B, PathEndMode.InteractionCell).FailOn((Toil to) => ContainerFull());
-            Toil toil = Toils_General.Wait(InsertTicks, TargetIndex.B).WithProgressBarToilDelay(TargetIndex.B).FailOnDespawnedOrNull(TargetIndex.B)
+            yield return Toils_Goto.GotoThing(reinforcer, PathEndMode.InteractionCell).FailOn((Toil to) => ContainerFull());
+            Toil toil = Toils_General.Wait(InsertTicks, reinforcer).WithProgressBarToilDelay(reinforcer).FailOnDespawnedOrNull(reinforcer)
                 .FailOn((Toil to) => ContainerFull());
             toil.handlingFacing = true;
             yield return toil;
             yield return InsertItemDirectly();
             bool ContainerFull()
             {
-                return pawn.jobs.curJob.GetTarget(TargetIndex.B).Thing.TryGetComp<CompReinforcerContainer>()?.Full ?? true;
+                return pawn.jobs.curJob.GetTarget(reinforcer).Thing.TryGetComp<CompReinforcerContainer>()?.Full ?? true;
             }
         }
 

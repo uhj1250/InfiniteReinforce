@@ -150,6 +150,7 @@
         <allowRefuelIfNotEmpty>true</allowRefuelIfNotEmpty>
         <factorByDifficulty>false</factorByDifficulty>
         <consumeFuelOnlyWhenUsed>true</consumeFuelOnlyWhenUsed>
+        <canEjectFuel>true</canEjectFuel>
         <fuelFilter>
           <thingDefs>
             <li>MechReinforcer</li>

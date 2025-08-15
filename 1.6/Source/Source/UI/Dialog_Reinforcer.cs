@@ -70,6 +70,7 @@ namespace InfiniteReinforce
         private static GUIStyle fontleft = new GUIStyle() { alignment = TextAnchor.MiddleLeft, normal = fontstylestate };
         private static GUIStyle box = new GUIStyle(GUI.skin.textArea) { hover = boxstylestate, onHover = boxstylestate, onNormal = boxstylestate };
         private static GUIStyle button = new GUIStyle(GUI.skin.button) { hover = buttonstylestate, onHover = buttonstylestate, onNormal = buttonstylestate };
+        private static bool blockstatinfo = false;
 
         public Dialog_Reinforcer(Building_Reinforcer building)
         {
@@ -511,7 +512,20 @@ namespace InfiniteReinforce
         {
             GUI.Box(rect, "", box);
             Rect statRect = rect.ContractedBy(4f);
-            StatsReportUtility.DrawStatsReport(statRect, thing);
+            if (!blockstatinfo)
+                try
+                {
+                    StatsReportUtility.DrawStatsReport(statRect, thing);
+                }
+                catch (Exception e)
+                {
+                    Log.Error("Failed to load status informations for " + thing.Label + ": " + e.Message);
+                    blockstatinfo = true;
+                }
+            else
+            {
+                Widgets.Label(statRect, "Failed to load status informations");
+            }
         }
 
         protected void ResourceInfo(Rect rect)

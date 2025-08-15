@@ -1,30 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <Patch>
-	<Operation Class="PatchOperationAdd">
-		<xpath>Defs/ThingSetMakerDef[defName="MapGen_AncientComplexRoomLoot_Default"]/root/options</xpath>
-		<value>
-			<li>
-				<weight>0.01</weight>
-				<thingSetMaker Class="ThingSetMaker_StackCount">
-					<fixedParams>
-						<filter>
-							<thingDefs>
-								<li>MechReinforcer</li>
-							</thingDefs>
-						</filter>
-						<countRange>1~3</countRange>
-					</fixedParams>
-				</thingSetMaker>
-			</li>
-		</value>
-	</Operation>
-	
+
 	<Operation Class="PatchOperationAdd">
 		<xpath>Defs/ThingSetMakerDef[defName="MapGen_AncientComplexRoomLoot_Better"]/root/options</xpath>
 		<value>
 			<li>
-				<weight>0.05</weight>
+				<weight>0.1</weight>
 				<thingSetMaker Class="ThingSetMaker_StackCount">
 					<fixedParams>
 						<filter>
@@ -33,6 +15,19 @@
 							</thingDefs>
 						</filter>
 						<countRange>2~7</countRange>
+					</fixedParams>
+				</thingSetMaker>
+			</li>
+			<li>
+				<weight>0.001</weight>
+				<thingSetMaker Class="ThingSetMaker_StackCount">
+					<fixedParams>
+						<filter>
+							<thingDefs>
+								<li>MechReinforcer</li>
+							</thingDefs>
+						</filter>
+						<countRange>23~47</countRange>
 					</fixedParams>
 				</thingSetMaker>
 			</li>
@@ -52,6 +47,19 @@
 							</thingDefs>
 						</filter>
 						<countRange>2~7</countRange>
+					</fixedParams>
+				</thingSetMaker>
+			</li>
+			<li>
+				<weight>0.001</weight>
+				<thingSetMaker Class="ThingSetMaker_StackCount">
+					<fixedParams>
+						<filter>
+							<thingDefs>
+								<li>MechReinforcer</li>
+							</thingDefs>
+						</filter>
+						<countRange>7~41</countRange>
 					</fixedParams>
 				</thingSetMaker>
 			</li>

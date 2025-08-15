@@ -1,3 +1,8 @@
+Version 1.1.0.9
+ - Added more reinforcer mechanites roots
+ - Reduced a reinforcer mechanite's value
+ - Now an ancient reinforcer may appear in an ancient temple
+
 Version 1.1.0.8
  - Disabled useless upgrades in CE
  - Added ranged warmup multiplier (Thanks to 동덕여대 케챱조리학과)

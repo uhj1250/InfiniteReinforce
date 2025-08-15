@@ -13,7 +13,7 @@ namespace InfiniteReinforce
     public class ReinforceableStatDef : Def
     {
         public const float offsetPerLevelDefault = 0.01f;
-
+        
         public bool isGeneric = true;
         public bool reversal = false;
         public bool disable = false;

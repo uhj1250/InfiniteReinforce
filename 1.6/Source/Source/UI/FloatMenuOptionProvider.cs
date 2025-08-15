@@ -1,5 +1,6 @@
 ﻿using LudeonTK;
 using RimWorld;
+using RimWorld.BaseGen;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -116,14 +117,14 @@ namespace InfiniteReinforce.UI
 
 
 
-        public static FloatMenuOption MakeReinforceMenu(Pawn pawn, LocalTargetInfo target, Building_Reinforcer reinforcer)
+        public static FloatMenuOption MakeReinforceMenu(Pawn pawn, ThingWithComps thing, Building_Reinforcer reinforcer)
         {
-            FloatMenuOption option = FloatMenuUtility.DecoratePrioritizedTask(new FloatMenuOption(Keyed.InsertItem(target.Label, reinforcer.Label), delegate ()
+            FloatMenuOption option = FloatMenuUtility.DecoratePrioritizedTask(new FloatMenuOption(Keyed.InsertItem(thing.Label, reinforcer.Label), delegate ()
             {
-                Job job = new Job(ReinforceDefOf.InsertEquipmentToReinforcer, target, reinforcer, reinforcer.InteractionCell);
+                Job job = JobDriver_InsertItemtoReinforcer.MakeJob(thing, reinforcer);
                 job.count = 1;
                 pawn.jobs.TryTakeOrderedJob(job);
-            }, MenuOptionPriority.Low), pawn, target);
+            }, MenuOptionPriority.Low), pawn, thing);
 
             return option;
         }
@@ -157,7 +158,7 @@ namespace InfiniteReinforce.UI
 
             FloatMenuOption option = FloatMenuUtility.DecoratePrioritizedTask(new FloatMenuOption(Keyed.InsertItem(item.Label, reinforcer.Label), delegate ()
             {
-                Job job = new Job(ReinforceDefOf.InsertEquipmentToReinforcerDirectly, item, reinforcer, reinforcer.InteractionCell);
+                Job job = JobDriver_InsertItemtoReinforcerDirectly.MakeJob(item, reinforcer);
                 job.count = 1;
                 pawn.jobs.TryTakeOrderedJob(job);
             }, MenuOptionPriority.High), pawn, reinforcer);

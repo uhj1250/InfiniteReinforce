@@ -94,6 +94,7 @@
     <Compile Include="DefInjection.cs" />
     <Compile Include="Defs\ReinforceDefs.cs" />
     <Compile Include="JobDrivers\JobDriver_InsertitemtoReinforcerDirectly.cs" />
+    <Compile Include="Patches\AncientTempleInterior.cs" />
     <Compile Include="Reflect.cs" />
     <Compile Include="ReinforceWorkers\ReinforceableWorker.cs" />
     <Compile Include="ReinforceWorkers\ReinforceableWorker_Basics.cs" />
