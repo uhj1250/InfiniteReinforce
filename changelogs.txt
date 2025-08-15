@@ -1,5 +1,5 @@
 Version 1.1.0.9
- - Added more reinforcer mechanites roots
+ - Added more reinforcer mechanites loots
  - Reduced a reinforcer mechanite's value
  - Now an ancient reinforcer may appear in an ancient temple
 
