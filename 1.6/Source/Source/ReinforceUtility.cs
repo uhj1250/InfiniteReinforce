@@ -402,7 +402,7 @@ namespace InfiniteReinforce
         {
             if (thing.HasComp<CompMechanoid>()) return ReinforceDefOf.BaseMechanoidCost;
             else if (thing.ParentHolder != null) return ReinforceDefOf.BaseMechanoidWeaponCost;
-            else if (thing.def.weaponTags.Contains("TurretGun")) return ReinforceDefOf.BaseMechanoidWeaponCost;
+            else if (thing.def?.weaponTags?.Contains("TurretGun") ?? false) return ReinforceDefOf.BaseMechanoidWeaponCost;
             else return DefDatabase<ReinforceCostDef>.GetNamedSilentFail(thing.def.defName);
         }
 
