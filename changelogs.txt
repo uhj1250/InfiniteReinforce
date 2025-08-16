@@ -5,6 +5,7 @@ Version 1.2.0.0
     Unfortunately, you cannot upgrade scyther's meele damage
  - Reinforcements are limited when exceeded stat's max value
  - Some code refactoring
+ 
 Version 1.1.0.9
  - Added more reinforcer mechanites loots
  - Reduced a reinforcer mechanite's value
