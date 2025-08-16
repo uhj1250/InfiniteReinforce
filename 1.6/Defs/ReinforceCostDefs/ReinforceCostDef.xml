@@ -1,5 +1,18 @@
 <?xml version="1.0" encoding="utf-8" ?>
 
 <Defs>
+	<InfiniteReinforce.ReinforceCostDef>
+		<defName>BaseMechanoidCost</defName>
+        <costList>
+            <Plasteel>120</Plasteel>
+        </costList>
+	</InfiniteReinforce.ReinforceCostDef>
 
+	<InfiniteReinforce.ReinforceCostDef>
+		<defName>BaseMechanoidWeaponCost</defName>
+        <costList>
+            <Plasteel>30</Plasteel>
+            <ComponentSpacer>1</ComponentSpacer>
+        </costList>
+	</InfiniteReinforce.ReinforceCostDef>
 </Defs>

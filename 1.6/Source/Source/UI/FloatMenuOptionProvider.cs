@@ -32,11 +32,13 @@ namespace InfiniteReinforce.UI
 
         protected override bool Multiselect => false;
 
+        protected override bool MechanoidCanDo => true;
+
         public override IEnumerable<FloatMenuOption> GetOptionsFor(Thing clickedThing, FloatMenuContext context)
         {
             Pawn pawn = context.FirstSelectedPawn;
             Vector3 clickPos = context.clickPosition;
-            var reinforcers = pawn.Map.listerBuildings.AllBuildingsColonistOfClass<Building_Reinforcer>().Where(x => x.HoldingItem == null).Distinct(new ReinforcerComparer()).ToList();
+            var reinforcers = pawn.Map.listerBuildings.AllBuildingsColonistOfClass<Building_Reinforcer>().Where(x => x.HoldingThing == null).Distinct(new ReinforcerComparer()).ToList();
             var refuelables = pawn.Map.listerBuildings.AllBuildingsColonistOfClass<Building_Reinforcer>().Where(x => RefuelWorkGiverUtility.CanRefuel(pawn, x)).ToList();
             //IEnumerable<LocalTargetInfo> targets = GenUI.TargetsAt(clickPos, OnlyItems);
             
@@ -44,16 +46,18 @@ namespace InfiniteReinforce.UI
             bool canRefuel = !refuelables.NullOrEmpty();
 
             if (canInsert || canRefuel) //foreach (LocalTargetInfo t in targets)
-                {
-                    bool isFuel = false;
+            {
+                bool isFuel = false;
 
-                    ThingWithComps thing = clickedThing as ThingWithComps;
-                    if (thing != null)
+                ThingWithComps thing = clickedThing as ThingWithComps;
+                if (thing != null)
+                {
+                    if (thing is Building_Reinforcer)
                     {
-                        if (thing is Building_Reinforcer)
+                        Building_Reinforcer reinforcer = thing as Building_Reinforcer;
+                        if (!pawn.HasComp<CompMechanoid>())
                         {
-                            Building_Reinforcer reinforcer = thing as Building_Reinforcer;
-                            if (reinforcer.HoldingItem == null)
+                            if (reinforcer.HoldingThing == null)
                             {
                                 List<ThingWithComps> equipments = pawn.equipment.AllEquipmentListForReading;
                                 if (!equipments.NullOrEmpty()) for (int i = 0; i < equipments.Count; i++)
@@ -68,51 +72,54 @@ namespace InfiniteReinforce.UI
                             {
                                 yield return MakeReinforcerRefuelMenu(pawn, reinforcer);
                             }
-
-
                         }
                         else
                         {
-                            if (canRefuel) for (int i = 0; i < refuelables.Count; i++)
-                                {
-
-                                    //if (thing is Building_Reinforcer && refuelables.Contains(thing))
-                                    //{
-                                    //    opts.AddDistinct(MakeReinforcerRefuelMenu(pawn, thing as Building_Reinforcer));
-                                    //    isFuel = true;
-                                    //    break;
-                                    //}
-
-                                    if (refuelables[i].FuelThing?.Contains(thing.def) ?? false)
-                                    {
-                                        yield return MakeRefuelMenu(pawn, thing, refuelables.FirstOrDefault());
-                                        isFuel = true;
-                                        break;
-                                    }
-                                }
-                            if (!isFuel)
+                            if (reinforcer.HoldingThing == null)
                             {
-                                if (canInsert)
+                                yield return MakeInsertSelfMenu(pawn, reinforcer);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (canRefuel) for (int i = 0; i < refuelables.Count; i++)
+                            {
+
+                                //if (thing is Building_Reinforcer && refuelables.Contains(thing))
+                                //{
+                                //    opts.AddDistinct(MakeReinforcerRefuelMenu(pawn, thing as Building_Reinforcer));
+                                //    isFuel = true;
+                                //    break;
+                                //}
+
+                                if (refuelables[i].FuelThing?.Contains(thing.def) ?? false)
                                 {
-                                    for (int i = 0; i < reinforcers.Count; i++)
+                                    yield return MakeRefuelMenu(pawn, thing, refuelables.FirstOrDefault());
+                                    isFuel = true;
+                                    break;
+                                }
+                            }
+                        if (!isFuel)
+                        {
+                            if (canInsert)
+                            {
+                                for (int i = 0; i < reinforcers.Count; i++)
+                                {
+                                    if (thing != null)
                                     {
-                                        if (thing != null)
+                                        if (reinforcers[i].ContainerComp.Accepts(thing))
                                         {
-                                            if (reinforcers[i].ContainerComp.Accepts(thing))
-                                            {
-                                                yield return MakeReinforceMenu(pawn, thing, reinforcers[i]);
-                                            }
+                                            yield return MakeReinforceMenu(pawn, thing, reinforcers[i]);
                                         }
                                     }
                                 }
                             }
-
                         }
+
                     }
                 }
-
-
-
+            }
         }
 
 
@@ -165,6 +172,15 @@ namespace InfiniteReinforce.UI
             return option;
         }
 
+        public static FloatMenuOption MakeInsertSelfMenu(Pawn pawn, Building_Reinforcer reinforcer)
+        {
+            FloatMenuOption option = FloatMenuUtility.DecoratePrioritizedTask(new FloatMenuOption(Keyed.InsertItem(pawn.Label, reinforcer.Label), delegate ()
+            {
+                Job job = JobMaker.MakeJob(ReinforceDefOf.InsertSelfToReinforcer, reinforcer);
+                pawn.jobs.TryTakeOrderedJob(job);
+            }, MenuOptionPriority.High), pawn, reinforcer);
+            return option;
+        }
 
 
     }

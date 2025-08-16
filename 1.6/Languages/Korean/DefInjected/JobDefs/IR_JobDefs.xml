@@ -2,6 +2,7 @@
 <LanguageData>
   <InsertEquipmentToReinforcer.reportString>TargetA를 TargetB에 넣는중</InsertEquipmentToReinforcer.reportString>
   <InsertEquipmentToReinforcerDirectly.reportString>TargetA를 TargetB에 넣는중</InsertEquipmentToReinforcerDirectly.reportString>
+  <InsertSelfToReinforcer.reportString>TargetA에 들어가는중</InsertSelfToReinforcer.reportString>
   
 
 </LanguageData>

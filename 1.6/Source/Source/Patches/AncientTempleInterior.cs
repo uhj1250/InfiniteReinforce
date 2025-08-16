@@ -13,7 +13,7 @@ namespace InfiniteReinforce
 
 
     [HarmonyPatch(typeof(SymbolResolver_Interior_AncientTemple))]
-    public static class AncientTempleInterior
+    public static class AncientTempleInterior_Patch
     {
         public const float ANCIENT_REINFORCER_CHANCE = 0.45f;
 
@@ -28,7 +28,7 @@ namespace InfiniteReinforce
                 Building_Reinforcer reinforcer = ThingMaker.MakeThing(ReinforceDefOf.AncientReinforcer) as Building_Reinforcer;
                 reinforcer.SetFuelRandom();
                 resolveparams.singleThingToSpawn = reinforcer;
-
+                
                 BaseGen.symbolStack.Push("thing", resolveparams);
             }
         }

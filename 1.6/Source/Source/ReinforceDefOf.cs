@@ -14,6 +14,7 @@ namespace InfiniteReinforce
     {
         public static readonly JobDef InsertEquipmentToReinforcer;
         public static readonly JobDef InsertEquipmentToReinforcerDirectly;
+        public static readonly JobDef InsertSelfToReinforcer;
         public static readonly SoundDef Reinforce_Success;
         public static readonly SoundDef Reinforce_FailedCritical;
         public static readonly SoundDef Reinforce_FailedNormal;
@@ -26,7 +27,8 @@ namespace InfiniteReinforce
         public static readonly ReinforceDef Reinforce_Reloadable;
         public static readonly ReinforceDef Reinforce_EquippedStatOffset;
 
-
+        public static readonly ReinforceCostDef BaseMechanoidCost;
+        public static readonly ReinforceCostDef BaseMechanoidWeaponCost;
 
     }
 }

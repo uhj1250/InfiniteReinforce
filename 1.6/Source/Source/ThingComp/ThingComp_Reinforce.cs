@@ -169,7 +169,7 @@ namespace InfiniteReinforce
             return 0;
         }
 
-        public bool ReinforceStat(StatDef stat, int level)
+        public bool ReinforceStat(StatDef stat, int level, float multiplier)
         {
             if (!statboost.ContainsKey(stat))
             {
@@ -177,7 +177,7 @@ namespace InfiniteReinforce
                 reinforcedcount.Add(stat, 0);
             }
 
-            statboost[stat] += stat.GetOffsetPerLevel()*level;
+            statboost[stat] += stat.GetOffsetPerLevel()*level*multiplier;
             reinforcedcount[stat] ++;
             Reinforced();
             return true;

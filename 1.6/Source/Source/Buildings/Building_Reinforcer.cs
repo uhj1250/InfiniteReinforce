@@ -1,19 +1,25 @@
-﻿using System;
+﻿using RimWorld;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 using Verse;
 using Verse.Sound;
-using RimWorld;
-using UnityEngine;
-using System.Runtime.CompilerServices;
 
 namespace InfiniteReinforce
 {
     public class Building_Reinforcer : Building
     {
+        public enum ReinforceTarget
+        {
+            Default,
+            Equipment,
+            Mechanoid
+        }
+
         public const int BaseReinforceTicks = 720;
         
         protected static readonly Vector2 BarSize = new Vector2(0.55f, 0.1f);
@@ -26,9 +32,40 @@ namespace InfiniteReinforce
         protected bool onprogress = false;
         private Material barFilledCachedMat;
         private List<Thing> insertedmaterials = new List<Thing>();
+        private ReinforceTarget reinforcetarget = ReinforceTarget.Equipment;
         protected Sustainer sustainer = null;
-        public int ReinforceTicks => BaseReinforceTicks + (ItemReinforceComp?.ReinforcedCount ?? 0) * 30;
-        
+        protected virtual float EffectiveMultiplier => HoldingThing is Pawn && Target != ReinforceTarget.Mechanoid ? 4f : 1.0f;
+        protected virtual float CostMultiplier
+        {
+            get
+            {
+                float res = 1.0f;
+                if (HoldingThing is Pawn)
+                {
+                    Pawn pawn = HoldingThing as Pawn;
+                    res = pawn.BodySize;
+                }
+                return res;
+            }
+        }
+        public int ReinforceTicks => BaseReinforceTicks + (TargetReinforceComp?.ReinforcedCount ?? 0) * 30;
+        public virtual ReinforceTarget Target 
+        {
+            get
+            {
+                return reinforcetarget;
+            }
+            set
+            {
+                if (onprogress) Log.Error("Cannot change target while reinforcement is in progress");
+                else
+                {
+                    reinforcetarget = value;
+                    Instance.Reset();
+                }
+            }
+        }
+
         public virtual bool PowerOn
         {
             get
@@ -59,7 +96,26 @@ namespace InfiniteReinforce
                 return Instance.Progress / Instance.ProgressionTicks;
             }
         }
-        public ThingWithComps HoldingItem => ContainerComp?.ContainedThing as ThingWithComps;
+        public ThingWithComps EquipmentItem
+        {
+            get
+            {
+                var thing = HoldingThing;
+                if (thing is Pawn)
+                {
+                    Pawn pawn = thing as Pawn;
+                    thing = pawn.equipment?.Primary;
+                    if (pawn.HasComp<CompTurretGun>()) thing = pawn.TryGetComp<CompTurretGun>()?.gun as ThingWithComps;
+                    if (thing == null)
+                    {
+                        thing = pawn;
+                        Target = ReinforceTarget.Mechanoid;
+                    }
+                }
+                return thing;
+            }
+        }
+        public ThingWithComps HoldingThing => ContainerComp?.ContainedThing as ThingWithComps;
         public virtual float Fuel => FuelComp?.Fuel ?? -1f;
         public virtual bool AlwaysSuccess => FuelComp?.AlwaysSuccess ?? false;
         public List<IReinforceSpecialOption> SpecialOptions => FuelComp?.Props?.SpecialOptions;
@@ -87,14 +143,22 @@ namespace InfiniteReinforce
             }
         }
 
-
-        public ThingComp_Reinforce ItemReinforceComp
+        public ThingWithComps TargetThing
         {
             get
             {
-                return HoldingItem?.GetReinforceComp();
+                switch (Target)
+                {
+                    case ReinforceTarget.Equipment:
+                    default:
+                        return EquipmentItem;
+                    case ReinforceTarget.Mechanoid:
+                        return HoldingThing;
+                }
             }
         }
+
+        public ThingComp_Reinforce TargetReinforceComp => TargetThing?.GetReinforceComp();
 
         public CompThingContainer ContainerComp
         {
@@ -167,6 +231,12 @@ namespace InfiniteReinforce
             ContainerComp.innerContainer.Take(item);
         }
 
+        public virtual void InsertPawn(Pawn pawn)
+        {
+            pawn.DeSpawn(DestroyMode.Vanish);
+            ContainerComp.innerContainer.TryAddOrTransfer(pawn, false);
+        }
+
         public void InsertMaterials(List<Thing> things)
         {
             if (!things.NullOrEmpty()) for(int i=0; i<things.Count; i++)
@@ -236,7 +306,7 @@ namespace InfiniteReinforce
                 icon = IconCache.EquipmentReinforce,
                 defaultLabel = Keyed.Reinforce,
                 defaultDesc = Keyed.ReinforceDesc,
-                Disabled = !PowerOn || HoldingItem == null,
+                Disabled = !PowerOn || TargetThing == null,
                 //disabledReason = "PowerNotConnected".Translate(),
                 action = delegate
                 {
@@ -253,7 +323,7 @@ namespace InfiniteReinforce
                 icon = ContentFinder<Texture2D>.Get("UI/Designators/Open", false),
                 defaultLabel = Keyed.TakeOut,
                 defaultDesc = Keyed.TakeOutDesc,
-                Disabled = HoldingItem == null,
+                Disabled = TargetThing == null,
                 disabledReason = Keyed.Empty,
                 action = delegate
                 {
@@ -307,19 +377,19 @@ namespace InfiniteReinforce
                     break;
                 case ReinforceFailureResult.DamageLittle:
                     DamageThing(Rand.Range(1, 10));
-                    if (!HoldingItem?.Destroyed ?? false) Find.LetterStack.ReceiveLetter(Keyed.FailedLetter, Keyed.FailedDamaged(HoldingItem.Label), LetterDefOf.NegativeEvent, this);
+                    if (!TargetThing?.Destroyed ?? false) Find.LetterStack.ReceiveLetter(Keyed.FailedLetter, Keyed.FailedDamaged(TargetThing.Label), LetterDefOf.NegativeEvent, this);
                     break;
                 case ReinforceFailureResult.DamageLarge:
                     DamageThing(Rand.Range(10, 60));
-                    if (!HoldingItem?.Destroyed ?? false) Find.LetterStack.ReceiveLetter(Keyed.FailedLetter, Keyed.FailedDamaged(HoldingItem.Label), LetterDefOf.NegativeEvent, this);
+                    if (!TargetThing?.Destroyed ?? false) Find.LetterStack.ReceiveLetter(Keyed.FailedLetter, Keyed.FailedDamaged(TargetThing.Label), LetterDefOf.NegativeEvent, this);
                     break;
                 case ReinforceFailureResult.Explosion:
                     Find.LetterStack.ReceiveLetter(Keyed.FailedLetter, Keyed.FailedExplosion(Label), LetterDefOf.NegativeEvent, this);
                     Explosion();
                     break;
                 case ReinforceFailureResult.Destroy:
-                    Find.LetterStack.ReceiveLetter(Keyed.FailedLetter, Keyed.FailedDestroy(HoldingItem.Label), LetterDefOf.Death, this);
-                    HoldingItem.Destroy(DestroyMode.Vanish);
+                    Find.LetterStack.ReceiveLetter(Keyed.FailedLetter, Keyed.FailedDestroy(TargetThing.Label), LetterDefOf.Death, this);
+                    TargetThing.Destroy(DestroyMode.Vanish);
                     ReinforceDefOf.Reinforce_FailedCritical.PlayOneShot(this);
                     break;
             }
@@ -327,17 +397,17 @@ namespace InfiniteReinforce
 
         public void DamageThing(float damage)
         {
-            if (HoldingItem.HitPoints <= damage)
+            if (TargetThing.HitPoints <= damage)
             {
-                Find.LetterStack.ReceiveLetter(Keyed.FailedLetter, Keyed.FailedDestroy(HoldingItem.Label), LetterDefOf.Death, this);
+                Find.LetterStack.ReceiveLetter(Keyed.FailedLetter, Keyed.FailedDestroy(TargetThing.Label), LetterDefOf.Death, this);
                 ReinforceDefOf.Reinforce_FailedCritical.PlayOneShot(this);
-                HoldingItem.Destroy(DestroyMode.Vanish);
+                TargetThing.Destroy(DestroyMode.Vanish);
             }
             else
             {
                 if (damage > 10) ReinforceDefOf.Reinforce_FailedNormal.PlayOneShot(this);
                 else ReinforceDefOf.Reinforce_FailedMinor.PlayOneShot(this);
-                HoldingItem.HitPoints -= (int)damage;
+                TargetThing.HitPoints -= (int)damage;
             }
         }
 
@@ -437,7 +507,7 @@ namespace InfiniteReinforce
             {
                 get
                 {
-                    return parent.ItemReinforceComp;
+                    return parent.TargetReinforceComp;
                 }
             }
 
@@ -601,7 +671,6 @@ namespace InfiniteReinforce
 
             public bool CompleteReinforce()
             {
-                int level;
                 if (reinforcementqueue.EnumerableNullOrEmpty())
                 {
                     Log.Error(parent.Label + ": Reinforcement queue is empty");
@@ -609,7 +678,7 @@ namespace InfiniteReinforce
                 }
                 Reinforcement reinforcement = reinforcementqueue.Dequeue();
 
-                if (parent.HoldingItem != null)
+                if (parent.TargetReinforceComp != null)
                 {
                     float rolled = 100f; float chance = 0f;
                     int[] weights = Comp.GetFailureWeights(out int totalweight);
@@ -625,22 +694,13 @@ namespace InfiniteReinforce
                         switch (reinforcement.type)
                         {
                             case ReinforceType.Stat:
-                                level = Rand.Range(1, 25);
-                                StatDef stat = (StatDef)reinforcement.reinforcedef;
-                                parent.ItemReinforceComp.ReinforceStat(stat, level);
-                                reinforcehistory.Add(stat.label + " " + (level * stat.GetOffsetPerLevel() * 100).ToString("+#;-#;0") + "%  " + chancestring);
-                                stat.Worker.TryClearCache();
+                                StatReinforce(reinforcement, chancestring);
                                 break;
                             case ReinforceType.Special:
-                                IReinforceSpecialOption option = (IReinforceSpecialOption)Activator.CreateInstance(reinforcement.optiontype);
-                                option.Reinforce(parent.ItemReinforceComp)();
-                                reinforcehistory.Add(option.LabelLeft(parent.ItemReinforceComp) + "  " + chancestring);
+                                SpecialReifnorce(reinforcement, chancestring);
                                 break;
                             case ReinforceType.Custom:
-                                ReinforceDef def = ((ReinforceDef)reinforcement.reinforcedef);
-                                level = Rand.Range(def.levelRange.min, def.levelRange.max);
-                                def.Worker.Reinforce(parent.ItemReinforceComp, level)();
-                                reinforcehistory.Add(def.Worker.ResultString(level) + "  " + chancestring);
+                                CustomReinforce(reinforcement, chancestring);
                                 break;
                             default:
                                 CleanUp();
@@ -665,7 +725,31 @@ namespace InfiniteReinforce
                 return false;
             }
 
+            private void StatReinforce(Reinforcement reinforcement, string chancestring)
+            {
+                int level;
+                level = Rand.Range(1, 25);
+                StatDef stat = (StatDef)reinforcement.reinforcedef;
+                parent.TargetReinforceComp.ReinforceStat(stat, level, parent.EffectiveMultiplier);
+                reinforcehistory.Add(stat.label + " " + (parent.EffectiveMultiplier * level * stat.GetOffsetPerLevel() * 100).ToString("+#;-#;0") + "%  " + chancestring);
+                stat.Worker.TryClearCache();
+            }
+
+            private void SpecialReifnorce(Reinforcement reinforcement, string chancestring)
+            {
+                IReinforceSpecialOption option = (IReinforceSpecialOption)Activator.CreateInstance(reinforcement.optiontype);
+                option.Reinforce(parent.TargetReinforceComp)();
+                reinforcehistory.Add(option.LabelLeft(parent.TargetReinforceComp) + "  " + chancestring);
+            }
             
+            private void CustomReinforce(Reinforcement reinforcement, string chancestring)
+            {
+                ReinforceDef def = ((ReinforceDef)reinforcement.reinforcedef);
+                int level = Rand.Range(def.levelRange.min, def.levelRange.max);
+                def.Worker.Reinforce(parent.TargetReinforceComp, level)();
+                reinforcehistory.Add(def.Worker.ResultString(level) + "  " + chancestring);
+            }
+
             public void Tick(float progression)
             {
                 progress += progression;
@@ -702,7 +786,7 @@ namespace InfiniteReinforce
                     {
                         parent.FuelComp.ConsumeOnce();
                         ReinforcerEffect effect = parent.FuelComp.Props.Effect;
-                        if (effect != null && effect.Apply(parent.ItemReinforceComp)) effect.DoEffect(parent, parent.ItemReinforceComp);
+                        if (effect != null && effect.Apply(parent.TargetReinforceComp)) effect.DoEffect(parent, parent.TargetReinforceComp);
                         return true;
                     }
                     return false;
@@ -713,7 +797,7 @@ namespace InfiniteReinforce
                     List<Thing>[] thingtoinsert = new List<Thing>[costlist.Count];
 
 
-                    ThingDef stuff = costMode == CostMode.SameThing ? parent.HoldingItem.Stuff : null;
+                    ThingDef stuff = costMode == CostMode.SameThing ? parent.TargetThing.Stuff : null;
 
 
                     for (int i=0; i < costlist.Count; i++)
@@ -736,44 +820,23 @@ namespace InfiniteReinforce
                 }
             }
             
-            protected int CostOf(List<ThingDefCountClass> costlist, int index, CostMode costMode)
+            public int CostOf(List<ThingDefCountClass> costlist, int index, CostMode costMode)
             {
                 if (costMode == CostMode.Fuel && !parent.ApplyMultiplier) return costlist[index].count;
-                return (int)(costlist[index].count * parent.ItemReinforceComp.CostMultiplier);
+                return (int)(costlist[index].count * parent.TargetReinforceComp.CostMultiplier * parent.CostMultiplier);
             }
 
-            protected List<ThingDefCountClass> BuildCostList(CostMode costmode)
+            public List<ThingDefCountClass> BuildCostList(CostMode costmode)
             {
-                
                 List<ThingDefCountClass> costlist = new List<ThingDefCountClass>();
 
                 switch (costmode)
                 {
                     case CostMode.SameThing:
-                        costlist.Add(new ThingDefCountClass(parent.HoldingItem.def, 1));
+                        costlist.Add(new ThingDefCountClass(parent.TargetThing.def, 1));
                         break;
                     case CostMode.Material:
-                        ReinforceCostDef costDef = DefDatabase<ReinforceCostDef>.GetNamedSilentFail(parent.HoldingItem.def.defName);
-                        if (costDef != null)
-                        {
-                            if (!costDef.costList.NullOrEmpty()) costlist.AddRange(costDef.costList);
-                        }
-                        else
-                        {
-                            if (!parent.HoldingItem.def.costList.NullOrEmpty()) costlist.AddRange(parent.HoldingItem.def.CostList);
-                            if (parent.HoldingItem.Stuff != null)
-                            {
-                                ThingDefCountClass stuff = costlist.FirstOrDefault(x => x.thingDef == parent.HoldingItem.Stuff);
-                                if (stuff != null)
-                                {
-                                    stuff.count += parent.HoldingItem.def.costStuffCount;
-                                }
-                                else
-                                {
-                                    costlist.Add(new ThingDefCountClass(parent.HoldingItem.Stuff, parent.HoldingItem.def.CostStuffCount));
-                                }
-                            }
-                        }
+                        costlist.BuildMaterialCost(parent.TargetThing, parent.Target);
                         break;
                     case CostMode.Fuel:
                         if (parent.FuelComp != null)
@@ -782,17 +845,17 @@ namespace InfiniteReinforce
                         }
                         break;
                     default:
-                        Log.Error(parent.Label + parent.HoldingItem.Label + ": Wrong cost mode");
+                        Log.Error(parent.Label + parent.TargetThing.Label + ": Wrong cost mode");
                         return null;
 
                 }
                 return costlist;
             }
-
-
         }
 
     }
+
+
 
 
     public class ReinforcerComparer : IEqualityComparer<Building_Reinforcer>

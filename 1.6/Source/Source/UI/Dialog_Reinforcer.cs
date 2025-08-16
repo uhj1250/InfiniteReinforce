@@ -42,8 +42,7 @@ namespace InfiniteReinforce
         private Vector2 optionscroll;
 
 
-        protected ThingWithComps thing => building?.HoldingItem;
-
+        protected ThingWithComps thing => building?.TargetThing;
 
         protected ThingComp_Reinforce comp
         {
@@ -58,7 +57,6 @@ namespace InfiniteReinforce
         }
 
         protected bool CanUse => building?.PowerOn ?? false;
-
 
 
         private ThingComp_Reinforce compcache;
@@ -110,42 +108,13 @@ namespace InfiniteReinforce
         {
 
             //Build same thing
-            if (costlist[(int)CostMode.SameThing] == null) costlist[(int)CostMode.SameThing] = new List<ThingDefCountClass>();
-            costlist[(int)CostMode.SameThing].Clear();
-            costlist[(int)CostMode.SameThing].Add(new ThingDefCountClass(thing.def, 1));
+            costlist[(int)CostMode.SameThing] = Instance.BuildCostList(CostMode.SameThing);
 
             //Build material cost
-            ReinforceCostDef costDef = DefDatabase<ReinforceCostDef>.GetNamedSilentFail(thing.def.defName);
-            if (costlist[(int)CostMode.Material] == null) costlist[(int)CostMode.Material] = new List<ThingDefCountClass>();
-            costlist[(int)CostMode.Material].Clear();
-            if (costDef != null)
-            {
-                if (!costDef.costList.NullOrEmpty()) costlist[(int)CostMode.Material].AddRange(costDef.costList);
-            }
-            else
-            {
-                if (!thing.def.costList.NullOrEmpty()) costlist[(int)CostMode.Material].AddRange(thing.def.CostList);
-                if (thing.Stuff != null)
-                {
-                    ThingDefCountClass stuff = costlist[(int)CostMode.Material].FirstOrDefault(x => x.thingDef == thing.Stuff);
-                    if (stuff != null)
-                    {
-                        stuff.count += thing.def.costStuffCount;
-                    }
-                    else
-                    {
-                        costlist[(int)CostMode.Material].Add(new ThingDefCountClass(thing.Stuff, thing.def.CostStuffCount));
-                    }
-                }
-            }
+            costlist[(int)CostMode.Material] = Instance.BuildCostList(CostMode.Material);
 
             //Build fuel cost
-            if (costlist[(int)CostMode.Fuel] == null) costlist[(int)CostMode.Fuel] = new List<ThingDefCountClass>();
-            costlist[(int)CostMode.Fuel].Clear();
-            if (building.FuelComp != null)
-            {
-                costlist[(int)CostMode.Fuel].Add(new ThingDefCountClass(building.FuelThing.FirstOrDefault(), 1));
-            }
+            costlist[(int)CostMode.Fuel] = Instance.BuildCostList(CostMode.Fuel);
         }
 
         public void UpdateThingList()
@@ -185,34 +154,9 @@ namespace InfiniteReinforce
 
         public int CostOf(int index)
         {
-            if (costMode == CostMode.Fuel && !building.ApplyMultiplier) return costlist[(int)costMode][index].count;
-            return (int)(costlist[(int)costMode][index].count * comp.CostMultiplier);
+            return Instance.CostOf(costlist[(int)costMode], index, costMode);
         }
 
-
-        //public void RemoveIngredients()
-        //{
-        //    if (costMode == CostMode.Fuel && building.Fuel > 0)
-        //    {
-        //        building.FuelComp.ConsumeOnce();
-        //        //if (building.Fuel <= 0)
-        //        //{
-        //        //    costMode = CostMode.Material;
-        //        //    BuildCostList();
-        //        //}
-        //        ReinforcerEffect effect = building.FuelComp.Props.Effect;
-        //        if (effect != null && effect.Apply(comp)) effect.DoEffect(building, comp);
-        //    }
-        //    else
-        //    {
-        //        for (int i = 0; i < costlist[(int)costMode].Count; i++)
-        //        {
-        //            if (costMode == CostMode.SameThing) building.InsertMaterials(resourcethings.GetThingsOfType(costlist[(int)costMode][i].thingDef, CostOf(i), thing.Stuff));
-        //            else building.InsertMaterials(resourcethings.GetThingsOfType(costlist[(int)costMode][i].thingDef, CostOf(i)));
-        //        }
-        //    }
-        //    UpdateThingList();
-        //}
 
         public bool CheckIngredients()
         {
@@ -237,35 +181,6 @@ namespace InfiniteReinforce
                 Messages.Message(Keyed.NotEnough, MessageTypeDefOf.RejectInput, false);
             }
         }
-
-        //public bool Reinforced()
-        //{
-        //    ResetProgress();
-        //    if (thing != null)
-        //    {
-        //        int[] weights = comp.GetFailureWeights(out int totalweight);
-        //        success = (costMode == CostMode.Fuel && building.AlwaysSuccess) || !comp.RollFailure(out float rolled, totalweight, building.MaxHitPoints / building.HitPoints);
-        //        if(reinforcehistory.Count > 30)
-        //        {
-        //            reinforcehistory.RemoveAt(0);
-        //        }
-        //        if (success ?? false)
-        //        {
-        //            reinforceaction();
-        //            reinforcehistory.Add(reinforcehistorycache.CapitalizeFirst());
-        //            ReinforceDefOf.Reinforce_Success.PlayOneShotOnCamera();
-        //            return true;
-        //        }
-        //        else
-        //        {
-        //            ReinforceFailureResult effect = FailureEffect(totalweight, weights);
-        //            reinforcehistory.Add(Keyed.Failed.CapitalizeFirst() + " - " + effect.Translate());
-        //            return false;
-        //        }
-        //    }
-        //    success = null;
-        //    return false;
-        //}
 
         public static void ToggleWindow(Building_Reinforcer building)
         {
@@ -478,7 +393,7 @@ namespace InfiniteReinforce
             Rect labelRect = new Rect(rect.x + iconRect.width, rect.y, rect.width - iconRect.width, rect.height/3);
             Rect labelRect2 = new Rect(rect.x + iconRect.width, labelRect.y + rect.height/3, rect.width - iconRect.width, rect.height/3);
             Rect labelRect3 = new Rect(rect.x + iconRect.width, labelRect2.y + rect.height / 3, rect.width - iconRect.width, rect.height/3);
-
+            Rect switchRect = new Rect(rect.x,rect.y,rect.height/4, rect.height/4);
             
             GUI.Box(rect, "", box);
             GUI.Box(iconRect, "", box);
@@ -490,7 +405,36 @@ namespace InfiniteReinforce
             GUI.Label(labelRect, " " + thing.Label.CapitalizeFirst(), fontleft);
             GUI.Label(labelRect2, " " + StatDefOf.MarketValue.label.CapitalizeFirst() + ": " + thing.GetStatValue(StatDefOf.MarketValue), fontleft);
             Widgets.FillableBar(labelRect3.ContractedBy(2f), (float)thing.HitPoints/thing.MaxHitPoints, Texture2D.linearGrayTexture);
-            GUI.Label(labelRect3, " " + StatDefOf.MaxHitPoints.label.CapitalizeFirst() + " " + String.Format("{0} / {1}", thing.HitPoints, thing.MaxHitPoints), fontleft);
+            if (thing is Pawn)
+            {
+                Pawn pawn = thing as Pawn;
+                GUI.Label(labelRect3, " " + StatDefOf.MaxHitPoints.label.CapitalizeFirst() + " " + String.Format("{0} / {1}", pawn.health.summaryHealth.SummaryHealthPercent, 1.0f), fontleft);
+            }
+            else GUI.Label(labelRect3, " " + StatDefOf.MaxHitPoints.label.CapitalizeFirst() + " " + String.Format("{0} / {1}", thing.HitPoints, thing.MaxHitPoints), fontleft);
+
+            if (building.HoldingThing is Pawn && Widgets.ButtonImage(switchRect, ContentFinder<Texture2D>.Get("UI/ReinforceSwitch", false)))
+            {
+                SwitchTarget();
+            }
+        }
+
+        private void SwitchTarget()
+        {
+            if (building.OnProgress) SoundDefOf.ClickReject.PlayOneShotOnCamera();
+            else
+            {
+                switch (building.Target)
+                {
+                    case Building_Reinforcer.ReinforceTarget.Equipment:
+                    default:
+                        building.Target = Building_Reinforcer.ReinforceTarget.Mechanoid;
+                        break;
+                    case Building_Reinforcer.ReinforceTarget.Mechanoid:
+                        building.Target = Building_Reinforcer.ReinforceTarget.Equipment;
+                        break;
+                }
+                ChangeBuilding(building);
+            }
         }
 
         protected void ReinforceHistory(Rect rect)
@@ -632,7 +576,7 @@ namespace InfiniteReinforce
                 {
                     Reinforce(delegate { return Instance.TryReinforce(stat,costmode, alwayssuccess); }, index);
                 }
-                , stat.label + " +" + comp.GetReinforcedCount(stat), null , comp.GetStatFactor(stat) < 0.01f);
+                , stat.label + " +" + comp.GetReinforcedCount(stat), null , comp.NotUpgradable(stat));
         }
 
         protected void CustomOption(Rect rect, ReinforceDef def, int index)

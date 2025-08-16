@@ -12,5 +12,11 @@
 		<driverClass>InfiniteReinforce.JobDriver_InsertItemtoReinforcerDirectly</driverClass>
 		<reportString>inserting TargetA in TargetB</reportString>
 	</JobDef>
+	
+	<JobDef>
+		<defName>InsertSelfToReinforcer</defName>
+		<driverClass>InfiniteReinforce.JobDriver_InsertSelftoReinforcer</driverClass>
+		<reportString>inserting self in TargetA</reportString>
+	</JobDef>
 
 </Defs>

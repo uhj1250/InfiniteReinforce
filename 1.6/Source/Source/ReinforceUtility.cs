@@ -1,13 +1,15 @@
-﻿using System;
+﻿using RimWorld;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
-using System.Runtime.InteropServices;
-using RimWorld;
-using Verse;
 using UnityEngine;
+using Verse;
 using Verse.AI.Group;
+using static InfiniteReinforce.Building_Reinforcer;
+using static UnityEngine.GraphicsBuffer;
 
 namespace InfiniteReinforce
 {
@@ -90,12 +92,12 @@ namespace InfiniteReinforce
             return 0;
         }
 
-        public static bool TryReinforce(this ThingWithComps thing, StatDef stat, int level = 1)
+        public static bool TryReinforce(this ThingWithComps thing, StatDef stat, int level = 1, float multiplier = 1.0f)
         {
             ThingComp_Reinforce comp = thing.GetReinforceComp();
             if (comp != null)
             {
-                return comp.ReinforceStat(stat, level);
+                return comp.ReinforceStat(stat, level, multiplier);
             }
             return false;
         }
@@ -359,6 +361,56 @@ namespace InfiniteReinforce
             }
             return sb.ToString();
         }
+
+        public static bool NotUpgradable(this ThingComp_Reinforce comp, StatDef stat)
+        {
+            var factor = comp.GetStatFactor(stat);
+            return factor < 0.001f || 
+                comp.parent.GetStatValue(stat) >= stat.maxValue;
+        }
+
+
+        public static void BuildMaterialCost(this List<ThingDefCountClass> costlist, ThingWithComps target, ReinforceTarget reinforceTarget)
+        {
+            ReinforceCostDef costDef = target.GetCostDef();
+
+            if (costDef != null)
+            {
+                costlist.BuildByCostDef(costDef);
+            }
+            else
+            {
+                if (!target.def.costList.NullOrEmpty()) costlist.AddRange(target.def.CostList);
+                if (target.Stuff != null) BuildStuffCost();
+            }
+
+            void BuildStuffCost()
+            {
+                ThingDefCountClass stuff = costlist.FirstOrDefault(x => x.thingDef == target.Stuff);
+                if (stuff != null)
+                {
+                    stuff.count += target.def.costStuffCount;
+                }
+                else
+                {
+                    costlist.Add(new ThingDefCountClass(target.Stuff, target.def.CostStuffCount));
+                }
+            }
+        }
+
+        public static ReinforceCostDef GetCostDef(this ThingWithComps thing)
+        {
+            if (thing.HasComp<CompMechanoid>()) return ReinforceDefOf.BaseMechanoidCost;
+            else if (thing.ParentHolder != null) return ReinforceDefOf.BaseMechanoidWeaponCost;
+            else if (thing.def.weaponTags.Contains("TurretGun")) return ReinforceDefOf.BaseMechanoidWeaponCost;
+            else return DefDatabase<ReinforceCostDef>.GetNamedSilentFail(thing.def.defName);
+        }
+
+        public static void BuildByCostDef(this List<ThingDefCountClass> costlist, ReinforceCostDef costDef)
+        {
+            if (!costDef.costList.NullOrEmpty()) costlist.AddRange(costDef.costList);
+        }
+
 
     }
 

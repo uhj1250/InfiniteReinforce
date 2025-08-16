@@ -93,8 +93,10 @@
     <Compile Include="Configurations\IRMod.cs" />
     <Compile Include="DefInjection.cs" />
     <Compile Include="Defs\ReinforceDefs.cs" />
+    <Compile Include="JobDrivers\JobDriver_InsertSelftoReinforcer.cs" />
     <Compile Include="JobDrivers\JobDriver_InsertitemtoReinforcerDirectly.cs" />
     <Compile Include="Patches\AncientTempleInterior.cs" />
+    <Compile Include="Patches\CompProperties_ProjectileInterceptor.cs" />
     <Compile Include="Reflect.cs" />
     <Compile Include="ReinforceWorkers\ReinforceableWorker.cs" />
     <Compile Include="ReinforceWorkers\ReinforceableWorker_Basics.cs" />
@@ -116,7 +118,7 @@
     <Compile Include="UI\FloatMenuOptionProvider.cs" />
     <Compile Include="UI\ReinforceUIUtility.cs" />
     <Compile Include="UI\TextureCache.cs" />
-    <Compile Include="ThingComp_Reinforce.cs" />
+    <Compile Include="ThingComp\ThingComp_Reinforce.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

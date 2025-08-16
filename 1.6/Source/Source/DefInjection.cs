@@ -15,7 +15,6 @@ namespace InfiniteReinforce
     {
         static DefInjection()
         {
-
             CompProperties prop = new CompProperties(typeof(ThingComp_Reinforce));
             //StatPart_Reinforce part = new StatPart_Reinforce();
             //StatPart_Reinforce_Reversal partrev = new StatPart_Reinforce_Reversal();
