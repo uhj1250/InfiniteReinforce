@@ -75,9 +75,27 @@ namespace InfiniteReinforce
             ChangeBuilding(building);
         }
 
+        private void ItemDestroyed(object sender, EventArgs e)
+        {
+            if (sender is Building_Reinforcer)
+            {
+                var b = sender as Building_Reinforcer;
+                if (b == building)
+                {
+                    //Reset Dialog
+                    ChangeBuilding(building);
+                }
+            }
+        }
+
         public void ChangeBuilding(Building_Reinforcer building)
         {
+            if (this.building != null)
+            {
+                this.building.ItemDestroyed -= ItemDestroyed;
+            }
             this.building = building;
+            building.ItemDestroyed += ItemDestroyed;
             compcache = null;
             BuildStatList();
             if (thing != null)
@@ -404,13 +422,17 @@ namespace InfiniteReinforce
 
             GUI.Label(labelRect, " " + thing.Label.CapitalizeFirst(), fontleft);
             GUI.Label(labelRect2, " " + StatDefOf.MarketValue.label.CapitalizeFirst() + ": " + thing.GetStatValue(StatDefOf.MarketValue), fontleft);
-            Widgets.FillableBar(labelRect3.ContractedBy(2f), (float)thing.HitPoints/thing.MaxHitPoints, Texture2D.linearGrayTexture);
             if (thing is Pawn)
             {
                 Pawn pawn = thing as Pawn;
-                GUI.Label(labelRect3, " " + StatDefOf.MaxHitPoints.label.CapitalizeFirst() + " " + String.Format("{0} / {1}", pawn.health.summaryHealth.SummaryHealthPercent, 1.0f), fontleft);
+                Widgets.FillableBar(labelRect3.ContractedBy(2f), pawn.health.summaryHealth.SummaryHealthPercent, Texture2D.linearGrayTexture);
+                GUI.Label(labelRect3, " " + "HitPoints".Translate(pawn.health.summaryHealth.SummaryHealthPercent * 100f), fontleft);
             }
-            else GUI.Label(labelRect3, " " + StatDefOf.MaxHitPoints.label.CapitalizeFirst() + " " + String.Format("{0} / {1}", thing.HitPoints, thing.MaxHitPoints), fontleft);
+            else
+            {
+                Widgets.FillableBar(labelRect3.ContractedBy(2f), (float)thing.HitPoints / thing.MaxHitPoints, Texture2D.linearGrayTexture);
+                GUI.Label(labelRect3, " " + "HitPoints".Translate(thing.HitPoints) + String.Format(" / {0}", thing.MaxHitPoints), fontleft);
+            }
 
             if (building.HoldingThing is Pawn && Widgets.ButtonImage(switchRect, ContentFinder<Texture2D>.Get("UI/ReinforceSwitch", false)))
             {

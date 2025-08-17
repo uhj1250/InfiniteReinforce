@@ -20,6 +20,7 @@ namespace InfiniteReinforce
             Mechanoid
         }
 
+        public EventHandler ItemDestroyed;
         public const int BaseReinforceTicks = 720;
         
         protected static readonly Vector2 BarSize = new Vector2(0.55f, 0.1f);
@@ -139,7 +140,7 @@ namespace InfiniteReinforce
         {
             get
             {
-                return HitPoints / def.BaseMaxHitPoints;
+                return HitPoints / (float)def.BaseMaxHitPoints;
             }
         }
 
@@ -389,35 +390,48 @@ namespace InfiniteReinforce
                     break;
                 case ReinforceFailureResult.Destroy:
                     Find.LetterStack.ReceiveLetter(Keyed.FailedLetter, Keyed.FailedDestroy(TargetThing.Label), LetterDefOf.Death, this);
-                    TargetThing.Destroy(DestroyMode.Vanish);
+                    DestroyItem();
                     ReinforceDefOf.Reinforce_FailedCritical.PlayOneShot(this);
                     break;
+            }
+
+            if (HoldingThing is Corpse)
+            {
+                Corpse corpse = HoldingThing as Corpse;
+                corpse.Destroy(DestroyMode.Vanish);
             }
         }
 
         public void DamageThing(float damage)
         {
-            if (TargetThing.HitPoints <= damage)
+            if (!(TargetThing is Pawn) && TargetThing.HitPoints <= damage)
             {
                 Find.LetterStack.ReceiveLetter(Keyed.FailedLetter, Keyed.FailedDestroy(TargetThing.Label), LetterDefOf.Death, this);
                 ReinforceDefOf.Reinforce_FailedCritical.PlayOneShot(this);
-                TargetThing.Destroy(DestroyMode.Vanish);
+                DestroyItem();
             }
             else
             {
                 if (damage > 10) ReinforceDefOf.Reinforce_FailedNormal.PlayOneShot(this);
                 else ReinforceDefOf.Reinforce_FailedMinor.PlayOneShot(this);
-                TargetThing.HitPoints -= (int)damage;
+                TargetThing.TakeDamage(new DamageInfo(DamageDefOf.Bomb, damage, 120f));
             }
+            
         }
+
 
         public void Explosion()
         {
             DamageThing(Rand.Range(30, 80));
-            HitPoints = Math.Max((int)(HitPoints * Rand.Range(0.65f, 0.90f)), 1);
             GenExplosion.DoExplosion(Position, Map, Rand.Range(1, 3), DamageDefOf.Bomb, this, Rand.Range(50, 120));
         }
 
+        public void DestroyItem()
+        {
+            TargetThing.Destroy(DestroyMode.Vanish);
+            Instance.SoftReset();
+            ItemDestroyed?.Invoke(this, EventArgs.Empty);
+        }
 
         public class ReinforceInstance : IExposable
         {
@@ -602,7 +616,6 @@ namespace InfiniteReinforce
             public void Reset()
             {
                 Init();
-                reinforcementqueue.Clear();
                 parent.ExtractAllMaterials();
                 CleanUp();
             }
@@ -611,18 +624,24 @@ namespace InfiniteReinforce
             {
                 progress = 0f;
 
-                if (reinforcementqueue.Count > 0)
+                if (parent.HoldingThing != null && reinforcementqueue.Count > 0)
                 {
                     return InsertMaterials(reinforcementqueue.First());
                 }
                 else
                 {
-                    parent.onprogress = false;
-                    parent.sustainer?.End();
-                    StatsReportUtility.Reset();
-                    StatsReportUtility.Notify_QuickSearchChanged();
-                    return true;
+                    return SoftReset();
                 }
+            }
+
+            public bool SoftReset()
+            {
+                parent.onprogress = false;
+                parent.sustainer?.End();
+                StatsReportUtility.Reset();
+                StatsReportUtility.Notify_QuickSearchChanged();
+                reinforcementqueue.Clear();
+                return true;
             }
 
             public bool TryReinforce(StatDef def, CostMode costmode, bool alwaysSuccess = false)
@@ -676,6 +695,9 @@ namespace InfiniteReinforce
                     Log.Error(parent.Label + ": Reinforcement queue is empty");
                     return false;
                 }
+
+
+
                 Reinforcement reinforcement = reinforcementqueue.Dequeue();
 
                 if (parent.TargetReinforceComp != null)
@@ -706,17 +728,17 @@ namespace InfiniteReinforce
                                 CleanUp();
                                 return false;
                         }
-                        CleanUp();
                         if (reinforcehistory.Count > 30) reinforcehistory.RemoveAt(0);
                         ReinforceDefOf.Reinforce_Success.PlayOneShot(parent);
+                        CleanUp();
                         return true;
                     }
                     else
                     {
-                        CleanUp();
                         ReinforceFailureResult effect = parent.FailureEffect(totalweight, weights);
                         reinforcehistory.Add(Keyed.Failed.CapitalizeFirst() + " - " + effect.Translate() + "  " + chancestring);
                         if (reinforcehistory.Count > 30) reinforcehistory.RemoveAt(0);
+                        CleanUp();
                         return false;
                     }
                 }
