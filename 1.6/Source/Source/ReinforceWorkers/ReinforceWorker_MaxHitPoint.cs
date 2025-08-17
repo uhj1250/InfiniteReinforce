@@ -13,18 +13,31 @@ namespace InfiniteReinforce
     {
         public override bool Appliable(ThingWithComps thing)
         {
-            return thing.def.IsApparel;
+            return thing.def.IsApparel || thing.def.IsWeapon;
         }
 
-        public override Func<bool> Reinforce(ThingComp_Reinforce comp, int level)
+        public override Func<bool> Reinforce(ThingComp_Reinforce comp, int level, float multiplier = 1.0f)
         {
             return delegate ()
             {
-                float percent = (float)comp.parent.HitPoints / comp.parent.MaxHitPoints;
-                bool res = comp.ReinforceCustom(def, level);
-                comp.parent.HitPoints = (int)(comp.parent.MaxHitPoints * percent);
+                int delta = (int)comp.parent.GetStatValue(StatDefOf.MaxHitPoints);
+                bool res = comp.ReinforceStat(StatDefOf.MaxHitPoints, level, multiplier);
+                delta = (int)comp.parent.GetStatValue(StatDefOf.MaxHitPoints) - delta; 
+                comp.parent.HitPoints += delta;
+                Log.Message("delta: " + delta + " maxhitpoints: " + comp.parent.MaxHitPoints + comp.parent.Label);
+                
                 return res;
             };
+        }
+
+        public override string ResultString(int level)
+        {
+            return StatDefOf.MaxHitPoints.label + " +" + def.offsetPerLevel * level * 100 + "%";
+        }
+
+        public override string LeftLabel(ThingComp_Reinforce comp)
+        {
+            return StatDefOf.MaxHitPoints.label + " +" + comp.GetReinforcedCount(StatDefOf.MaxHitPoints);
         }
 
     }

@@ -2,6 +2,23 @@
 
 <Patch>
 
+  	<Operation Class="PatchOperationConditional">
+  	  <xpath>Defs/StatDef[defName="MaxHitPoints"]/parts</xpath>
+  	  <nomatch Class="PatchOperationAdd">
+  	    <xpath>Defs/StatDef[defName="MaxHitPoints"]</xpath>
+  	    <value>
+  	      <parts />
+  	    </value>
+  	  </nomatch>
+  	</Operation>
+	
+	<Operation Class="PatchOperationAdd">
+		<xpath>Defs/StatDef[defName="MaxHitPoints"]/parts</xpath>
+		<value>
+			<li Class="InfiniteReinforce.StatPart_Reinforce"/>
+		</value>
+	</Operation>
+
 	<Operation Class="PatchOperationAdd">
 		<xpath>Defs/StatDef[defName="MarketValue"]/parts</xpath>
 		<value>

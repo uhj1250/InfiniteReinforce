@@ -16,7 +16,7 @@ namespace InfiniteReinforce
 
         public abstract bool Appliable(ThingWithComps thing);
 
-        public abstract Func<bool> Reinforce(ThingComp_Reinforce comp, int level);
+        public abstract Func<bool> Reinforce(ThingComp_Reinforce comp, int level, float multiplier = 1.0f);
 
         public virtual string ResultString(int level)
         {

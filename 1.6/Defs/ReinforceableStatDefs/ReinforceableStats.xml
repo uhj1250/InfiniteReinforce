@@ -95,6 +95,7 @@
 		<offsetPerLevel>0.004</offsetPerLevel>
 		<reversal>true</reversal>
 		<isGeneric>false</isGeneric>
+		<workerClass>InfiniteReinforce.ReinforceableWorker_OnlyRangedWeapon_NotTurret</workerClass>
 	</InfiniteReinforce.ReinforceableStatDef>
 	
 	<InfiniteReinforce.ReinforceableStatDef>
@@ -108,6 +109,7 @@
 		<offsetPerLevel>0.004</offsetPerLevel>
 		<reversal>true</reversal>
 		<isGeneric>false</isGeneric>
+		<workerClass>InfiniteReinforce.ReinforceableWorker_OnlyRangedWeapon_NotTurret</workerClass>
 	</InfiniteReinforce.ReinforceableStatDef>
 
 	<InfiniteReinforce.ReinforceableStatDef>

@@ -401,7 +401,7 @@ namespace InfiniteReinforce
         public static ReinforceCostDef GetCostDef(this ThingWithComps thing)
         {
             if (thing.HasComp<CompMechanoid>()) return ReinforceDefOf.BaseMechanoidCost;
-            else if (thing.ParentHolder != null) return ReinforceDefOf.BaseMechanoidWeaponCost;
+            else if (ThingOwnerUtility.GetAnyParent<Pawn>(thing)?.HasComp<CompMechanoid>() ?? false) return ReinforceDefOf.BaseMechanoidWeaponCost;
             else if (thing.def?.weaponTags?.Contains("TurretGun") ?? false) return ReinforceDefOf.BaseMechanoidWeaponCost;
             else return DefDatabase<ReinforceCostDef>.GetNamedSilentFail(thing.def.defName);
         }

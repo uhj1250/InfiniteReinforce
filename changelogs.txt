@@ -1,3 +1,10 @@
+Version 1.2.0.3
+ - Added machanoid reinforcement options
+ - Added again max hitpoint reinforcement
+ - Minor UI modification
+ - Removed cooldown and warmup options for turret guns
+ - Minor bug fixes
+
 Version 1.2.0.2
  - Minor bug fixes
 

@@ -16,6 +16,13 @@ namespace InfiniteReinforce
             return thing.def.IsRangedWeapon;
         }
     }
+    public class ReinforceableWorker_OnlyRangedWeapon_NotTurret : ReinforceableWorker
+    {
+        public override bool IsAppliable(ThingWithComps thing)
+        {
+            return thing.def.IsRangedWeapon && !thing.def.weaponTags.Contains("TurretGun");
+        }
+    }
 
     public class ReinforceableWorker_OnlyBurstWeapon : ReinforceableWorker
     {

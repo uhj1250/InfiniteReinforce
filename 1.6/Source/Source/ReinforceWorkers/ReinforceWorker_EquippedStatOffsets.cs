@@ -16,7 +16,7 @@ namespace InfiniteReinforce
             return !thing.def.equippedStatOffsets.NullOrEmpty();
         }
 
-        public override Func<bool> Reinforce(ThingComp_Reinforce comp, int level)
+        public override Func<bool> Reinforce(ThingComp_Reinforce comp, int level, float multiplier = 1.0f)
         {
             return delegate ()
             {

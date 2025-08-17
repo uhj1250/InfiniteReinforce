@@ -103,8 +103,10 @@
     <Compile Include="ReinforceWorkers\ReinforceWorker.cs" />
     <Compile Include="ReinforceWorkers\ReinforceWorker_EquippedStatOffsets.cs" />
     <Compile Include="ReinforceWorkers\ReinforceWorker_MaxHitPoint.cs" />
+    <Compile Include="ReinforceWorkers\ReinforceableWorker_Mechanoid.cs" />
     <Compile Include="ReinforceWorkers\ReinforceWorker_Rechargeable.cs" />
     <Compile Include="Buildings\SpecialOption_Repiar.cs" />
+    <Compile Include="ReinforceWorkers\ReinforceWorker_Stats.cs" />
     <Compile Include="StatParts\StatPart_WarmUpMultiplier.cs" />
     <Compile Include="UI\Dialog_Reinforcer.cs" />
     <Compile Include="Keyed.cs" />

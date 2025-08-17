@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8" ?>
 
 <Defs>
-<!-- Not working
 	<InfiniteReinforce.ReinforceDef>
-		<defName>Reinforce_Hitpoint</defName>
+		<defName>MaxHitPoints</defName>
 		<label>durability</label>
 		<workerClass>InfiniteReinforce.ReinforceWorker_MaxHitPoint</workerClass>
-		<levelRange>1~25</levelRange>
-		<offsetPerLevel>0.01</offsetPerLevel>
+		<levelRange>10~16</levelRange>
+		<offsetPerLevel>0.002</offsetPerLevel>
 	</InfiniteReinforce.ReinforceDef>
--->
+
 	<InfiniteReinforce.ReinforceDef>
 		<defName>Reinforce_Reloadable</defName>
 		<label>capacity</label>

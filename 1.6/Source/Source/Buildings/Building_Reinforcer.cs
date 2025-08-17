@@ -768,7 +768,7 @@ namespace InfiniteReinforce
             {
                 ReinforceDef def = ((ReinforceDef)reinforcement.reinforcedef);
                 int level = Rand.Range(def.levelRange.min, def.levelRange.max);
-                def.Worker.Reinforce(parent.TargetReinforceComp, level)();
+                def.Worker.Reinforce(parent.TargetReinforceComp, level, parent.EffectiveMultiplier)();
                 reinforcehistory.Add(def.Worker.ResultString(level) + "  " + chancestring);
             }
 

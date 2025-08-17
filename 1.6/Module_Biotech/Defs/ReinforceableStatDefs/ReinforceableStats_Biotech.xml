@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<Defs>
+
+	<InfiniteReinforce.ReinforceableStatDef>
+		<defName>MechEnergyUsageFactor</defName>
+		<offsetPerLevel>0.005</offsetPerLevel>
+		<reversal>true</reversal>
+		<isGeneric>false</isGeneric>
+		<workerClass>InfiniteReinforce.ReinforceableWorker_Mechanoid</workerClass>
+	</InfiniteReinforce.ReinforceableStatDef>
+	
+	<InfiniteReinforce.ReinforceableStatDef>
+		<defName>WastepacksPerRecharge</defName>
+		<offsetPerLevel>0.004</offsetPerLevel>
+		<reversal>true</reversal>
+		<isGeneric>false</isGeneric>
+		<workerClass>InfiniteReinforce.ReinforceableWorker_Mechanoid</workerClass>
+	</InfiniteReinforce.ReinforceableStatDef>
+
+	<InfiniteReinforce.ReinforceableStatDef>
+		<defName>MechEnergyLossPerHP</defName>
+		<offsetPerLevel>0.01</offsetPerLevel>
+		<reversal>true</reversal>
+		<isGeneric>false</isGeneric>
+		<workerClass>InfiniteReinforce.ReinforceableWorker_Mechanoid</workerClass>
+	</InfiniteReinforce.ReinforceableStatDef>
+
+</Defs>

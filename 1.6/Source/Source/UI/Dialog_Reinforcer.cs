@@ -385,17 +385,18 @@ namespace InfiniteReinforce
                 }
             }
 
-            for(int i=0; i<statlist.Count; i++)
-            {
-                StatOption(listmain.GetRect(FontHeight), statlist[i], i);
-            }
-            for (int i=0; i<ReinforceUtility.ReinforceDefs.Count; i++)
+            for (int i = 0; i < ReinforceUtility.ReinforceDefs.Count; i++)
             {
                 ReinforceDef def = ReinforceUtility.ReinforceDefs[i];
                 if (!def.disable && def.Worker.Appliable(thing)) CustomOption(listmain.GetRect(FontHeight), def, i);
             }
+
+            for (int i=0; i<statlist.Count; i++)
+            {
+                StatOption(listmain.GetRect(FontHeight), statlist[i], i);
+            }
             
-            
+
             listmain.End();
             Widgets.EndScrollView();
         }
