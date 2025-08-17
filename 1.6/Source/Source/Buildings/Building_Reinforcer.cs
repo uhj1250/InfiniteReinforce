@@ -792,7 +792,7 @@ namespace InfiniteReinforce
                 else
                 {
                     Messages.Message(Keyed.NotEnough, parent, MessageTypeDefOf.RejectInput);
-                    Reset();
+                    SoftReset();
                     return false;
                 }
 
@@ -815,9 +815,9 @@ namespace InfiniteReinforce
                 }
                 else
                 {
-                    IEnumerable<Thing> materials = ReinforceUtility.AllThingsNearBeacon(parent.Map, x => costlist.Exists(y => y.thingDef == x.def));
+                    IEnumerable<Thing> materials = TradeUtility.AllLaunchableThingsForTrade(parent.Map);
                     List<Thing>[] thingtoinsert = new List<Thing>[costlist.Count];
-
+                    
 
                     ThingDef stuff = costMode == CostMode.SameThing ? parent.TargetThing.Stuff : null;
 
@@ -842,6 +842,7 @@ namespace InfiniteReinforce
                 }
             }
             
+
             public int CostOf(List<ThingDefCountClass> costlist, int index, CostMode costMode)
             {
                 if (costMode == CostMode.Fuel && !parent.ApplyMultiplier) return costlist[index].count;

@@ -13,7 +13,7 @@ namespace InfiniteReinforce
     {
         public override bool Appliable(ThingWithComps thing)
         {
-            return thing.def.IsApparel || thing.def.IsWeapon;
+            return thing.HitPoints > 0 && (thing.def.IsApparel || thing.def.IsWeapon);
         }
 
         public override Func<bool> Reinforce(ThingComp_Reinforce comp, int level, float multiplier = 1.0f)

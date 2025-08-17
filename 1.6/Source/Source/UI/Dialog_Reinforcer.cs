@@ -149,7 +149,7 @@ namespace InfiniteReinforce
             else
             {
                 if (costMode == CostMode.Fuel) costMode = InitialCostMode();
-                resourcethings = ReinforceUtility.AllThingsNearBeacon(building.Map).Where(x => costlist[(int)costMode].Exists(y => y.thingDef == x.def));//TradeUtility.AllLaunchableThingsForTrade(building.Map).Where(x => costlist.Exists(y => y.thingDef == x.def));
+                resourcethings = TradeUtility.AllLaunchableThingsForTrade(building.Map).Where(x => costlist[(int)costMode].Exists(y => y.thingDef == x.def));//TradeUtility.AllLaunchableThingsForTrade(building.Map).Where(x => costlist.Exists(y => y.thingDef == x.def));
                 if (!costlist[(int)costMode].NullOrEmpty())
                 {
                     foreach (ThingDefCountClass cost in costlist[(int)costMode])
@@ -427,12 +427,12 @@ namespace InfiniteReinforce
             {
                 Pawn pawn = thing as Pawn;
                 Widgets.FillableBar(labelRect3.ContractedBy(2f), pawn.health.summaryHealth.SummaryHealthPercent, Texture2D.linearGrayTexture);
-                GUI.Label(labelRect3, " " + "HitPoints".Translate(pawn.health.summaryHealth.SummaryHealthPercent * 100f), fontleft);
+                GUI.Label(labelRect3, " " + "HitPoints".Translate(pawn.health.summaryHealth.SummaryHealthPercent * 100f + "%").CapitalizeFirst(), fontleft);
             }
             else
             {
                 Widgets.FillableBar(labelRect3.ContractedBy(2f), (float)thing.HitPoints / thing.MaxHitPoints, Texture2D.linearGrayTexture);
-                GUI.Label(labelRect3, " " + "HitPoints".Translate(thing.HitPoints) + String.Format(" / {0}", thing.MaxHitPoints), fontleft);
+                GUI.Label(labelRect3, " " + "HitPoints".Translate("").CapitalizeFirst() + String.Format(" {0} / {1}", thing.HitPoints, thing.MaxHitPoints), fontleft);
             }
 
             if (building.HoldingThing is Pawn && Widgets.ButtonImage(switchRect, ContentFinder<Texture2D>.Get("UI/ReinforceSwitch", false)))

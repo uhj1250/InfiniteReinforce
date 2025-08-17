@@ -316,21 +316,6 @@ namespace InfiniteReinforce
             return false;
         }
 
-        public static IEnumerable<Thing> AllThingsNearBeacon(Map map, Func<Thing, bool> predicate = null)
-        {
-            HashSet<Thing> yieldedThings = new HashSet<Thing>();
-            if (predicate == null) predicate = delegate { return true; };
-            foreach (Building_OrbitalTradeBeacon item in Building_OrbitalTradeBeacon.AllPowered(map))
-            {
-                foreach (IntVec3 tradeableCell in item.TradeableCells)
-                {
-                    IEnumerable<Thing> thingList = tradeableCell.GetThingList(map).Where(predicate);
-                    yieldedThings.AddRange(thingList);
-                }
-            }
-            return yieldedThings;
-        }
-
         public static bool CannotUseAsMaterial(this Thing thing)
         {
             if (thing.GetReinforcedCount() > 0) return true;
