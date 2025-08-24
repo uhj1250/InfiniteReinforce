@@ -21,6 +21,7 @@ namespace InfiniteReinforce
         }
 
         public EventHandler ItemDestroyed;
+        public EventHandler ReinforceCompleted;
         public const int BaseReinforceTicks = 720;
         
         protected static readonly Vector2 BarSize = new Vector2(0.55f, 0.1f);
@@ -188,15 +189,14 @@ namespace InfiniteReinforce
             Scribe_Collections.Look(ref insertedmaterials, "insertedmaterials", true, LookMode.Reference);
         }
 
-        protected override void Tick()
+        protected override void TickInterval(int delta)
         {
-            base.Tick();
+            base.TickInterval(delta);
             if (PowerOn && onprogress)
             {
-                Instance.Tick(ProgressPerTick);
+                Instance.Tick(ProgressPerTick * delta);
             }
         }
-
 
         public override void DrawGUIOverlay()
         {
@@ -731,6 +731,7 @@ namespace InfiniteReinforce
                         if (reinforcehistory.Count > 30) reinforcehistory.RemoveAt(0);
                         ReinforceDefOf.Reinforce_Success.PlayOneShot(parent);
                         CleanUp();
+                        parent.ReinforceCompleted?.Invoke(parent, EventArgs.Empty);
                         return true;
                     }
                     else
@@ -739,6 +740,7 @@ namespace InfiniteReinforce
                         reinforcehistory.Add(Keyed.Failed.CapitalizeFirst() + " - " + effect.Translate() + "  " + chancestring);
                         if (reinforcehistory.Count > 30) reinforcehistory.RemoveAt(0);
                         CleanUp();
+                        parent.ReinforceCompleted?.Invoke(parent, EventArgs.Empty);
                         return false;
                     }
                 }
@@ -815,30 +817,36 @@ namespace InfiniteReinforce
                 }
                 else
                 {
-                    IEnumerable<Thing> materials = TradeUtility.AllLaunchableThingsForTrade(parent.Map);
-                    List<Thing>[] thingtoinsert = new List<Thing>[costlist.Count];
-                    
 
-                    ThingDef stuff = costMode == CostMode.SameThing ? parent.TargetThing.Stuff : null;
-
-
-                    for (int i=0; i < costlist.Count; i++)
+                    //IEnumerable<Thing> materials = TradeUtility.AllLaunchableThingsForTrade(parent.Map);
+                    if (parent.Map.GetThingsNearBeacon(out List<Thing> materials))
                     {
-                        if (materials.CountThingInCollection(costlist[i].thingDef, stuff) < CostOf(costlist, i, costMode)) return false;
-                    }
-                         
-                    for (int i = 0; i < costlist.Count; i++)
-                    {
-                        thingtoinsert[i] = materials.GetThingsOfType(costlist[i].thingDef, CostOf(costlist, i, costMode), stuff);
-                        if (thingtoinsert[i] == null) return false;
-                    }
 
-                    for (int i = 0; i < costlist.Count; i++)
-                    {
-                        parent.InsertMaterials(thingtoinsert[i]);
-                    }
+                        List<Thing>[] thingtoinsert = new List<Thing>[costlist.Count];
 
-                    return true;
+
+                        ThingDef stuff = costMode == CostMode.SameThing ? parent.TargetThing.Stuff : null;
+
+
+                        for (int i = 0; i < costlist.Count; i++)
+                        {
+                            if (materials.CountThingInCollection(costlist[i].thingDef, stuff) < CostOf(costlist, i, costMode)) return false;
+                        }
+
+                        for (int i = 0; i < costlist.Count; i++)
+                        {
+                            thingtoinsert[i] = materials.GetThingsOfType(costlist[i].thingDef, CostOf(costlist, i, costMode), stuff);
+                            if (thingtoinsert[i] == null) return false;
+                        }
+
+                        for (int i = 0; i < costlist.Count; i++)
+                        {
+                            parent.InsertMaterials(thingtoinsert[i]);
+                        }
+
+                        return true;
+                    }
+                    return false;
                 }
             }
             

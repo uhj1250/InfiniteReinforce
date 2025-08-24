@@ -88,14 +88,21 @@ namespace InfiniteReinforce
             }
         }
 
+        private void ReinforceCompleted(object sender, EventArgs e)
+        {
+            UpdateThingList();
+        }
+
         public void ChangeBuilding(Building_Reinforcer building)
         {
             if (this.building != null)
             {
                 this.building.ItemDestroyed -= ItemDestroyed;
+                this.building.ReinforceCompleted -= ReinforceCompleted;
             }
             this.building = building;
             building.ItemDestroyed += ItemDestroyed;
+            building.ReinforceCompleted += ReinforceCompleted;
             compcache = null;
             BuildStatList();
             if (thing != null)
@@ -149,17 +156,21 @@ namespace InfiniteReinforce
             else
             {
                 if (costMode == CostMode.Fuel) costMode = InitialCostMode();
-                resourcethings = TradeUtility.AllLaunchableThingsForTrade(building.Map).Where(x => costlist[(int)costMode].Exists(y => y.thingDef == x.def));//TradeUtility.AllLaunchableThingsForTrade(building.Map).Where(x => costlist.Exists(y => y.thingDef == x.def));
-                if (!costlist[(int)costMode].NullOrEmpty())
-                {
-                    foreach (ThingDefCountClass cost in costlist[(int)costMode])
-                    {
-                        thingcountcache.Add(new ThingDefCountClass(cost.thingDef, 0));
-                    }
-                }
 
-                if (costMode == CostMode.SameThing) resourcethings.CountThingInCollection(ref thingcountcache, thing.Stuff);
-                else resourcethings.CountThingInCollection(ref thingcountcache);
+                if (building.Map.GetThingsNearBeacon(out List<Thing> things))
+                {
+                    resourcethings = things.Where(x => costlist[(int)costMode].Exists(y => y.thingDef == x.def));
+                    if (!costlist[(int)costMode].NullOrEmpty())
+                    {
+                        foreach (ThingDefCountClass cost in costlist[(int)costMode])
+                        {
+                            thingcountcache.Add(new ThingDefCountClass(cost.thingDef, 0));
+                        }
+                    }
+
+                    if (costMode == CostMode.SameThing) resourcethings.CountThingInCollection(ref thingcountcache, thing.Stuff);
+                    else resourcethings.CountThingInCollection(ref thingcountcache);
+                }
             }
         }
 

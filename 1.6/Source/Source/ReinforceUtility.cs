@@ -1,4 +1,5 @@
-﻿using RimWorld;
+﻿using HarmonyLib;
+using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -206,37 +207,24 @@ namespace InfiniteReinforce
             return res;
         }
 
-
-
-        public static void EliminateThingsOfType(this Map map, ThingDef def, int cost)
+        /// <summary>
+        /// Vanilla method TradeUtility.AllLaunchableThingsForTrade won't get tainted apparels and biocoded weapons.
+        /// So, you need this.
+        /// </summary>
+        public static bool GetThingsNearBeacon(this Map map, out List<Thing> things)
         {
-            while (cost > 0)
+            things = new List<Thing>();
+            foreach (Building_OrbitalTradeBeacon beacon in Building_OrbitalTradeBeacon.AllPowered(map))
             {
-                Thing thing = null;
-                foreach (Building_OrbitalTradeBeacon building_OrbitalTradeBeacon in Building_OrbitalTradeBeacon.AllPowered(map))
+                foreach(IntVec3 cell in beacon.TradeableCells)
                 {
-                    foreach (IntVec3 c in building_OrbitalTradeBeacon.TradeableCells)
-                    {
-                        foreach (Thing thing2 in map.thingGrid.ThingsAt(c))
-                        {
-                            if (thing2.def == def)
-                            {
-                                thing = thing2;
-                                break;
-                            }
-                        }
-                    }
+                    things.AddRange(cell.GetThingList(map));
                 }
-                if (thing == null)
-                {
-                    Log.Error("Could not find any " + def + " to remove.");
-                    return;
-                }
-                int num = Math.Min(cost, thing.stackCount);
-                thing.SplitOff(num).Destroy(DestroyMode.Vanish);
-                cost -= num;
             }
+
+            return !things.NullOrEmpty();
         }
+
 
         public static List<Thing> GetThingsOfType(this IEnumerable<Thing> things, ThingDef def, int cost, ThingDef stuff = null)
         {
