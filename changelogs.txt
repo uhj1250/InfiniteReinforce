@@ -1,5 +1,6 @@
 Version 1.2.0.5
  - Fixed reinforcers don't consume tainted or biocoded equipments
+ - Minor improvements
 
 Version 1.2.0.4
  - Fixed crash on executing queued reinforces when the materials insufficient
