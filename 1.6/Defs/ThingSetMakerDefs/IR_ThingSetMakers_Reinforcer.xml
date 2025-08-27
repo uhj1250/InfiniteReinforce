@@ -1,0 +1,137 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+  <ThingSetMakerDef>
+    <defName>Loot_Reinforcer_Poor</defName>
+    <root Class="ThingSetMaker_RandomOption">
+      <options>
+        <!-- Fail -->
+			  <li>
+			  	<weight>9</weight>
+			  	<thingSetMaker Class="ThingSetMaker_StackCount">
+			  		<fixedParams>
+			  			<filter>
+			  				<thingDefs>
+			  					<li>ChunkSlagSteel</li>
+			  				</thingDefs>
+			  			</filter>
+			  			<countRange>1~1</countRange>
+			  		</fixedParams>
+			  	</thingSetMaker>
+			  </li>
+
+        <!--Actual Loots-->
+			  <li>
+			  	<weight>1</weight>
+			  	<thingSetMaker Class="ThingSetMaker_StackCount">
+			  		<fixedParams>
+			  			<filter>
+			  				<thingDefs>
+			  					<li>MechReinforcer</li>
+			  				</thingDefs>
+			  			</filter>
+			  			<countRange>2~7</countRange>
+			  		</fixedParams>
+			  	</thingSetMaker>
+			  </li>
+      </options>
+    </root>
+  </ThingSetMakerDef>
+
+  <ThingSetMakerDef>
+    <defName>Loot_Reinforcer_Normal</defName>
+    <root Class="ThingSetMaker_RandomOption">
+      <options>
+        <!-- Fail -->
+			  <li>
+			  	<weight>2</weight>
+			  	<thingSetMaker Class="ThingSetMaker_StackCount">
+			  		<fixedParams>
+			  			<filter>
+			  				<thingDefs>
+			  					<li>ChunkSlagSteel</li>
+			  				</thingDefs>
+			  			</filter>
+			  			<countRange>2~2</countRange>
+			  		</fixedParams>
+			  	</thingSetMaker>
+			  </li>
+
+        <!--Actual Loots-->
+			  <li>
+			  	<weight>1</weight>
+			  	<thingSetMaker Class="ThingSetMaker_StackCount">
+			  		<fixedParams>
+			  			<filter>
+			  				<thingDefs>
+			  					<li>MechReinforcer</li>
+			  				</thingDefs>
+			  			</filter>
+			  			<countRange>2~7</countRange>
+			  		</fixedParams>
+			  	</thingSetMaker>
+			  </li>
+			  <li>
+			  	<weight>0.01</weight>
+			  	<thingSetMaker Class="ThingSetMaker_StackCount">
+			  		<fixedParams>
+			  			<filter>
+			  				<thingDefs>
+			  					<li>MechReinforcer</li>
+			  				</thingDefs>
+			  			</filter>
+			  			<countRange>9~27</countRange>
+			  		</fixedParams>
+			  	</thingSetMaker>
+			  </li>
+      </options>
+    </root>
+  </ThingSetMakerDef>
+  
+  <ThingSetMakerDef>
+    <defName>Loot_Reinforcer_Plenty</defName>
+    <root Class="ThingSetMaker_RandomOption">
+      <options>
+			  <li>
+			  	<weight>1</weight>
+			  	<thingSetMaker Class="ThingSetMaker_StackCount">
+			  		<fixedParams>
+			  			<filter>
+			  				<thingDefs>
+			  					<li>MechReinforcer</li>
+			  				</thingDefs>
+			  			</filter>
+			  			<countRange>9~13</countRange>
+			  		</fixedParams>
+			  	</thingSetMaker>
+			  </li>
+			  <li>
+			  	<weight>0.02</weight>
+			  	<thingSetMaker Class="ThingSetMaker_StackCount">
+			  		<fixedParams>
+			  			<filter>
+			  				<thingDefs>
+			  					<li>MechReinforcer</li>
+			  				</thingDefs>
+			  			</filter>
+			  			<countRange>11~23</countRange>
+			  		</fixedParams>
+			  	</thingSetMaker>
+			  </li>
+			  <li>
+			  	<weight>0.001</weight>
+			  	<thingSetMaker Class="ThingSetMaker_StackCount">
+			  		<fixedParams>
+			  			<filter>
+			  				<thingDefs>
+			  					<li>MechReinforcer</li>
+			  				</thingDefs>
+			  			</filter>
+			  			<countRange>21~47</countRange>
+			  		</fixedParams>
+			  	</thingSetMaker>
+			  </li>
+      </options>
+    </root>
+  </ThingSetMakerDef>
+
+</Defs>

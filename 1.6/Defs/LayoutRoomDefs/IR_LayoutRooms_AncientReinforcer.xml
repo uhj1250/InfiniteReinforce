@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+  
+  <LayoutRoomDef>
+    <defName>AncientReinforcerRoom</defName>
+    <canMergeWithAdjacentRoom>true</canMergeWithAdjacentRoom>
+    <prefabs>
+      <AncientStorageCylinder_Edge>
+        <countPerTenEdgeCells>3</countPerTenEdgeCells>
+        <minMaxRange>5~10</minMaxRange>
+      </AncientStorageCylinder_Edge>
+      <AncientMachine_Rows>
+        <countPerHundredCells>5</countPerHundredCells>
+        <minMaxRange>2~3</minMaxRange>
+      </AncientMachine_Rows>
+      <AncientSystemRacks_Rows>
+        <countPerHundredCells>5</countPerHundredCells>
+        <minMaxRange>1~10</minMaxRange>
+      </AncientSystemRacks_Rows>
+    </prefabs>
+    <floorTypes>
+      <li>AncientTile</li>
+    </floorTypes>
+    <parts>
+      <AncientReinforcer/>
+      <HermetricCrate_Reinforcer_Poor>0.8</HermetricCrate_Reinforcer_Poor>
+      <HermetricCrate_Reinforcer_Normal>0.4</HermetricCrate_Reinforcer_Normal>
+      <HermetricCrate_Reinforcer_Plenty>0.1</HermetricCrate_Reinforcer_Plenty>
+    </parts>
+  </LayoutRoomDef>
+
+</Defs>

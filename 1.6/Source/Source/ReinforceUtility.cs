@@ -345,9 +345,7 @@ namespace InfiniteReinforce
 
         public static void BuildMaterialCost(this List<ThingDefCountClass> costlist, ThingWithComps target, ReinforceTarget reinforceTarget)
         {
-            ReinforceCostDef costDef = target.GetCostDef();
-
-            if (costDef != null)
+            if (target.GetCostDef(reinforceTarget, out ReinforceCostDef costDef) && costDef.HasCost)
             {
                 costlist.BuildByCostDef(costDef);
             }
@@ -371,10 +369,38 @@ namespace InfiniteReinforce
             }
         }
 
+        public static void BuildSingleThingCost(this List<ThingDefCountClass> costlist, ThingWithComps target, ReinforceTarget reinforceTarget)
+        {
+            if (target.GetCostDef(reinforceTarget, out ReinforceCostDef costDef) && costDef.HasSingleThing)
+            {
+                costlist.Add(costDef.singleThing);
+            }
+            else
+            {
+                costlist.Add(new ThingDefCountClass(target.def, 1));
+            }
+        }
+
+        public static bool GetCostDef(this ThingWithComps thing, ReinforceTarget target, out ReinforceCostDef costDef)
+        {
+            switch (target)
+            {
+                case ReinforceTarget.Mechanoid:
+                    costDef = ReinforceDefOf.BaseMechanoidCost;
+                    break;
+                case ReinforceTarget.Equipment:
+                default:
+                    costDef = thing.GetCostDef();
+                    break;
+            }
+
+            return costDef != null;
+        }
+
         public static ReinforceCostDef GetCostDef(this ThingWithComps thing)
         {
-            if (thing.HasComp<CompMechanoid>()) return ReinforceDefOf.BaseMechanoidCost;
-            else if (ThingOwnerUtility.GetAnyParent<Pawn>(thing)?.HasComp<CompMechanoid>() ?? false) return ReinforceDefOf.BaseMechanoidWeaponCost;
+            //if (thing.HasComp<CompMechanoid>()) return ReinforceDefOf.BaseMechanoidCost;
+            if (ThingOwnerUtility.GetAnyParent<Pawn>(thing)?.HasComp<CompMechanoid>() ?? false) return ReinforceDefOf.BaseMechanoidWeaponCost;
             else if (thing.def?.weaponTags?.Contains("TurretGun") ?? false) return ReinforceDefOf.BaseMechanoidWeaponCost;
             else return DefDatabase<ReinforceCostDef>.GetNamedSilentFail(thing.def.defName);
         }
@@ -384,6 +410,31 @@ namespace InfiniteReinforce
             if (!costDef.costList.NullOrEmpty()) costlist.AddRange(costDef.costList);
         }
 
+        public static bool GetStatList(this ThingWithComps thing, out List<StatDef> statlist)
+        {
+            statlist = new List<StatDef>();
+            for (int i = 0; i < ReinforcableStats.Count; i++)
+            {
+                StatDef stat = ReinforcableStats[i];
+                if (stat.IsStatAppliable(thing))
+                {
+                    statlist.Add(stat);
+                    continue;
+                }
+            }
+            return !statlist.NullOrEmpty();
+        }
+
+        public static bool GetAppliableCustom(this ThingWithComps thing, out List<ReinforceDef> customlist)
+        {
+            customlist = new List<ReinforceDef>();
+            for (int i = 0; i < ReinforceDefs.Count; i++)
+            {
+                ReinforceDef def = ReinforceDefs[i];
+                if (!def.disable && def.Worker.Appliable(thing)) customlist.Add(def);
+            }
+            return !customlist.NullOrEmpty();
+        }
 
     }
 

@@ -3,24 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using RimWorld;
 using Verse;
 
 namespace InfiniteReinforce
 {
-    public interface IReinforceSpecialOption
-    {
-        bool Enable(ThingWithComps thing);
-
-        bool Appliable(ThingWithComps thing);
-
-        Func<bool> Reinforce(ThingComp_Reinforce comp);
-
-        string LabelLeft(ThingComp_Reinforce comp);
-        string LabelRight(ThingComp_Reinforce comp);
-
-    }
-
     public class SpecialOption_Repiar : IReinforceSpecialOption
     {
         public bool Enable(ThingWithComps thing)
@@ -30,7 +16,7 @@ namespace InfiniteReinforce
 
         public bool Appliable(ThingWithComps thing)
         {
-            return true;
+            return thing.MaxHitPoints > 0 && !(thing is Pawn);
         }
 
         public Func<bool> Reinforce(ThingComp_Reinforce comp)

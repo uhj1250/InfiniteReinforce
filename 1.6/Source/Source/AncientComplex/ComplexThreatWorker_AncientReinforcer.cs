@@ -17,7 +17,6 @@ namespace InfiniteReinforce
 			ComplexUtility.TryFindRandomSpawnCell(ReinforceDefOf.AncientReinforcer, parms.room, parms.map, out IntVec3 loc, 1, null);
 			Building_Reinforcer ancient_reinforcer = (Building_Reinforcer)GenSpawn.Spawn(ReinforceDefOf.AncientReinforcer, loc, parms.map, WipeMode.Vanish);
 			ancient_reinforcer.SetFuelRandom();
-
 			spawnedThings.Add(ancient_reinforcer);
 			parms.spawnedThings.Add(ancient_reinforcer);
 		}

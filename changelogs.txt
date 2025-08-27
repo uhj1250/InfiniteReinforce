@@ -1,3 +1,11 @@
+Version 1.2.0.6
+ - Unreinforced equipment and mechanoids no longer show the '+0'
+ - Added loots for odyssey and ideology structures
+   - (Odyssey) You may find an ancient reinforcer in a frozen terraformer and an ancient stockpile
+   - An Ancient reinforcer appears with 0~3 of hermetic crates
+ - Added quality upgrade for ancient reinforcer
+ - Minor bug fixes
+
 Version 1.2.0.5
  - Fixed reinforcers don't consume tainted or biocoded equipments
  - Minor improvements

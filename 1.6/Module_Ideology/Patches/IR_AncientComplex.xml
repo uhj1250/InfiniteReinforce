@@ -10,4 +10,14 @@
 			</AncientReinforcer>
 		</value>
 	</Operation>
+	
+	<Operation Class="PatchOperationAdd">
+		<xpath>Defs/ComplexLayoutDef[defName="AncientComplex"]/roomDefs</xpath>
+		<value>
+			<AncientReinforcerRoom>
+				<weight>0.2</weight>
+      			<countRange>0~1</countRange>
+			</AncientReinforcerRoom>
+		</value>
+	</Operation>
 </Patch>

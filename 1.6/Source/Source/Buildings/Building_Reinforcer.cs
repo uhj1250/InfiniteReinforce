@@ -19,6 +19,7 @@ namespace InfiniteReinforce
             Equipment,
             Mechanoid
         }
+        
 
         public EventHandler ItemDestroyed;
         public EventHandler ReinforceCompleted;
@@ -279,7 +280,7 @@ namespace InfiniteReinforce
         {
             if (FuelComp != null)
             {
-                FuelComp.Refuel(Rand.Range(0, FuelComp.GetFuelCountToFullyRefuel()));
+                FuelComp.Refuel(Rand.Range(0, FuelComp.GetFuelCountToFullyRefuel() + 1));
             }
         }
 
@@ -580,7 +581,7 @@ namespace InfiniteReinforce
                                 res.Add(r.reinforcedef.label);
                                 break;
                             case ReinforceType.Special:
-                                res.Add(parent.SpecialOptions?.FirstOrDefault(x => x.GetType().Equals(r.optiontype))?.LabelLeft(null) ?? "Error");
+                                res.Add(parent.SpecialOptions?.FirstOrDefault(x => x.GetType().Equals(r.optiontype))?.LabelLeft(Comp) ?? "Error");
                                 break;
                             default:
                                 res.Add("Error");
@@ -603,9 +604,17 @@ namespace InfiniteReinforce
             {
                 if (!parent.onprogress)
                 {
-                    parent.onprogress = true;
-                    if (parent.sustainer == null || parent.sustainer.Ended) parent.sustainer = ReinforceDefOf.Reinforce_Progress.TrySpawnSustainer(parent);
-                    return InsertMaterials(reinforcementqueue.First());
+                    if (InsertMaterials(reinforcementqueue.First()))
+                    {
+                        parent.onprogress = true;
+                        if (parent.sustainer == null || parent.sustainer.Ended) parent.sustainer = ReinforceDefOf.Reinforce_Progress.TrySpawnSustainer(parent);
+                        return true;
+                    }
+                    else
+                    {
+                        reinforcementqueue.Dequeue();
+                        return false;
+                    }
                 }
                 else
                 {
@@ -696,8 +705,6 @@ namespace InfiniteReinforce
                     return false;
                 }
 
-
-
                 Reinforcement reinforcement = reinforcementqueue.Dequeue();
 
                 if (parent.TargetReinforceComp != null)
@@ -783,8 +790,31 @@ namespace InfiniteReinforce
                 }
             }
 
+            protected bool InvalidReinforcement(Reinforcement reinforcement)
+            {
+                switch (reinforcement.type)
+                {
+                    case ReinforceType.Stat:
+                        return Comp.NotUpgradable(reinforcement.reinforcedef as StatDef);
+                    case ReinforceType.Custom:
+                        ReinforceDef def = reinforcement.reinforcedef as ReinforceDef;
+                        return def.disable;
+                    case ReinforceType.Special:
+                        IReinforceSpecialOption option = (IReinforceSpecialOption)Activator.CreateInstance(reinforcement.optiontype);
+                        return !option.Enable(Comp.parent);
+                    default:
+                        Log.Error(parent.Label + parent.TargetThing.Label + ": Invalid reinforcement type");
+                        return false;
+                }
+            }
+
             protected bool InsertMaterials(Reinforcement reinforcement)
             {
+                if (InvalidReinforcement(reinforcement))
+                {
+                    Messages.Message(Keyed.Failed, parent, MessageTypeDefOf.RejectInput);
+                    return false;
+                }
                 if (DebugSettings.godMode) return true;
                 List<ThingDefCountClass> costlist = BuildCostList(reinforcement.costMode);
                 if (CheckAndInsertMaterials(costlist, reinforcement.costMode))
@@ -864,7 +894,7 @@ namespace InfiniteReinforce
                 switch (costmode)
                 {
                     case CostMode.SameThing:
-                        costlist.Add(new ThingDefCountClass(parent.TargetThing.def, 1));
+                        costlist.BuildSingleThingCost(parent.TargetThing, parent.Target);
                         break;
                     case CostMode.Material:
                         costlist.BuildMaterialCost(parent.TargetThing, parent.Target);
@@ -882,6 +912,9 @@ namespace InfiniteReinforce
                 }
                 return costlist;
             }
+
+            
+
         }
 
     }

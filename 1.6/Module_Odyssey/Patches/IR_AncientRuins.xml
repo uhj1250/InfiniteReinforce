@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Patch>
+	<Operation Class="PatchOperationAdd">
+		<xpath>Defs/StructureLayoutDef[defName="AncientRuinsFrozenTerraformer"]/roomDefs</xpath>
+		<value>
+			<AncientReinforcerRoom>
+      			<countRange>0~1</countRange>
+			</AncientReinforcerRoom>
+		</value>
+	</Operation>
+	
+	<Operation Class="PatchOperationAdd">
+		<xpath>Defs/StructureLayoutDef[defName="AncientStockpile"]/roomDefs</xpath>
+		<value>
+			<AncientReinforcerRoom>0.4</AncientReinforcerRoom>
+		</value>
+	</Operation>
+</Patch>

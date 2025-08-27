@@ -14,19 +14,22 @@ namespace InfiniteReinforce
     {
         public const float FactorPer = 0.60f;
 
-        protected int reinforced = 0;
-        protected int discount = 0;
+        private int reinforced = 0;
+        private int discount = 0;
         protected Dictionary<StatDef, float> statboost = new Dictionary<StatDef, float>(new StatDefComparer());
         protected Dictionary<StatDef, int> reinforcedcount = new Dictionary<StatDef, int>(new StatDefComparer());
         protected Dictionary<ReinforceDef, float> custom = new Dictionary<ReinforceDef, float>();
         protected Dictionary<ReinforceDef, int> customcount = new Dictionary<ReinforceDef, int>();
         protected IRDifficultFlag difficult;
+        public int Reinforced { get => reinforced; protected set => reinforced = value; }
 
+        public int Discount { get => discount; protected set => discount = value; }
+        public bool Hide { get; set; }
         public int ReinforcedCount
         {
             get
             {
-                return reinforced;
+                return Reinforced;
             }
         }
 
@@ -34,8 +37,13 @@ namespace InfiniteReinforce
         {
             get
             {
-                return CostMultiplierOf(reinforced);
+                return CostMultiplierOf(Reinforced);
             }
+        }
+
+        public override void PostSpawnSetup(bool respawningAfterLoad)
+        {
+            Hide = Reinforced < 1;
         }
 
         public float CostMultiplierOf(int reinforcedcount)
@@ -45,7 +53,7 @@ namespace InfiniteReinforce
             int qc = 0;
             if (parent.TryGetQuality(out QualityCategory quality)) qc = (int)quality - 2;
 
-            return Math.Max(0, 1.0f + (reinforcedcount - discount + qc) * FactorPer*factor);
+            return Math.Max(0, 1.0f + (reinforcedcount - Discount + qc) * FactorPer*factor);
         }
 
         public float CostMultiplierOf(int start, int dest)
@@ -53,7 +61,7 @@ namespace InfiniteReinforce
             float factor = 1.0f;
             if (IRConfig.BabyMode | IRConfig.ProMode) factor *= IRConfig.CostIncrementMultiplier;
             int qc = 0;
-            if (parent.TryGetQuality(out QualityCategory quality)) qc = (int)quality - 2 - discount;
+            if (parent.TryGetQuality(out QualityCategory quality)) qc = (int)quality - 2 - Discount;
             start += qc;
             dest += qc;
             return 0.5f*(1 + dest - start)*(FactorPer * factor * (start + dest) + 2);
@@ -75,6 +83,7 @@ namespace InfiniteReinforce
                 return reinforcedcount.ToList();
             }
         }
+
 
         public override bool AllowStackWith(Thing other)
         {
@@ -99,10 +108,11 @@ namespace InfiniteReinforce
 
         public override void DrawGUIOverlay()
         {
+            if (Hide) return;
             if (Find.CameraDriver.CurrentZoom > CameraZoomRange.Close) return;
             QualityCategory cat;
             ThingWithComps thing = parent;
-            int count = reinforced;
+            int count = Reinforced;
             if (thing is MinifiedThing)
             {
                 thing = thing.GetInnerIfMinified() as ThingWithComps;
@@ -120,10 +130,9 @@ namespace InfiniteReinforce
         }
 
 
-
         public override string TransformLabel(string label)
         {
-            return reinforced > 0 ? label + " +" + reinforced : label;
+            return Reinforced > 0 ? label + " +" + Reinforced : label;
         }
 
         public override IEnumerable<StatDrawEntry> SpecialDisplayStats()
@@ -179,7 +188,7 @@ namespace InfiniteReinforce
 
             statboost[stat] += stat.GetOffsetPerLevel()*level*multiplier;
             reinforcedcount[stat] ++;
-            Reinforced();
+            Reinforce();
             return true;
         }
 
@@ -193,11 +202,11 @@ namespace InfiniteReinforce
 
             custom[def] += def.offsetPerLevel * level;
             customcount[def]++;
-            Reinforced();
+            Reinforce();
             return true;
         }
 
-        protected void Reinforced()
+        protected void Reinforce()
         {
             if (IRConfig.WeenieMode && IRConfig.FailureChanceMultiplier < 1.0f) difficult |= IRDifficultFlag.Weenie;
             else if (IRConfig.BadassMode && IRConfig.FailureChanceMultiplier > 1.0f) difficult |= IRDifficultFlag.Badass;
@@ -205,13 +214,14 @@ namespace InfiniteReinforce
             else if (IRConfig.IronMode) difficult |= IRDifficultFlag.Ironman;
             if (IRConfig.BabyMode && IRConfig.CostIncrementMultiplier < 1.0f) difficult |= IRDifficultFlag.Baby;
             else if (IRConfig.ProMode && IRConfig.CostIncrementMultiplier > 1.0f) difficult |= IRDifficultFlag.Pro;
-            reinforced++;
+            Reinforced++;
+            Hide = false;
         }
 
         
         public void AddDiscount(int count)
         {
-            discount += count;
+            Discount += count;
         }
 
         public class StatDefComparer : IEqualityComparer<StatDef>

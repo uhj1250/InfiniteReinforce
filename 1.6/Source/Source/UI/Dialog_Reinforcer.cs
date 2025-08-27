@@ -34,6 +34,7 @@ namespace InfiniteReinforce
         //protected int? selectedindex = null;
         //protected Func<bool> reinforceaction;
         protected List<StatDef> statlist = new List<StatDef>();
+        protected List<ReinforceDef> customlist = new List<ReinforceDef>();
         protected IEnumerable<Thing> resourcethings;
         protected List<ThingDefCountClass>[] costlist = new List<ThingDefCountClass>[CostModeCount];
         protected List<ThingDefCountClass> thingcountcache = new List<ThingDefCountClass>();
@@ -105,6 +106,7 @@ namespace InfiniteReinforce
             building.ReinforceCompleted += ReinforceCompleted;
             compcache = null;
             BuildStatList();
+            BuildCustomList();
             if (thing != null)
             {
                 BuildCostList();
@@ -114,19 +116,9 @@ namespace InfiniteReinforce
             StatsReportUtility.Notify_QuickSearchChanged();
         }
 
-        public void BuildStatList()
+        public bool BuildStatList()
         {
-            statlist.Clear();
-            for (int i=0; i< ReinforceUtility.ReinforcableStats.Count; i++)
-            {
-                StatDef stat = ReinforceUtility.ReinforcableStats[i];
-                if (stat.IsStatAppliable(thing))
-                {
-                    statlist.Add(stat);
-                    continue;
-                }
-            }
-
+            return thing.GetStatList(out statlist);
         }
 
         public void BuildCostList()
@@ -140,6 +132,11 @@ namespace InfiniteReinforce
 
             //Build fuel cost
             costlist[(int)CostMode.Fuel] = Instance.BuildCostList(CostMode.Fuel);
+        }
+
+        public bool BuildCustomList()
+        {
+            return thing.GetAppliableCustom(out customlist);
         }
 
         public void UpdateThingList()
@@ -170,6 +167,13 @@ namespace InfiniteReinforce
 
                     if (costMode == CostMode.SameThing) resourcethings.CountThingInCollection(ref thingcountcache, thing.Stuff);
                     else resourcethings.CountThingInCollection(ref thingcountcache);
+                }
+                else
+                {
+                    foreach (ThingDefCountClass cost in costlist[(int)costMode])
+                    {
+                        thingcountcache.Add(new ThingDefCountClass(cost.thingDef, 0));
+                    }
                 }
             }
         }
@@ -390,16 +394,16 @@ namespace InfiniteReinforce
                     List<IReinforceSpecialOption> options = building.FuelComp.Props.SpecialOptions;
                     for (int i=0; i<options.Count; i++)
                     {
-                        SpecialOption(listmain.GetRect(FontHeight), options[i],i);
-                        
+                        if (options[i].Appliable(thing))
+                            SpecialOption(listmain.GetRect(FontHeight), options[i],i);
                     }
                 }
             }
 
-            for (int i = 0; i < ReinforceUtility.ReinforceDefs.Count; i++)
+            for (int i = 0; i < customlist.Count; i++)
             {
-                ReinforceDef def = ReinforceUtility.ReinforceDefs[i];
-                if (!def.disable && def.Worker.Appliable(thing)) CustomOption(listmain.GetRect(FontHeight), def, i);
+                ReinforceDef def = customlist[i];
+                CustomOption(listmain.GetRect(FontHeight), def, i);
             }
 
             for (int i=0; i<statlist.Count; i++)

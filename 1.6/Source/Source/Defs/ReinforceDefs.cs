@@ -38,6 +38,11 @@ namespace InfiniteReinforce
     public class ReinforceCostDef : Def
     {
         public List<ThingDefCountClass> costList;
+        public ThingDefCountClass singleThing;
+
+        public bool HasCost => !costList.NullOrEmpty();
+        public bool HasSingleThing => singleThing != null;
+
     }
 
 }

@@ -141,6 +141,7 @@
         <applyMultiplier>false</applyMultiplier>
         <SpecialOptions>
           <li Class="InfiniteReinforce.SpecialOption_Repiar"/>
+          <li Class="InfiniteReinforce.SpecialOption_QualityUpgrade"/>
         </SpecialOptions>
         <effectClass>InfiniteReinforce.ReinforcerEffect_Discount</effectClass>
         <initialFuelPercent>0</initialFuelPercent>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+  <RoomPart_ThingDef>
+    <defName>AncientReinforcer</defName>
+    <workerClass>InfiniteReinforce.RoomPart_BuildingCorner</workerClass>
+    <thingDef>AncientReinforcer</thingDef>
+  </RoomPart_ThingDef>
+
+  <RoomPart_CrateDef>
+    <defName>HermetricCrate_Reinforcer_Poor</defName>
+    <crateDef>AncientHermeticCrate</crateDef>
+    <thingSetMaker>Loot_Reinforcer_Poor</thingSetMaker>
+  </RoomPart_CrateDef>
+  
+  <RoomPart_CrateDef>
+    <defName>HermetricCrate_Reinforcer_Normal</defName>
+    <crateDef>AncientHermeticCrate</crateDef>
+    <thingSetMaker>Loot_Reinforcer_Normal</thingSetMaker>
+  </RoomPart_CrateDef>
+  
+  <RoomPart_CrateDef>
+    <defName>HermetricCrate_Reinforcer_Plenty</defName>
+    <crateDef>AncientHermeticCrate</crateDef>
+    <thingSetMaker>Loot_Reinforcer_Plenty</thingSetMaker>
+  </RoomPart_CrateDef>
+
+</Defs>
