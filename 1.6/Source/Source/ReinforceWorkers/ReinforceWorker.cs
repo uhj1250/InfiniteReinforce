@@ -20,7 +20,7 @@ namespace InfiniteReinforce
 
         public virtual string ResultString(int level)
         {
-            return def.label + " +" + def.offsetPerLevel * level * 100 + "%";
+            return String.Format("{0} +{1:0.00}%",def.label,def.offsetPerLevel * level * 100);
         }
 
         public virtual string LeftLabel(ThingComp_Reinforce comp)

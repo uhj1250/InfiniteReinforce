@@ -139,6 +139,12 @@ namespace InfiniteReinforce
         public static readonly string Ironman = "IR.Ironman".Translate();
         public static readonly string IronmanBaby = "IR.IronmanBaby".Translate();
         public static readonly string Cheater = "IR.Cheater".Translate();
+        public static readonly string Upgrade = "IR.Upgrade".Translate();
+        public static readonly string UpgradeDesc = "IR.UpgradeDesc".Translate();
+        public static readonly string CoreConsumtion = "IR.CoreConsumtion".Translate();
+        public static readonly string AdditionalCoreConsumtion = "IR.AdditionalCoreConsumtion".Translate();
+        public static readonly string ReliableAdjConfig = "IR.ReliableAdjConfig".Translate();
+        public static readonly string ReliableAdjConfigDesc = "IR.ReliableAdjConfigDesc".Translate();
     }
 
 }

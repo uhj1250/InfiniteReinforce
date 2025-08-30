@@ -11,19 +11,25 @@ namespace InfiniteReinforce
 {
     public class CompProperties_ReinforceFuel : CompProperties_Refuelable
     {
+        
         public float fuelConsumptionPerReinforce = 1.0f;
         public List<IReinforceSpecialOption> SpecialOptions = new List<IReinforceSpecialOption>();
-        public Type effectClass;
+        public ReinforcerEffect effectClass;
 
         public bool alwaysSuccess = false;
         public bool applyMultiplier = true;
+        public bool applyOnNormalReinforce = false;
+        public bool canFuelReinforce = true;
 
-        protected ReinforcerEffect effectcache;
+        
 
         public CompProperties_ReinforceFuel()
         {
             compClass = typeof(CompReinforceFuel);
+
         }
+
+        
 
         public override IEnumerable<string> ConfigErrors(ThingDef parentDef)
         {
@@ -38,17 +44,7 @@ namespace InfiniteReinforce
         }
 
 
-        public ReinforcerEffect Effect
-        {
-            get
-            {
-                if (effectcache == null && effectClass != null)
-                {
-                    effectcache = (ReinforcerEffect)Activator.CreateInstance(effectClass);
-                }
-                return effectcache;
-            }
-        }
+        public ReinforcerEffect Effect => effectClass;
 
 
     }
@@ -70,16 +66,36 @@ namespace InfiniteReinforce
                 return Props.applyMultiplier;
             }
         }
-        
 
-        public virtual void ConsumeOnce()
+        public override void PostDestroy(DestroyMode mode, Map previousMap)
         {
-            ConsumeFuel(Props.fuelConsumptionPerReinforce);
+            if (Props.FuelMultiplierCurrentDifficulty <= 1) base.PostDestroy(mode, previousMap);
         }
+
+        public bool ApplyOnNormalReinforce => Props.applyOnNormalReinforce;
+        public ReinforcerEffect Effect => Props.Effect;
+
+        public virtual bool ConsumeOnce(float multiply)
+        {
+            float fueltoconsume = Props.fuelConsumptionPerReinforce * multiply;
+            if (Fuel >= fueltoconsume)
+            {
+                ConsumeFuel(fueltoconsume);
+                return true;
+            }
+            else return false;
+        }
+
+        public virtual bool CanConsumeOnce(float multiply)
+        {
+            float fueltoconsume = Props.fuelConsumptionPerReinforce * multiply;
+            return Fuel >= fueltoconsume;
+        }
+
 
         public override string CompInspectStringExtra()
         {
-            string text = Props.FuelLabel + ": " + Fuel.ToStringDecimalIfSmall() + " / " + Props.fuelCapacity.ToStringDecimalIfSmall();
+            string text = Props.FuelLabel + ": " + (Fuel).ToStringDecimalIfSmall() + " / " + (Props.fuelCapacity).ToStringDecimalIfSmall();
             if (!HasFuel && !Props.outOfFuelMessage.NullOrEmpty())
             {
                 text += $"\n{Props.outOfFuelMessage} ({GetFuelCountToFullyRefuel()}x {Props.fuelFilter.AnyAllowedDef.label})";
@@ -90,6 +106,8 @@ namespace InfiniteReinforce
             }
             return text;
         }
+
+
     }
 
 

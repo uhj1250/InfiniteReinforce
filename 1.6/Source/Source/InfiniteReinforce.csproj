@@ -87,8 +87,11 @@
   <ItemGroup>
     <Compile Include="AncientComplex\ComplexThreatWorker_AncientReinforcer.cs" />
     <Compile Include="AncientComplex\RoomPart_BuildingCorner.cs" />
+    <Compile Include="Buildings\Building_AdvancedReinforcer.cs" />
     <Compile Include="Buildings\Building_Reinforcer.cs" />
     <Compile Include="Buildings\CompProperties_ReinforceFuel.cs" />
+    <Compile Include="GenericUtilities.cs" />
+    <Compile Include="ThingComp\ThingComp_Upgrade.cs" />
     <Compile Include="Buildings\IReinforceSpecialOption.cs" />
     <Compile Include="Buildings\ReinforcerEffect.cs" />
     <Compile Include="Buildings\CompReinforcerContainer.cs" />

@@ -1,3 +1,10 @@
+Version 1.2.0.7
+ - Added advanced reinforcer that consumes persona core
+   - You can upgrade a normal reinforcer with a persona core within an orbital trade beacon range
+   - The advanced reinforcer can enhance the reinforce output as an exchange for a persona core
+ - Increased max hitpoint reinforcement outputs
+ - Minor bug fixes
+
 Version 1.2.0.6
  - Unreinforced equipment and mechanoids no longer show the '+0'
  - Added loots for odyssey and ideology structures

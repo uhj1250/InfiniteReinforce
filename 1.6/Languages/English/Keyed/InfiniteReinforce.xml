@@ -66,4 +66,12 @@
   <IR.Ironman>Ironman</IR.Ironman>
   <IR.IronmanBaby>Ironbaby</IR.IronmanBaby>
   <IR.Cheater>Cheater</IR.Cheater>
+  
+  <IR.Upgrade>Upgrade</IR.Upgrade>
+  <IR.UpgradeDesc>Upgrade</IR.UpgradeDesc>
+  <IR.CoreConsumtion>Core durability consumtion</IR.CoreConsumtion>
+  <IR.AdditionalCoreConsumtion>Additional durability consumtion</IR.AdditionalCoreConsumtion>
+  <IR.ReliableAdjConfig>Extra reliability</IR.ReliableAdjConfig>
+  <IR.ReliableAdjConfigDesc>The minimum effect increases towards maximum effectiveness at this value, with an exchange of core durability.</IR.ReliableAdjConfigDesc>
+
 </LanguageData>

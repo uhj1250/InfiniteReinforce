@@ -5,7 +5,7 @@
 		<defName>MaxHitPoints</defName>
 		<label>durability</label>
 		<workerClass>InfiniteReinforce.ReinforceWorker_MaxHitPoint</workerClass>
-		<levelRange>10~16</levelRange>
+		<levelRange>25~51</levelRange>
 		<offsetPerLevel>0.002</offsetPerLevel>
 	</InfiniteReinforce.ReinforceDef>
 

@@ -175,6 +175,7 @@ namespace InfiniteReinforce
             return ReinforceableStatDef.offsetPerLevelDefault;
         }
 
+
         public static void CountThingInCollection(this IEnumerable<Thing> things, ref List<ThingDefCountClass> list, ThingDef stuff = null)
         {
             if (!things.EnumerableNullOrEmpty()) foreach (Thing thing in things)
@@ -262,10 +263,10 @@ namespace InfiniteReinforce
             return Mathf.Min(99.99f , Mathf.Min(50f, comp.ReinforcedCount) * multiply);
         }
 
-        public static bool RollFailure(this ThingComp_Reinforce comp, out float rolled, out float chance, int totalweight, float multiply)
+        public static bool RollFailure(this ThingComp_Reinforce comp, out float rolled, out float chance, float multiply)
         {
-            chance = totalweight * comp.GetFailureChance(multiply)/100;
-            rolled = Rand.Range(0f, totalweight);
+            chance = 100 * comp.GetFailureChance(multiply)/100;
+            rolled = Rand.Range(0f, 100);
             if (DebugSettings.godMode) return false;
             return chance > rolled;
         }
@@ -435,6 +436,7 @@ namespace InfiniteReinforce
             }
             return !customlist.NullOrEmpty();
         }
+
 
     }
 

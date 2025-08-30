@@ -1,19 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Defs>
-
-  <ThingDef ParentName="BuildingBase">
-    <defName>EquipmentReinforcer</defName>
-    <label>equipment reinforcer</label>
-    <description>A machine that eliminates tons of resources.&#10;&#10;If damaged, eliminating effeciency increases.</description>
+  <ThingDef Abstract="True" Name="ReinforcerBase" ParentName="BuildingBase">
     <thingClass>InfiniteReinforce.Building_Reinforcer</thingClass>
-    <graphicData>
-      <texPath>Things/Building/Reinforcer/Reinforcer</texPath>
-      <graphicClass>Graphic_Multi</graphicClass>
-      <shadowData>
-        <volume>(2.9,0.6,1.9)</volume>
-      </shadowData>
-      <drawSize>(3, 2)</drawSize>
-    </graphicData>
     <drawerType>MapMeshAndRealTime</drawerType>
     <drawGUIOverlay>true</drawGUIOverlay>
     <defaultPlacingRot>South</defaultPlacingRot>
@@ -41,22 +29,39 @@
       <Flammability>0.1</Flammability>
       <Beauty>-5</Beauty>
     </statBases>
-    <size>(3, 2)</size>
-    <interactionCellOffset>(0,0,2)</interactionCellOffset>
     <hasInteractionCell>true</hasInteractionCell>
     <building>
       <destroySound>BuildingDestroyed_Metal_Big</destroySound>
     </building>
-    <designationCategory>Misc</designationCategory>
     <minifiedDef>MinifiedThing</minifiedDef>
-    <thingCategories>
-      <li>BuildingsMisc</li>
-    </thingCategories>
     <tickerType>Normal</tickerType>
     <inspectorTabs>
       <li>ITab_Storage</li>
     </inspectorTabs>
     <surfaceType>Item</surfaceType>
+    <placeWorkers>
+      <li>PlaceWorker_PreventInteractionSpotOverlap</li>
+    </placeWorkers>
+  </ThingDef>
+
+  <ThingDef ParentName="ReinforcerBase">
+    <defName>EquipmentReinforcer</defName>
+    <label>equipment reinforcer</label>
+    <description>A machine that eliminates tons of resources.&#10;&#10;If damaged, eliminating effeciency increases.</description>
+    <graphicData>
+      <texPath>Things/Building/Reinforcer/Reinforcer</texPath>
+      <graphicClass>Graphic_Multi</graphicClass>
+      <shadowData>
+        <volume>(2.9,0.6,1.9)</volume>
+      </shadowData>
+      <drawSize>(3, 2)</drawSize>
+    </graphicData>
+    <size>(3, 2)</size>
+    <interactionCellOffset>(0,0,2)</interactionCellOffset>
+    <designationCategory>Misc</designationCategory>
+    <thingCategories>
+      <li>BuildingsMisc</li>
+    </thingCategories>
     <comps>
       <li Class="CompProperties_Power">
         <compClass>CompPowerTrader</compClass>
@@ -68,20 +73,90 @@
         <containedThingOffset>(0,0,1)</containedThingOffset>
         <stackLimit>1</stackLimit>
       </li>
+      <li Class="InfiniteReinforce.CompProperties_UpgradeThing">
+        <compClass>InfiniteReinforce.ThingComp_Upgrade_Reinforcer</compClass>
+        <thingDef>AdvancedEquipmentReinforcer</thingDef>
+        <cost>
+          <AIPersonaCore>1</AIPersonaCore>
+        </cost>
+      </li>
     </comps>
-    <placeWorkers>
-      <li>PlaceWorker_PreventInteractionSpotOverlap</li>
-    </placeWorkers>
   </ThingDef>
-
-  <ThingDef ParentName="BuildingBase">
-    <defName>AncientReinforcer</defName>
-    <label>ancient equipment reinforcer</label>
-    <description>An ancient reinforcer.&#10;&#10;Can use reinforcer mechanite.</description>
-    <thingClass>InfiniteReinforce.Building_Reinforcer</thingClass>
+  
+  <ThingDef ParentName="ReinforcerBase">
+    <defName>AdvancedEquipmentReinforcer</defName>
+    <label>advanced equipment reinforcer</label>
+    <description>An enhanced reinforcer that is upgraded with persona core.&#10;&#10;This can reinforce more reliable than normal one, but this will cause damage on the persona core. In addition, this can prevent cost increments sometimes.</description>
+    <thingClass>InfiniteReinforce.Building_AdvancedReinforcer</thingClass>
+    <graphicData>
+      <texPath>Things/Building/AdvancedReinforcer/AdvancedReinforcer</texPath>
+      <graphicClass>Graphic_Multi</graphicClass>
+      <shadowData>
+        <volume>(2.9,0.6,1.9)</volume>
+      </shadowData>
+      <drawSize>(3, 2)</drawSize>
+    </graphicData>
+    <size>(3, 2)</size>
+    <interactionCellOffset>(0,0,2)</interactionCellOffset>
     <thingCategories>
       <li>BuildingsSpecial</li>
     </thingCategories>
+    <costList>
+      <Steel>250</Steel>
+      <Plasteel>75</Plasteel>
+      <ComponentSpacer>2</ComponentSpacer>
+    </costList>
+    <comps>
+      <li Class="CompProperties_Power">
+        <compClass>CompPowerTrader</compClass>
+        <basePowerConsumption>400</basePowerConsumption>
+      </li>
+      <li Class="InfiniteReinforce.CompProperties_ReinforceFuel">
+        <fuelLabel>Core durability</fuelLabel>
+        <fuelGizmoLabel>Core durability</fuelGizmoLabel>
+        <fuelCapacity>15000.0</fuelCapacity>
+        <fuelMultiplier>10000.0</fuelMultiplier>
+        <fuelConsumptionPerReinforce>1.0</fuelConsumptionPerReinforce>
+        <alwaysSuccess>true</alwaysSuccess>
+        <applyMultiplier>true</applyMultiplier>
+        <applyOnNormalReinforce>true</applyOnNormalReinforce>
+        <canFuelReinforce>false</canFuelReinforce>
+        
+        <effectClass Class="InfiniteReinforce.ReinforcerEffect_Discount_Chance">
+          <discountAmount>1</discountAmount>
+          <chance>0.2</chance>
+        </effectClass>
+        <initialFuelPercent>0</initialFuelPercent>
+        <autoRefuelPercent>30</autoRefuelPercent>
+        <fuelConsumptionRate>0</fuelConsumptionRate>
+        <drawOutOfFuelOverlay>false</drawOutOfFuelOverlay>
+        <allowRefuelIfNotEmpty>true</allowRefuelIfNotEmpty>
+        <factorByDifficulty>false</factorByDifficulty>
+        <consumeFuelOnlyWhenUsed>true</consumeFuelOnlyWhenUsed>
+        <canEjectFuel>false</canEjectFuel>
+        <fuelFilter>
+          <thingDefs>
+            <li>AIPersonaCore</li>
+          </thingDefs>
+        </fuelFilter>
+      </li>
+      <li Class="CompProperties_Flickable"/>
+      <li Class="CompProperties_ThingContainer">
+        <compClass>InfiniteReinforce.CompReinforcerContainer</compClass>
+        <containedThingOffset>(0,0,1)</containedThingOffset>
+        <stackLimit>1</stackLimit>
+      </li>
+      <li Class="CompProperties_Glower">
+        <glowRadius>4.5</glowRadius>
+        <glowColor>(0,255,255,0)</glowColor>
+      </li>
+    </comps>
+  </ThingDef>
+
+  <ThingDef ParentName="ReinforcerBase">
+    <defName>AncientReinforcer</defName>
+    <label>ancient equipment reinforcer</label>
+    <description>An ancient reinforcer.&#10;&#10;Can use reinforcer mechanite.</description>
     <graphicData>
       <texPath>Things/Building/AncientReinforcer/AncientReinforcer</texPath>
       <graphicClass>Graphic_Multi</graphicClass>
@@ -90,26 +165,16 @@
       </shadowData>
       <drawSize>(3, 2)</drawSize>
     </graphicData>
-    <drawerType>MapMeshAndRealTime</drawerType>
-    <drawGUIOverlay>true</drawGUIOverlay>
-    <defaultPlacingRot>South</defaultPlacingRot>
-    <altitudeLayer>Building</altitudeLayer>
-    <passability>PassThroughOnly</passability>
-    <pathCost>42</pathCost>
-    <blockWind>true</blockWind>
-    <fillPercent>0.5</fillPercent>
-    <canOverlapZones>false</canOverlapZones>
-    <castEdgeShadows>true</castEdgeShadows>
-    <selectable>true</selectable>
+    <size>(3, 2)</size>
+    <interactionCellOffset>(0,0,2)</interactionCellOffset>
+    <thingCategories>
+      <li>BuildingsSpecial</li>
+    </thingCategories>
     <costList>
       <Steel>250</Steel>
-      <Plasteel>75</Plasteel>
-      <ComponentSpacer>1</ComponentSpacer>
+      <Plasteel>100</Plasteel>
+      <ComponentSpacer>2</ComponentSpacer>
     </costList>
-    <researchPrerequisites>
-      <li>MicroelectronicsBasics</li>
-    </researchPrerequisites>
-    <constructionSkillPrerequisite>8</constructionSkillPrerequisite>
     <statBases>
       <MaxHitPoints>250</MaxHitPoints>
       <WorkToBuild>25000</WorkToBuild>
@@ -117,24 +182,14 @@
       <Flammability>0.1</Flammability>
       <Beauty>-5</Beauty>
     </statBases>
-    <size>(3, 2)</size>
-    <interactionCellOffset>(0,0,2)</interactionCellOffset>
-    <hasInteractionCell>true</hasInteractionCell>
-    <building>
-      <destroySound>BuildingDestroyed_Metal_Big</destroySound>
-    </building>
-    <minifiedDef>MinifiedThing</minifiedDef>
-    <tickerType>Normal</tickerType>
-    <inspectorTabs>
-      <li>ITab_Storage</li>
-    </inspectorTabs>
-    <surfaceType>Item</surfaceType>
     <comps>
       <li Class="CompProperties_Power">
         <compClass>CompPowerTrader</compClass>
         <basePowerConsumption>250</basePowerConsumption>
       </li>
       <li Class="InfiniteReinforce.CompProperties_ReinforceFuel">
+        <fuelLabel>Reinforcer mechanite</fuelLabel>
+        <fuelGizmoLabel>Reinforcer mechanite</fuelGizmoLabel>
         <fuelCapacity>5.0</fuelCapacity>
         <fuelConsumptionPerReinforce>1.0</fuelConsumptionPerReinforce>
         <alwaysSuccess>true</alwaysSuccess>
@@ -143,7 +198,9 @@
           <li Class="InfiniteReinforce.SpecialOption_Repiar"/>
           <li Class="InfiniteReinforce.SpecialOption_QualityUpgrade"/>
         </SpecialOptions>
-        <effectClass>InfiniteReinforce.ReinforcerEffect_Discount</effectClass>
+        <effectClass Class="InfiniteReinforce.ReinforcerEffect_Discount">
+          <discountAmount>2</discountAmount>
+        </effectClass>
         <initialFuelPercent>0</initialFuelPercent>
         <autoRefuelPercent>100</autoRefuelPercent>
         <fuelConsumptionRate>0</fuelConsumptionRate>
@@ -169,9 +226,6 @@
         <glowColor>(239,133,50,0)</glowColor>
       </li>
     </comps>
-    <placeWorkers>
-      <li>PlaceWorker_PreventInteractionSpotOverlap</li>
-    </placeWorkers>
     <thingSetMakerTags>
       <li>RewardStandardLowFreq</li>
     </thingSetMakerTags>

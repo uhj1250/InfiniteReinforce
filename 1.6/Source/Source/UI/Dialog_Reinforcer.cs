@@ -142,7 +142,7 @@ namespace InfiniteReinforce
         public void UpdateThingList()
         {
             thingcountcache.Clear();
-            if (costMode == CostMode.Fuel && building.FuelComp != null)
+            if (costMode == CostMode.Fuel && building.CanFuelReinforce)
             {
                 IEnumerable<ThingDef> fuelthings = building.FuelThing;
                 if (!fuelthings.EnumerableNullOrEmpty()) foreach(ThingDef def in fuelthings)
@@ -180,7 +180,7 @@ namespace InfiniteReinforce
 
         public CostMode InitialCostMode()
         {
-            if (building.Fuel > 0) return CostMode.Fuel;
+            if (building.CanFuelReinforce && building.Fuel > 0) return CostMode.Fuel;
             if (costlist[(int)CostMode.Material].NullOrEmpty()) return CostMode.SameThing;
             return CostMode.Material;
         }

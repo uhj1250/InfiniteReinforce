@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
 using Verse.Sound;
+using static InfiniteReinforce.Building_Reinforcer.ReinforceInstance;
 
 namespace InfiniteReinforce
 {
@@ -51,6 +52,7 @@ namespace InfiniteReinforce
                 return res;
             }
         }
+        
         public int ReinforceTicks => BaseReinforceTicks + (TargetReinforceComp?.ReinforcedCount ?? 0) * 30;
         public virtual ReinforceTarget Target 
         {
@@ -120,10 +122,12 @@ namespace InfiniteReinforce
         }
         public ThingWithComps HoldingThing => ContainerComp?.ContainedThing as ThingWithComps;
         public virtual float Fuel => FuelComp?.Fuel ?? -1f;
+        public virtual bool CanFuelReinforce => FuelComp != null && FuelComp.Props.canFuelReinforce;
         public virtual bool AlwaysSuccess => FuelComp?.AlwaysSuccess ?? false;
         public List<IReinforceSpecialOption> SpecialOptions => FuelComp?.Props?.SpecialOptions;
         public virtual bool ApplyMultiplier => FuelComp?.ApplyMultiplier ?? true;
         public IEnumerable<ThingDef> FuelThing => FuelComp?.Props.fuelFilter.AllowedThingDefs;
+        protected virtual float FuelConsumtionMultiplier => 1.0f;
         public bool OnProgress => onprogress;
 
         protected Material BarFilledMat
@@ -258,9 +262,29 @@ namespace InfiniteReinforce
             insertedmaterials.Clear();
         }
 
-        protected void ConsumeMaterials()
+        protected bool ConsumeMaterials(Reinforcement reinforcement)
         {
-            insertedmaterials.Clear();
+            switch (reinforcement.costMode)
+            {
+                case CostMode.Fuel:
+                    if (FuelComp.ConsumeOnce(FuelConsumtionMultiplier))
+                    {
+                        ReinforcerEffect effect = FuelComp.Effect;
+                        if (effect != null && effect.Apply(TargetReinforceComp)) effect.DoEffect(this, TargetReinforceComp);
+                        return true;
+                    }
+                    return false;
+                case CostMode.Material:
+                case CostMode.SameThing:
+                default:
+                    if ((FuelComp?.ApplyOnNormalReinforce ?? false) && FuelComp.ConsumeOnce(FuelConsumtionMultiplier))
+                    {
+                        ReinforcerEffect effect = FuelComp.Effect;
+                        if (effect != null && effect.Apply(TargetReinforceComp)) effect.DoEffect(this, TargetReinforceComp);
+                    }
+                    insertedmaterials.Clear();
+                    return true;
+            }
         }
 
         public virtual void ExtractItem()
@@ -434,6 +458,17 @@ namespace InfiniteReinforce
             ItemDestroyed?.Invoke(this, EventArgs.Empty);
         }
 
+
+        protected virtual float GetFailureMultiplier(Reinforcement reinforcement)
+        {
+            return MaxHitPoints / (HitPoints * reinforcement.ProgressMultiplier);
+        }
+
+        protected virtual int RollReinforceLevel(int min, int max)
+        {
+            return Rand.Range(min, max);
+        }
+
         public class ReinforceInstance : IExposable
         {
             public struct Reinforcement : IExposable
@@ -597,6 +632,7 @@ namespace InfiniteReinforce
             {
                 progress = 0f;
                 successed = null;
+                reinforcementqueue.Clear();
                 return true;
             }
 
@@ -695,13 +731,14 @@ namespace InfiniteReinforce
             }
             
             
-
+            
 
             public bool CompleteReinforce()
             {
                 if (reinforcementqueue.EnumerableNullOrEmpty())
                 {
                     Log.Error(parent.Label + ": Reinforcement queue is empty");
+                    CleanUp();
                     return false;
                 }
 
@@ -710,10 +747,18 @@ namespace InfiniteReinforce
                 if (parent.TargetReinforceComp != null)
                 {
                     float rolled = 100f; float chance = 0f;
-                    int[] weights = Comp.GetFailureWeights(out int totalweight);
-                    successed = reinforcement.alwaysSuccess || !Comp.RollFailure(out rolled,out chance, totalweight, parent.MaxHitPoints / (parent.HitPoints*reinforcement.ProgressMultiplier));
+                    successed = reinforcement.alwaysSuccess || !Comp.RollFailure(out rolled,out chance, parent.GetFailureMultiplier(reinforcement));
                     string chancestring = String.Format("{0:0.0}/{1:0.0}", rolled,chance);
-                    parent.ConsumeMaterials();
+
+                    
+                    if (!parent.ConsumeMaterials(reinforcement))
+                    {
+                        SoundDefOf.ClickReject.PlayOneShotOnCamera();
+                        Messages.Message(Keyed.NotEnough, parent, MessageTypeDefOf.RejectInput);
+                        CleanUp();
+                        return false;
+                    }
+
                     if (reinforcehistory.Count > 30)
                     {
                         reinforcehistory.RemoveAt(0);
@@ -743,6 +788,7 @@ namespace InfiniteReinforce
                     }
                     else
                     {
+                        int[] weights = Comp.GetFailureWeights(out int totalweight);
                         ReinforceFailureResult effect = parent.FailureEffect(totalweight, weights);
                         reinforcehistory.Add(Keyed.Failed.CapitalizeFirst() + " - " + effect.Translate() + "  " + chancestring);
                         if (reinforcehistory.Count > 30) reinforcehistory.RemoveAt(0);
@@ -756,10 +802,11 @@ namespace InfiniteReinforce
                 return false;
             }
 
+
+
             private void StatReinforce(Reinforcement reinforcement, string chancestring)
             {
-                int level;
-                level = Rand.Range(1, 25);
+                int level = parent.RollReinforceLevel(1,26);
                 StatDef stat = (StatDef)reinforcement.reinforcedef;
                 parent.TargetReinforceComp.ReinforceStat(stat, level, parent.EffectiveMultiplier);
                 reinforcehistory.Add(stat.label + " " + (parent.EffectiveMultiplier * level * stat.GetOffsetPerLevel() * 100).ToString("+#;-#;0") + "%  " + chancestring);
@@ -776,7 +823,7 @@ namespace InfiniteReinforce
             private void CustomReinforce(Reinforcement reinforcement, string chancestring)
             {
                 ReinforceDef def = ((ReinforceDef)reinforcement.reinforcedef);
-                int level = Rand.Range(def.levelRange.min, def.levelRange.max);
+                int level = parent.RollReinforceLevel(def.levelRange.min, def.levelRange.max);
                 def.Worker.Reinforce(parent.TargetReinforceComp, level, parent.EffectiveMultiplier)();
                 reinforcehistory.Add(def.Worker.ResultString(level) + "  " + chancestring);
             }
@@ -836,18 +883,10 @@ namespace InfiniteReinforce
 
                 if (costMode == CostMode.Fuel)
                 {
-                    if (parent.Fuel > 0)
-                    {
-                        parent.FuelComp.ConsumeOnce();
-                        ReinforcerEffect effect = parent.FuelComp.Props.Effect;
-                        if (effect != null && effect.Apply(parent.TargetReinforceComp)) effect.DoEffect(parent, parent.TargetReinforceComp);
-                        return true;
-                    }
-                    return false;
+                    return parent.Fuel > 0;
                 }
                 else
                 {
-
                     //IEnumerable<Thing> materials = TradeUtility.AllLaunchableThingsForTrade(parent.Map);
                     if (parent.Map.GetThingsNearBeacon(out List<Thing> materials))
                     {
@@ -900,7 +939,7 @@ namespace InfiniteReinforce
                         costlist.BuildMaterialCost(parent.TargetThing, parent.Target);
                         break;
                     case CostMode.Fuel:
-                        if (parent.FuelComp != null)
+                        if (parent.CanFuelReinforce)
                         {
                             costlist.Add(new ThingDefCountClass(parent.FuelThing.FirstOrDefault(), 1));
                         }
@@ -913,7 +952,6 @@ namespace InfiniteReinforce
                 return costlist;
             }
 
-            
 
         }
 

@@ -43,7 +43,12 @@ namespace InfiniteReinforce
 
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
-            Hide = Reinforced < 1;
+            Hide = ShouldHide();
+        }
+
+        private bool ShouldHide()
+        {
+            return !parent.TryGetQuality(out QualityCategory qc) && Reinforced < 1;
         }
 
         public float CostMultiplierOf(int reinforcedcount)
@@ -119,13 +124,15 @@ namespace InfiniteReinforce
                 count = thing.GetReinforcedCount();
             }
 
+            string reinforcedcount = "";
+            if (count > 0) reinforcedcount = "+" + count;
             if (parent.TryGetQuality(out cat))
             {
-                GenMapUI.DrawThingLabel(thing, cat.GetLabelShort() + " +" + count);
+                GenMapUI.DrawThingLabel(thing, cat.GetLabelShort() + " " + reinforcedcount);
             }
             else
             {
-                GenMapUI.DrawThingLabel(thing, "+" + count);
+                GenMapUI.DrawThingLabel(thing, reinforcedcount);
             }
         }
 

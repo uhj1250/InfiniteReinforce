@@ -18,6 +18,8 @@ namespace InfiniteReinforce
 
     public class ReinforcerEffect_Discount : ReinforcerEffect
     {
+        public int discountAmount;
+
         public override bool Apply(ThingComp_Reinforce comp)
         {
             return true;
@@ -25,9 +27,18 @@ namespace InfiniteReinforce
 
         public override void DoEffect(Building_Reinforcer reinforcer, ThingComp_Reinforce comp)
         {
-            comp.AddDiscount(2);
+            comp.AddDiscount(discountAmount);
         }
+    }
 
+    public class ReinforcerEffect_Discount_Chance : ReinforcerEffect_Discount
+    {
+        public float chance;
+
+        public override void DoEffect(Building_Reinforcer reinforcer, ThingComp_Reinforce comp)
+        {
+            if (Rand.Chance(chance)) comp.AddDiscount(discountAmount);
+        }
     }
 
 }
