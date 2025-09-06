@@ -25,6 +25,10 @@ namespace InfiniteReinforce
             {
                 things[i].comps.Add(prop);
                 things[i].drawGUIOverlayQuality = false;
+                if (things[i].inspectorTabs == null) things[i].inspectorTabs = new List<Type>();
+                things[i].inspectorTabs?.AddDistinct(typeof(ITab_Reinforce));
+                if (things[i].inspectorTabsResolved == null) things[i].inspectorTabsResolved = new List<InspectTabBase>();
+                things[i].inspectorTabsResolved?.AddDistinct(new ITab_Reinforce());
             }
             for (int i=0; i<stats.Count; i++)
             {

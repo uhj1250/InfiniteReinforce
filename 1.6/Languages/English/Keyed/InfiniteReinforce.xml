@@ -74,4 +74,5 @@
   <IR.ReliableAdjConfig>Extra reliability</IR.ReliableAdjConfig>
   <IR.ReliableAdjConfigDesc>The minimum effect increases towards maximum effectiveness at this value, with an exchange of core durability.</IR.ReliableAdjConfigDesc>
 
+  <IR.Reinforcement>Upgrades</IR.Reinforcement>
 </LanguageData>

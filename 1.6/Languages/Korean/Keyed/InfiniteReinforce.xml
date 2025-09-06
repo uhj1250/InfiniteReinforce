@@ -75,4 +75,7 @@
   <IR.AdditionalCoreConsumtion>추가 내구도 소모</IR.AdditionalCoreConsumtion>
   <IR.ReliableAdjConfig>신뢰성 향상</IR.ReliableAdjConfig>
   <IR.ReliableAdjConfigDesc>인공자아 핵의 내구도를 추가로 소모하여 이 수치만큼 강화효과의 최소값을 보정합니다.</IR.ReliableAdjConfigDesc>
+  
+  <IR.Reinforcement>강화</IR.Reinforcement>
+  
 </LanguageData>

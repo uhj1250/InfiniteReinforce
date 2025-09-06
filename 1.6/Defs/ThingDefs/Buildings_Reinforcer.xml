@@ -121,7 +121,6 @@
         <applyMultiplier>true</applyMultiplier>
         <applyOnNormalReinforce>true</applyOnNormalReinforce>
         <canFuelReinforce>false</canFuelReinforce>
-        
         <effectClass Class="InfiniteReinforce.ReinforcerEffect_Discount_Chance">
           <discountAmount>1</discountAmount>
           <chance>0.2</chance>

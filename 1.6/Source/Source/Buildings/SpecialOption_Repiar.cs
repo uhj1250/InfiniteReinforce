@@ -16,7 +16,7 @@ namespace InfiniteReinforce
 
         public bool Appliable(ThingWithComps thing)
         {
-            return thing.MaxHitPoints > 0 && !(thing is Pawn);
+            return thing.HitPoints > 0 && !(thing is Pawn);
         }
 
         public Func<bool> Reinforce(ThingComp_Reinforce comp)

@@ -18,9 +18,10 @@ namespace InfiniteReinforce
         {
             Default,
             Equipment,
-            Mechanoid
+            Mechanoid,
+            Turret
         }
-        
+
 
         public EventHandler ItemDestroyed;
         public EventHandler ReinforceCompleted;
@@ -52,7 +53,7 @@ namespace InfiniteReinforce
                 return res;
             }
         }
-        
+
         public int ReinforceTicks => BaseReinforceTicks + (TargetReinforceComp?.ReinforcedCount ?? 0) * 30;
         public virtual ReinforceTarget Target 
         {
@@ -60,7 +61,7 @@ namespace InfiniteReinforce
             {
                 return reinforcetarget;
             }
-            set
+            protected set
             {
                 if (onprogress) Log.Error("Cannot change target while reinforcement is in progress");
                 else
@@ -110,7 +111,8 @@ namespace InfiniteReinforce
                 {
                     Pawn pawn = thing as Pawn;
                     thing = pawn.equipment?.Primary;
-                    if (pawn.HasComp<CompTurretGun>()) thing = pawn.TryGetComp<CompTurretGun>()?.gun as ThingWithComps;
+                    if (thing == null && Target != ReinforceTarget.Turret && pawn.HasComp<CompTurretGun>()) Target = ReinforceTarget.Turret;
+                    if (pawn.HasComp<CompTurretGun>() && Target == ReinforceTarget.Turret) thing = pawn.TryGetComp<CompTurretGun>()?.gun as ThingWithComps;
                     if (thing == null)
                     {
                         thing = pawn;
@@ -157,6 +159,7 @@ namespace InfiniteReinforce
                 switch (Target)
                 {
                     case ReinforceTarget.Equipment:
+                    case ReinforceTarget.Turret:
                     default:
                         return EquipmentItem;
                     case ReinforceTarget.Mechanoid:
@@ -191,6 +194,7 @@ namespace InfiniteReinforce
             base.ExposeData();
             Scribe_Deep.Look(ref instance, "instance");
             Scribe_Values.Look(ref onprogress, "onprogress", false, true);
+            Scribe_Values.Look(ref reinforcetarget, "reinforcetarget", ReinforceTarget.Equipment, true);
             Scribe_Collections.Look(ref insertedmaterials, "insertedmaterials", true, LookMode.Reference);
         }
 
@@ -235,12 +239,29 @@ namespace InfiniteReinforce
         public virtual void InsertItem(ThingWithComps item)
         {
             ContainerComp.innerContainer.Take(item);
+            Target = ReinforceTarget.Equipment;
         }
 
         public virtual void InsertPawn(Pawn pawn)
         {
             pawn.DeSpawn(DestroyMode.Vanish);
             ContainerComp.innerContainer.TryAddOrTransfer(pawn, false);
+            Target = ReinforceTarget.Mechanoid;
+        }
+
+        public void InsertedEquipment()
+        {
+            Target = ReinforceTarget.Equipment;
+        }
+
+        public void InsertedMechanoid()
+        {
+            Target = ReinforceTarget.Mechanoid;
+        }
+
+        public void InsertedTurret()
+        {
+            Target = ReinforceTarget.Turret;
         }
 
         public void InsertMaterials(List<Thing> things)
@@ -264,6 +285,7 @@ namespace InfiniteReinforce
 
         protected bool ConsumeMaterials(Reinforcement reinforcement)
         {
+            if (DebugSettings.godMode) return true;
             switch (reinforcement.costMode)
             {
                 case CostMode.Fuel:
@@ -561,7 +583,6 @@ namespace InfiniteReinforce
                 }
             }
 
-
             public void ExposeData()
             {
                 Scribe_Values.Look(ref progress, "progress", 0, true);
@@ -572,7 +593,8 @@ namespace InfiniteReinforce
                 {
                     List<Reinforcement> queuetemp = new List<Reinforcement>();
                     Scribe_Collections.Look(ref queuetemp, "reinforcementqueue", LookMode.Deep);
-                    if (!queuetemp.NullOrEmpty()) reinforcementqueue.Concat(queuetemp);
+                    Log.Message("IR: Loading queue" + queuetemp.NullOrEmpty());
+                    if (!queuetemp.NullOrEmpty()) foreach (Reinforcement r in queuetemp) reinforcementqueue.Enqueue(r);
                 }
                 else if (Scribe.mode == LoadSaveMode.Saving)
                 {

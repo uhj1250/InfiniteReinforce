@@ -17,9 +17,9 @@ namespace InfiniteReinforce
     {
         public const int InsertTicks = 180;
 
-        private const TargetIndex thing = TargetIndex.A;
-        private const TargetIndex reinforcer = TargetIndex.B;
-        private const TargetIndex cell = TargetIndex.C;
+        private const TargetIndex thingidx = TargetIndex.A;
+        private const TargetIndex reinforceridx = TargetIndex.B;
+        private const TargetIndex cellidx = TargetIndex.C;
 
         public override bool TryMakePreToilReservations(bool errorOnFailed)
         {
@@ -37,21 +37,26 @@ namespace InfiniteReinforce
 
         protected override IEnumerable<Toil> MakeNewToils()
         {
-            yield return Toils_Goto.GotoThing(thing, PathEndMode.OnCell).FailOnDespawnedNullOrForbidden(thing).FailOn((Toil to) => ContainerFull());
-            yield return Toils_Haul.StartCarryThing(thing, putRemainderInQueue: false, subtractNumTakenFromJobCount: true).FailOn((Toil to) => ContainerFull());
-            yield return Toils_Haul.CarryHauledThingToCell(cell).FailOn((Toil to) => ContainerFull());
-            Toil toil = Toils_General.Wait(InsertTicks, reinforcer).WithProgressBarToilDelay(reinforcer).FailOnDespawnedOrNull(reinforcer)
+            Thing thing = job.GetTarget(thingidx).Thing;
+            Building_Reinforcer reinforcer = job.GetTarget(reinforceridx).Thing as Building_Reinforcer;
+
+            yield return Toils_Goto.GotoThing(thingidx, PathEndMode.OnCell).FailOnDespawnedNullOrForbidden(thingidx).FailOn((Toil to) => ContainerFull());
+            yield return Toils_Haul.StartCarryThing(thingidx, putRemainderInQueue: false, subtractNumTakenFromJobCount: true).FailOn((Toil to) => ContainerFull());
+            yield return Toils_Haul.CarryHauledThingToCell(cellidx).FailOn((Toil to) => ContainerFull());
+            Toil toil = Toils_General.Wait(InsertTicks, reinforceridx).WithProgressBarToilDelay(reinforceridx).FailOnDespawnedOrNull(reinforceridx)
                 .FailOn((Toil to) => ContainerFull());
             toil.handlingFacing = true;
             yield return toil;
-            yield return Toils_Haul.DepositHauledThingInContainer(reinforcer, thing, delegate
+            yield return Toils_Haul.DepositHauledThingInContainer(reinforceridx, thingidx, delegate
             {
-                job.GetTarget(thing).Thing.def.soundDrop.PlayOneShot(new TargetInfo(job.GetTarget(reinforcer).Cell, pawn.Map));
-                SoundDefOf.Relic_Installed.PlayOneShot(new TargetInfo(job.GetTarget(reinforcer).Cell, pawn.Map));
+                if (thing.IsEquipment()) reinforcer.InsertedEquipment();
+
+                thing.def.soundDrop.PlayOneShot(new TargetInfo(job.GetTarget(reinforceridx).Cell, pawn.Map));
+                SoundDefOf.Relic_Installed.PlayOneShot(new TargetInfo(job.GetTarget(reinforceridx).Cell, pawn.Map));
             });
             bool ContainerFull()
             {
-                return pawn.jobs.curJob.GetTarget(reinforcer).Thing.TryGetComp<CompReinforcerContainer>()?.Full ?? true;
+                return pawn.jobs.curJob.GetTarget(reinforceridx).Thing.TryGetComp<CompReinforcerContainer>()?.Full ?? true;
             }
         }
 

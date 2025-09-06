@@ -114,6 +114,16 @@ namespace InfiniteReinforce
             return thingDef.stackLimit <= 1 && (thingDef.IsApparel || thingDef.IsWeapon);
         }
 
+        public static bool IsEquipment(this Thing thing)
+        {
+            return thing.def.IsEquipment();
+        }
+
+        public static bool IsEquipment(this ThingDef thingDef)
+        {
+            return thingDef.IsApparel || thingDef.IsWeapon;
+        }
+
 
         public static bool IsReinforcable(this StatCategoryDef category)
         {

@@ -6,7 +6,7 @@
       <options>
         <!-- Fail -->
 			  <li>
-			  	<weight>9</weight>
+			  	<weight>2</weight>
 			  	<thingSetMaker Class="ThingSetMaker_StackCount">
 			  		<fixedParams>
 			  			<filter>
@@ -21,7 +21,7 @@
 
         <!--Actual Loots-->
 			  <li>
-			  	<weight>1</weight>
+			  	<weight>8</weight>
 			  	<thingSetMaker Class="ThingSetMaker_StackCount">
 			  		<fixedParams>
 			  			<filter>
@@ -29,7 +29,7 @@
 			  					<li>MechReinforcer</li>
 			  				</thingDefs>
 			  			</filter>
-			  			<countRange>2~7</countRange>
+			  			<countRange>1~4</countRange>
 			  		</fixedParams>
 			  	</thingSetMaker>
 			  </li>
@@ -43,7 +43,7 @@
       <options>
         <!-- Fail -->
 			  <li>
-			  	<weight>2</weight>
+			  	<weight>1</weight>
 			  	<thingSetMaker Class="ThingSetMaker_StackCount">
 			  		<fixedParams>
 			  			<filter>
@@ -58,7 +58,7 @@
 
         <!--Actual Loots-->
 			  <li>
-			  	<weight>1</weight>
+			  	<weight>9</weight>
 			  	<thingSetMaker Class="ThingSetMaker_StackCount">
 			  		<fixedParams>
 			  			<filter>

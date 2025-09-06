@@ -20,7 +20,7 @@ namespace InfiniteReinforce
         {
             return delegate ()
             {
-                bool res = comp.ReinforceCustom(def, level);
+                bool res = comp.ReinforceCustom(def, level, multiplier);
                 return res;
             };
         }

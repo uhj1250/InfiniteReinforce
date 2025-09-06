@@ -1,3 +1,10 @@
+Version 1.2.1.0
+ - Fixed reinforcer requires wrong materials in some cases
+ - Fixed queued reinforces not loaded
+ - Increased ancient reinforcer loots
+ - Added inspector tab
+ - Minor bug fixes
+
 Version 1.2.0.7
  - Added advanced reinforcer that consumes persona core
    - You can upgrade a normal reinforcer with a persona core within an orbital trade beacon range

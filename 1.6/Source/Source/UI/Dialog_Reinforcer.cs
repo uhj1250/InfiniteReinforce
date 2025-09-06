@@ -465,10 +465,18 @@ namespace InfiniteReinforce
                 {
                     case Building_Reinforcer.ReinforceTarget.Equipment:
                     default:
-                        building.Target = Building_Reinforcer.ReinforceTarget.Mechanoid;
+                        if (building.HoldingThing.HasComp<CompTurretGun>())
+                        {
+                            building.InsertedTurret();
+                            break;
+                        }
+                        else goto case Building_Reinforcer.ReinforceTarget.Turret;
+                    case Building_Reinforcer.ReinforceTarget.Turret:
+                        building.InsertedMechanoid();
                         break;
                     case Building_Reinforcer.ReinforceTarget.Mechanoid:
-                        building.Target = Building_Reinforcer.ReinforceTarget.Equipment;
+                        building.InsertedEquipment();
+
                         break;
                 }
                 ChangeBuilding(building);

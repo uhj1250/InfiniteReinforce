@@ -22,9 +22,12 @@ namespace InfiniteReinforce
         protected Dictionary<ReinforceDef, int> customcount = new Dictionary<ReinforceDef, int>();
         protected IRDifficultFlag difficult;
         public int Reinforced { get => reinforced; protected set => reinforced = value; }
-
         public int Discount { get => discount; protected set => discount = value; }
         public bool Hide { get; set; }
+        public List<StatDef> StatReinforceList => reinforcedcount.Keys.ToList();
+        public List<ReinforceDef> CustomReinforceList => customcount.Keys.ToList();
+
+
         public int ReinforcedCount
         {
             get
@@ -38,11 +41,13 @@ namespace InfiniteReinforce
             get
             {
                 return CostMultiplierOf(Reinforced);
+
             }
         }
 
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
+            
             Hide = ShouldHide();
         }
 
@@ -199,7 +204,7 @@ namespace InfiniteReinforce
             return true;
         }
 
-        public bool ReinforceCustom(ReinforceDef def, int level)
+        public bool ReinforceCustom(ReinforceDef def, int level, float multiplier)
         {
             if (!custom.ContainsKey(def))
             {
@@ -207,7 +212,7 @@ namespace InfiniteReinforce
                 customcount.Add(def, 0);
             }
 
-            custom[def] += def.offsetPerLevel * level;
+            custom[def] += def.offsetPerLevel * level * multiplier;
             customcount[def]++;
             Reinforce();
             return true;
