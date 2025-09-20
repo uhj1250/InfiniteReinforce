@@ -9,9 +9,10 @@
   <AncientReinforcer.comps.1.fuelLabel>강화 기계입자</AncientReinforcer.comps.1.fuelLabel>
   <AncientReinforcer.comps.1.fuelGizmoLabel>강화 기계입자</AncientReinforcer.comps.1.fuelGizmoLabel>
   <AdvancedEquipmentReinforcer.label>고급 강화기</AdvancedEquipmentReinforcer.label>
-  <AdvancedEquipmentReinforcer.description>인공자아 핵으로 강화된 강화기입니다.&#10;&#10;기존의 강화기보다 신뢰성있으며 가끔 강화비용이 증가하는것을 막아줍니다. 대신 그로인해 인공자아 핵이 조금씩 손상되며 교체가 필요합니다.</AdvancedEquipmentReinforcer.description>
+  <AdvancedEquipmentReinforcer.description>인공자아 핵을 활용하기위해 강화된 강화기입니다.&#10;&#10;기존의 강화기보다 신뢰성있으며 가끔 강화비용이 증가하는것을 막아줍니다. 대신 그로인해 인공자아 핵이 조금씩 손상되며 교체가 필요합니다.&#10;&#10;인공자아 핵이 없다면 일반 강화기와 동일합니다.</AdvancedEquipmentReinforcer.description>
   <AdvancedEquipmentReinforcer.comps.1.fuelLabel>인공자아 핵 내구도</AdvancedEquipmentReinforcer.comps.1.fuelLabel>
   <AdvancedEquipmentReinforcer.comps.1.fuelGizmoLabel>인공자아 핵 내구도</AdvancedEquipmentReinforcer.comps.1.fuelGizmoLabel>
-  
 
+  <UpgradeReinforcer.label>강화기 업그레이드</UpgradeReinforcer.label>
+  <UpgradeReinforcer.description>업그레이드</UpgradeReinforcer.description>
 </LanguageData>

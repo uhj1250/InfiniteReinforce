@@ -1,3 +1,9 @@
+Version 1.2.1.1
+ - UI improvements
+ - Now the reinforcer upgrade places a blueprint instead of instantly upgrading
+ - Changed cost of advanced reinforcer
+ - The persona core quest can be issued after the microelectronics research
+
 Version 1.2.1.0
  - Fixed reinforcer requires wrong materials in some cases
  - Fixed queued reinforces not loaded

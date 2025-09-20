@@ -491,6 +491,11 @@ namespace InfiniteReinforce
             return Rand.Range(min, max);
         }
 
+
+
+
+
+
         public class ReinforceInstance : IExposable
         {
             public struct Reinforcement : IExposable
@@ -539,11 +544,50 @@ namespace InfiniteReinforce
                 }
             }
 
+            public struct ReinforceRecord : IExposable
+            {
+                public ThingDef thingDef;
+                public ThingDef stuff;
+                public ThingStyleDef styleDef;
+                public string resultstring;
+                public float rolled;
+                public float chance;
+
+                public Thing thing
+                {
+                    set
+                    {
+                        if (value != null)
+                        {
+                            thingDef = value.def;
+                            stuff = value.Stuff;
+                            styleDef = value.StyleDef;
+                        }
+                    }
+                }
+
+                public override string ToString()
+                {
+                    return String.Format("{0} {1:0.0}/{2:0.0}", resultstring, rolled, chance);
+                }
+
+                public void ExposeData()
+                {
+                    Scribe_Defs.Look(ref thingDef, "thingDef");
+                    Scribe_Defs.Look(ref stuff, "stuff");
+                    Scribe_Defs.Look(ref styleDef, "styleDef");
+                    Scribe_Values.Look(ref resultstring, "resultstring");
+                    Scribe_Values.Look(ref rolled, "rolled");
+                    Scribe_Values.Look(ref chance, "chance");
+                }
+            }
+
             private float progress;
             private float progressmultiplier = 1.0f;
             private Building_Reinforcer parent;
             private bool? successed = null;
-            protected List<string> reinforcehistory = new List<string>();
+            //protected List<string> reinforcehistory = new List<string>();
+            protected List<ReinforceRecord> records = new List<ReinforceRecord>();
             protected Queue<Reinforcement> reinforcementqueue = new Queue<Reinforcement>();
             
             public int QueueCount
@@ -588,7 +632,8 @@ namespace InfiniteReinforce
                 Scribe_Values.Look(ref progress, "progress", 0, true);
                 Scribe_Values.Look(ref progressmultiplier, "progressmultiplier", 1.0f, true);
                 Scribe_References.Look(ref parent, "parent", true);
-                Scribe_Collections.Look(ref reinforcehistory, "reinforcehistory", LookMode.Value);
+                //Scribe_Collections.Look(ref reinforcehistory, "reinforcehistory", LookMode.Value);
+                Scribe_Collections.Look(ref records, "records", LookMode.Deep);
                 if (Scribe.mode == LoadSaveMode.LoadingVars)
                 {
                     List<Reinforcement> queuetemp = new List<Reinforcement>();
@@ -603,7 +648,14 @@ namespace InfiniteReinforce
                 }
             }
 
-            public ReadOnlyCollection<string> History => reinforcehistory.AsReadOnly();
+            public List<ReinforceRecord> Records
+            {
+                get
+                {
+                    if (records.NullOrEmpty()) records = new List<ReinforceRecord>();
+                    return records;
+                }
+            }
 
 
             public ReinforceInstance() { }
@@ -770,7 +822,7 @@ namespace InfiniteReinforce
                 {
                     float rolled = 100f; float chance = 0f;
                     successed = reinforcement.alwaysSuccess || !Comp.RollFailure(out rolled,out chance, parent.GetFailureMultiplier(reinforcement));
-                    string chancestring = String.Format("{0:0.0}/{1:0.0}", rolled,chance);
+                    //string chancestring = String.Format("{0:0.0}/{1:0.0}", rolled,chance);
 
                     
                     if (!parent.ConsumeMaterials(reinforcement))
@@ -781,28 +833,28 @@ namespace InfiniteReinforce
                         return false;
                     }
 
-                    if (reinforcehistory.Count > 30)
+                    if (records.Count > 30)
                     {
-                        reinforcehistory.RemoveAt(0);
+                        records.RemoveAt(0);
                     }
                     if (successed ?? false)
                     {
                         switch (reinforcement.type)
                         {
                             case ReinforceType.Stat:
-                                StatReinforce(reinforcement, chancestring);
+                                StatReinforce(reinforcement, rolled, chance);
                                 break;
                             case ReinforceType.Special:
-                                SpecialReifnorce(reinforcement, chancestring);
+                                SpecialReifnorce(reinforcement, rolled, chance);
                                 break;
                             case ReinforceType.Custom:
-                                CustomReinforce(reinforcement, chancestring);
+                                CustomReinforce(reinforcement, rolled, chance);
                                 break;
                             default:
                                 CleanUp();
                                 return false;
                         }
-                        if (reinforcehistory.Count > 30) reinforcehistory.RemoveAt(0);
+                        if (records.Count > 30) records.RemoveAt(0);
                         ReinforceDefOf.Reinforce_Success.PlayOneShot(parent);
                         CleanUp();
                         parent.ReinforceCompleted?.Invoke(parent, EventArgs.Empty);
@@ -812,8 +864,14 @@ namespace InfiniteReinforce
                     {
                         int[] weights = Comp.GetFailureWeights(out int totalweight);
                         ReinforceFailureResult effect = parent.FailureEffect(totalweight, weights);
-                        reinforcehistory.Add(Keyed.Failed.CapitalizeFirst() + " - " + effect.Translate() + "  " + chancestring);
-                        if (reinforcehistory.Count > 30) reinforcehistory.RemoveAt(0);
+                        records.Add(new ReinforceRecord
+                        {
+                            thing = parent.TargetThing,
+                            resultstring = Keyed.Failed.CapitalizeFirst() + " - " + effect.Translate(),
+                            rolled = rolled,
+                            chance = chance
+                        });
+                        if (records.Count > 30) records.RemoveAt(0);
                         CleanUp();
                         parent.ReinforceCompleted?.Invoke(parent, EventArgs.Empty);
                         return false;
@@ -826,28 +884,46 @@ namespace InfiniteReinforce
 
 
 
-            private void StatReinforce(Reinforcement reinforcement, string chancestring)
+            private void StatReinforce(Reinforcement reinforcement, float rolled, float chance)
             {
                 int level = parent.RollReinforceLevel(1,26);
                 StatDef stat = (StatDef)reinforcement.reinforcedef;
                 parent.TargetReinforceComp.ReinforceStat(stat, level, parent.EffectiveMultiplier);
-                reinforcehistory.Add(stat.label + " " + (parent.EffectiveMultiplier * level * stat.GetOffsetPerLevel() * 100).ToString("+#;-#;0") + "%  " + chancestring);
+                records.Add(new ReinforceRecord 
+                {
+                    thing = parent.TargetThing,
+                    resultstring = stat.label + " " + (parent.EffectiveMultiplier * level * stat.GetOffsetPerLevel() * 100).ToString("+#;-#;0") + "%",
+                    rolled = rolled,
+                    chance = chance
+                });
                 stat.Worker.TryClearCache();
             }
 
-            private void SpecialReifnorce(Reinforcement reinforcement, string chancestring)
+            private void SpecialReifnorce(Reinforcement reinforcement, float rolled, float chance)
             {
                 IReinforceSpecialOption option = (IReinforceSpecialOption)Activator.CreateInstance(reinforcement.optiontype);
                 option.Reinforce(parent.TargetReinforceComp)();
-                reinforcehistory.Add(option.LabelLeft(parent.TargetReinforceComp) + "  " + chancestring);
+                records.Add(new ReinforceRecord
+                {
+                    thing = parent.TargetThing,
+                    resultstring = option.LabelLeft(parent.TargetReinforceComp),
+                    rolled = rolled,
+                    chance = chance
+                });
             }
             
-            private void CustomReinforce(Reinforcement reinforcement, string chancestring)
+            private void CustomReinforce(Reinforcement reinforcement, float rolled, float chance)
             {
                 ReinforceDef def = ((ReinforceDef)reinforcement.reinforcedef);
                 int level = parent.RollReinforceLevel(def.levelRange.min, def.levelRange.max);
                 def.Worker.Reinforce(parent.TargetReinforceComp, level, parent.EffectiveMultiplier)();
-                reinforcehistory.Add(def.Worker.ResultString(level) + "  " + chancestring);
+                records.Add(new ReinforceRecord
+                {
+                    thing = parent.TargetThing,
+                    resultstring = def.Worker.ResultString(level),
+                    rolled = rolled,
+                    chance = chance
+                });
             }
 
             public void Tick(float progression)
@@ -997,17 +1073,6 @@ namespace InfiniteReinforce
         
     }
 
-
-    public class ReinDeer : IDisposable
-    {
-        public void Dispose()
-        {
-            
-        }
-        
-
-
-    }
 
 
 

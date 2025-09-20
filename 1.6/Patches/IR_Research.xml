@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Patch>
+
+  	<Operation Class="PatchOperationConditional">
+  	  <xpath>Defs/ResearchProjectDef[defName="MicroelectronicsBasics"]/tags</xpath>
+  	  <nomatch Class="PatchOperationAdd">
+  	    <xpath>Defs/ResearchProjectDef[defName="MicroelectronicsBasics"]</xpath>
+  	    <value>
+  	      <tags />
+  	    </value>
+  	  </nomatch>
+  	</Operation>
+
+	<Operation Class="PatchOperationAdd">
+		<xpath>Defs/ResearchProjectDef[defName="MicroelectronicsBasics"]/tags</xpath>
+		<value>
+      		<li>ShipRelated</li>
+		</value>
+	</Operation>
+
+</Patch>

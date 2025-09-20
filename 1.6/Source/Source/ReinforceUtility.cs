@@ -287,6 +287,16 @@ namespace InfiniteReinforce
             return IRConfig.BaseWeights;
         }
 
+        public static string FailureInfo(this ThingComp_Reinforce comp)
+        {
+            int[] weights = comp.GetFailureWeights(out int totalweight);
+            return String.Format(Keyed.Failure + (float)weights[0] / totalweight * 100 + "%" + "\n" +
+                Keyed.MinorDamage + (float)weights[1] / totalweight * 100 + "%" + "\n" +
+                Keyed.MajorDamage + (float)weights[2] / totalweight * 100 + "%" + "\n" +
+                Keyed.Explosion + (float)weights[3] / totalweight * 100 + "%" + "\n" +
+                Keyed.Destruction + (float)weights[4] / totalweight * 100 + "%" + "");
+        }
+
         public static bool LowerIsBetter(this StatDef stat)
         {
             if (LowerBetter == null)

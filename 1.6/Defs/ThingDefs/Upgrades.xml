@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+  <InfiniteReinforce.UpgradeDef ParentName="BuildingBase">
+    <defName>UpgradeReinforcer</defName>
+    <label>upgrade reinforcer</label>
+    <description>an upgrade</description>
+    <thingClass>InfiniteReinforce.UpgradeThing_Building</thingClass>
+    <resultThingDef>AdvancedEquipmentReinforcer</resultThingDef>
+    <graphicData>
+      <texPath>Things/Building/Reinforcer/Reinforcer</texPath>
+      <graphicClass>Graphic_Multi</graphicClass>
+      <shadowData>
+        <volume>(2.9,0.6,1.9)</volume>
+      </shadowData>
+      <drawSize>(3, 2)</drawSize>
+    </graphicData>
+    <statBases>
+      <MaxHitPoints>300</MaxHitPoints>
+      <WorkToBuild>7000</WorkToBuild>
+      <Mass>75</Mass>
+      <Flammability>0.1</Flammability>
+      <Beauty>-5</Beauty>
+    </statBases>
+    <costList>
+        <Plasteel>25</Plasteel>
+        <ComponentSpacer>1</ComponentSpacer>
+    </costList>
+  </InfiniteReinforce.UpgradeDef>
+
+</Defs>

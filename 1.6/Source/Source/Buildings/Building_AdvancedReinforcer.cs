@@ -185,6 +185,7 @@ namespace InfiniteReinforce
                 val = Mathf.Floor(posnormalized.DeNormalize(min, max) * 100f) / 100f;
                 if (!Input.GetMouseButton(0))
                 {
+
                     clicked = false;
                 }
             }

@@ -366,7 +366,7 @@ namespace InfiniteReinforce
             GUI.Label(failureRect, String.Format(Keyed.FailureChance + " {0:0.00}%", chance), fontright);
             
             GUI.color = Color.white;
-            TooltipHandler.TipRegion(failureRect, FailureInfo());
+            TooltipHandler.TipRegion(failureRect, comp.FailureInfo());
 
             Rect btnRect = new Rect(failureRect.x, failureRect.y, FontHeight, FontHeight);
             if (Widgets.ButtonImage(btnRect, IconCache.Plus, true))
@@ -433,7 +433,7 @@ namespace InfiniteReinforce
             GUI.Box(iconRect, "", box);
 
             GUI.color = thing.DrawColor;
-            Widgets.DrawTextureFitted(iconRect, thing.def.uiIcon, 1.0f);
+            Widgets.DrawTextureFitted(iconRect, Widgets.GetIconFor(thing.def, thing.Stuff, thing.StyleDef), 1.0f);
             GUI.color = Color.white;
 
             GUI.Label(labelRect, " " + thing.Label.CapitalizeFirst(), fontleft);
@@ -490,9 +490,9 @@ namespace InfiniteReinforce
             
             listmain.Begin(rect.ContractedBy(4f));
             
-            for (int i = Instance.History.Count - 1; i >= 0; i--)
+            for (int i = Instance.Records.Count - 1; i >= 0; i--)
             {
-                listmain.Label(Instance.History[i]);
+                ReinforceUIUtility.DrawReinforceRecord(listmain.GetRect(FontHeight), Instance.Records[i]);
             }
 
             listmain.End();
@@ -549,45 +549,12 @@ namespace InfiniteReinforce
             Color costColor = stackcount < cost ? Color.red : Color.green;
             Widgets.DefLabelWithIcon(rect, def);
             GUI.Label(rowRight, stackcount + ", " + "Required".Translate().CapitalizeFirst() + ": " + cost + " ", fontright);
-
+            
             GUI.color = costColor;
             Widgets.DrawHighlight(rect);
             GUI.color = Color.white;
         }
 
-        protected string FailureInfo()
-        {
-            int[] weights = comp.GetFailureWeights(out int totalweight);
-            return String.Format(Keyed.Failure + (float)weights[0] / totalweight * 100 + "%" + "\n" +
-                Keyed.MinorDamage + (float)weights[1] / totalweight * 100 + "%" + "\n" +
-                Keyed.MajorDamage + (float)weights[2] / totalweight * 100 + "%" + "\n" +
-                Keyed.Explosion + (float)weights[3] / totalweight * 100 + "%" + "\n" +
-                Keyed.Destruction + (float)weights[4] / totalweight * 100 + "%" + "");
-            
-            //Widgets.DrawMenuSection(rect);
-            //Listing_Standard listmain = new Listing_Standard();
-            //listmain.Begin(rect.ContractedBy(4f));
-            //Rect temp = listmain.GetRect(FontHeight);
-            //GUI.Label(temp, Keyed.Failure, fontleft);
-            //GUI.Label(temp, (float)weights[0]/totalweight*100 + "%", fontright);
-            //
-            //temp = listmain.GetRect(FontHeight);
-            //GUI.Label(temp, Keyed.MinorDamage, fontleft);
-            //GUI.Label(temp, (float)weights[1] / totalweight*100 + "%", fontright);
-            //
-            //temp = listmain.GetRect(FontHeight);
-            //GUI.Label(temp, Keyed.MajorDamage, fontleft);
-            //GUI.Label(temp, (float)weights[2] / totalweight*100 + "%", fontright);
-            //
-            //temp = listmain.GetRect(FontHeight);
-            //GUI.Label(temp, Keyed.Explosion, fontleft);
-            //GUI.Label(temp, (float)weights[3] / totalweight*100 + "%", fontright);
-            //
-            //temp = listmain.GetRect(FontHeight);
-            //GUI.Label(temp, Keyed.Destruction, fontleft);
-            //GUI.Label(temp, (float)weights[4] / totalweight*100 + "%", fontright);
-            //listmain.End();
-        }
 
         protected void QueueInfo(Rect rect)
         {

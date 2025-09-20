@@ -75,10 +75,7 @@
       </li>
       <li Class="InfiniteReinforce.CompProperties_UpgradeThing">
         <compClass>InfiniteReinforce.ThingComp_Upgrade_Reinforcer</compClass>
-        <thingDef>AdvancedEquipmentReinforcer</thingDef>
-        <cost>
-          <AIPersonaCore>1</AIPersonaCore>
-        </cost>
+        <upgradeDef>UpgradeReinforcer</upgradeDef>
       </li>
     </comps>
   </ThingDef>
@@ -86,7 +83,7 @@
   <ThingDef ParentName="ReinforcerBase">
     <defName>AdvancedEquipmentReinforcer</defName>
     <label>advanced equipment reinforcer</label>
-    <description>An enhanced reinforcer that is upgraded with persona core.&#10;&#10;This can reinforce more reliable than normal one, but this will cause damage on the persona core. In addition, this can prevent cost increments sometimes.</description>
+    <description>An enhanced reinforcer that is upgraded to utilize persona cores.&#10;&#10;This can reinforce more reliable than normal one, but this will cause damage on the persona core. In addition, this can prevent cost increments sometimes.&#10;&#10;Without the core, this will act the same as the normal version.</description>
     <thingClass>InfiniteReinforce.Building_AdvancedReinforcer</thingClass>
     <graphicData>
       <texPath>Things/Building/AdvancedReinforcer/AdvancedReinforcer</texPath>
@@ -103,9 +100,16 @@
     </thingCategories>
     <costList>
       <Steel>250</Steel>
-      <Plasteel>75</Plasteel>
+      <Plasteel>100</Plasteel>
       <ComponentSpacer>2</ComponentSpacer>
     </costList>
+    <statBases>
+      <MaxHitPoints>350</MaxHitPoints>
+      <WorkToBuild>30000</WorkToBuild>
+      <Mass>80</Mass>
+      <Flammability>0.1</Flammability>
+      <Beauty>-1</Beauty>
+    </statBases>
     <comps>
       <li Class="CompProperties_Power">
         <compClass>CompPowerTrader</compClass>
@@ -114,7 +118,7 @@
       <li Class="InfiniteReinforce.CompProperties_ReinforceFuel">
         <fuelLabel>Core durability</fuelLabel>
         <fuelGizmoLabel>Core durability</fuelGizmoLabel>
-        <fuelCapacity>15000.0</fuelCapacity>
+        <fuelCapacity>20000.0</fuelCapacity>
         <fuelMultiplier>10000.0</fuelMultiplier>
         <fuelConsumptionPerReinforce>1.0</fuelConsumptionPerReinforce>
         <alwaysSuccess>true</alwaysSuccess>
@@ -177,9 +181,9 @@
     <statBases>
       <MaxHitPoints>250</MaxHitPoints>
       <WorkToBuild>25000</WorkToBuild>
-      <Mass>75</Mass>
+      <Mass>65</Mass>
       <Flammability>0.1</Flammability>
-      <Beauty>-5</Beauty>
+      <Beauty>-4</Beauty>
     </statBases>
     <comps>
       <li Class="CompProperties_Power">
