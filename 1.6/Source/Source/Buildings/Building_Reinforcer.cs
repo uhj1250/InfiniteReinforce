@@ -803,9 +803,6 @@ namespace InfiniteReinforce
                 return SetUp();
                 
             }
-            
-            
-            
 
             public bool CompleteReinforce()
             {
@@ -892,7 +889,7 @@ namespace InfiniteReinforce
                 records.Add(new ReinforceRecord 
                 {
                     thing = parent.TargetThing,
-                    resultstring = stat.label + " " + (parent.EffectiveMultiplier * level * stat.GetOffsetPerLevel() * 100).ToString("+#;-#;0") + "%",
+                    resultstring = Keyed.ReinforceResult(stat.label, parent.EffectiveMultiplier * level * stat.GetOffsetPerLevel()),
                     rolled = rolled,
                     chance = chance
                 });
@@ -952,7 +949,7 @@ namespace InfiniteReinforce
                         return false;
                 }
             }
-
+            
             protected bool InsertMaterials(Reinforcement reinforcement)
             {
                 if (InvalidReinforcement(reinforcement))
@@ -972,7 +969,6 @@ namespace InfiniteReinforce
                     SoftReset();
                     return false;
                 }
-
             }
 
             protected bool CheckAndInsertMaterials(List<ThingDefCountClass> costlist, CostMode costMode)
@@ -988,12 +984,9 @@ namespace InfiniteReinforce
                     //IEnumerable<Thing> materials = TradeUtility.AllLaunchableThingsForTrade(parent.Map);
                     if (parent.Map.GetThingsNearBeacon(out List<Thing> materials))
                     {
-
                         List<Thing>[] thingtoinsert = new List<Thing>[costlist.Count];
 
-
                         ThingDef stuff = costMode == CostMode.SameThing ? parent.TargetThing.Stuff : null;
-
 
                         for (int i = 0; i < costlist.Count; i++)
                         {

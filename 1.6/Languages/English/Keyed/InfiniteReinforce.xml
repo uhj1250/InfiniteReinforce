@@ -75,4 +75,6 @@
   <IR.ReliableAdjConfigDesc>The minimum effect increases towards maximum effectiveness at this value, with an exchange of core durability.</IR.ReliableAdjConfigDesc>
 
   <IR.Reinforcement>Upgrades</IR.Reinforcement>
+  <IR.Normal>Normal</IR.Normal>
+  <IR.MustEmpty>The reinforcer must be empty</IR.MustEmpty>
 </LanguageData>

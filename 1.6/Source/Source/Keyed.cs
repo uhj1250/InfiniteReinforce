@@ -1,10 +1,11 @@
-﻿using System;
+﻿using RimWorld;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using Verse;
-using RimWorld;
 
 
 namespace InfiniteReinforce
@@ -17,6 +18,8 @@ namespace InfiniteReinforce
         public static string FailedDamaged(string thing) => "IR.FailedDamaged".Translate(thing).CapitalizeFirst();
         public static string FailedExplosion(string building) => "IR.FailedExplosion".Translate(building).CapitalizeFirst();
         public static string FailedDestroy(string thing) => "IR.FailedDestroy".Translate(thing).CapitalizeFirst();
+        public static string ReinforceResult(string label, float offset) => String.Format("{0} {1:+#;-#;0}%", label, offset * 100);
+
 
         public static string Translate(this ReinforceFailureResult result)
         {
@@ -41,7 +44,7 @@ namespace InfiniteReinforce
             switch (flag)
             {
                 case IRDifficultFlag.None:
-                    return "None".Translate();
+                    return "IR.Normal".Translate();
                 case IRDifficultFlag.Baby:
                     return Baby;
                 case IRDifficultFlag.Weenie:

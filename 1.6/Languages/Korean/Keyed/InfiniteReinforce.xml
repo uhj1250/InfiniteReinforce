@@ -77,5 +77,7 @@
   <IR.ReliableAdjConfigDesc>인공자아 핵의 내구도를 추가로 소모하여 이 수치만큼 강화효과의 최소값을 보정합니다.</IR.ReliableAdjConfigDesc>
   
   <IR.Reinforcement>강화</IR.Reinforcement>
+  <IR.Normal>보통</IR.Normal>
+  <IR.MustEmpty>강화기가 비어있어야합니다</IR.MustEmpty>
   
 </LanguageData>

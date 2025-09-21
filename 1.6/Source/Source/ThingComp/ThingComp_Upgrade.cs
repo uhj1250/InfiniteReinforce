@@ -16,6 +16,7 @@ namespace InfiniteReinforce
     public abstract class CompProperties_Upgrade : CompProperties
     {
         public UpgradeDef upgradeDef;
+        public ResearchProjectDef prerequisite;
         public List<ThingDefCountClass> Cost => upgradeDef.CostList;
     }
 
@@ -40,15 +41,21 @@ namespace InfiniteReinforce
         {
             if (upgradeDef != null)
             {
-                MethodInfo methodbp = typeof(ThingDefGenerator_Buildings).GetMethod("NewBlueprintDef_Thing", BindingFlags.Static | BindingFlags.NonPublic);
-                ThingDef blueprintDef = methodbp.Invoke(null, new object[] { upgradeDef, false, null, false}) as ThingDef;
-                blueprintDef.size = upgradeDef.Size;
+                if (upgradeDef.blueprintDef == null)
+                {
+                    MethodInfo methodbp = typeof(ThingDefGenerator_Buildings).GetMethod("NewBlueprintDef_Thing", BindingFlags.Static | BindingFlags.NonPublic);
+                    ThingDef blueprintDef = methodbp.Invoke(null, new object[] { upgradeDef, false, null, false }) as ThingDef;
+                    blueprintDef.size = upgradeDef.Size;
+                }
 
-                MethodInfo method = typeof(ThingDefGenerator_Buildings).GetMethod("NewFrameDef_Thing", BindingFlags.Static | BindingFlags.NonPublic);
-                ThingDef frameDef = method.Invoke(null, new object[] { upgradeDef, false }) as ThingDef;
-                frameDef.defName = FrameDefName;
-                frameDef.size = upgradeDef.Size;
-                DefDatabase<ThingDef>.Add(frameDef);
+                if (DefDatabase<ThingDef>.GetNamedSilentFail(FrameDefName) == null)
+                {
+                    MethodInfo method = typeof(ThingDefGenerator_Buildings).GetMethod("NewFrameDef_Thing", BindingFlags.Static | BindingFlags.NonPublic);
+                    ThingDef frameDef = method.Invoke(null, new object[] { upgradeDef, false }) as ThingDef;
+                    frameDef.defName = FrameDefName;
+                    frameDef.size = upgradeDef.Size;
+                    DefDatabase<ThingDef>.Add(frameDef);
+                }
             }
         }
 
@@ -67,14 +74,14 @@ namespace InfiniteReinforce
         protected abstract void TryUpgrade();
         protected abstract string UpgradeLabel { get; }
         protected abstract string UpgradeDesc { get; }
-        protected abstract bool Disable { get; }
-        protected abstract string DisabledReason { get; }
 
         public override IEnumerable<Gizmo> CompGetGizmosExtra()
         {
-            yield return CreateExtractItemGizmo();
+            if (Props.prerequisite == null || Props.prerequisite.IsFinished)
+                yield return CreateExtractItemGizmo();
         }
 
+        public abstract bool Disabled(out string disabledReason);
 
         protected Gizmo CreateExtractItemGizmo()
         {
@@ -83,8 +90,8 @@ namespace InfiniteReinforce
                 icon = IconCache.Upgrade,
                 defaultLabel = UpgradeLabel,
                 defaultDesc = UpgradeDesc,
-                Disabled = Disable,
-                disabledReason = DisabledReason,
+                Disabled = Disabled(out string disabledReason),
+                disabledReason = disabledReason,
                 action = TryUpgrade
             };
             return gizmo;
@@ -97,31 +104,13 @@ namespace InfiniteReinforce
 
         Building_Reinforcer Parent => parent as Building_Reinforcer;
 
-        protected override bool Disable { get => Parent.HoldingThing != null; }
-
-        protected override string DisabledReason => "The reinforcer must be empty";
-
         protected override string UpgradeLabel => Keyed.Upgrade;
 
-        protected override string UpgradeDesc => Keyed.UpgradeDesc + "\n" + Keyed.Materials + ": " + Props.Cost[0].thingDef.label + " x" + Props.Cost[0].count;
+        protected override string UpgradeDesc => Keyed.UpgradeDesc + "\n" + Keyed.Materials + ": " + String.Join("\n", Props.Cost.Select(x => x.Summary).ToList());
 
         protected override void TryUpgrade()
         {
             Upgrade();
-
-
-            //if (parent.Map.GetThingsNearBeacon(out List<Thing> things) && things.CountThingInCollection(Props.Cost[0].thingDef) >= Props.Cost[0].count)
-            //{
-            //    List<Thing> materials = things.GetThingsOfType(Props.Cost[0].thingDef, Props.Cost[0].count);
-            //    //foreach (var thing in materials) { thing.Destroy(); }
-            //    Upgrade(materials);
-            //}
-            //else
-            //{
-            //    SoundDefOf.ClickReject.PlayOneShotOnCamera();
-            //    Messages.Message(Keyed.NotEnough + ": " + Props.Cost[0].thingDef.label, parent, MessageTypeDefOf.RejectInput);
-            //}
-
         }
 
         private void Upgrade()
@@ -131,14 +120,19 @@ namespace InfiniteReinforce
             GenSpawn.Spawn(frame, parent.Position, parent.Map, parent.Rotation);
 
             frame.resourceContainer.TryAddOrTransfer(parent.MakeMinified(), true);
-            //Thing thing = ThingMaker.MakeThing(Props.thingDef);
-            //if (thing.HasComp<CompRefuelable>()) thing.TryGetComp<CompRefuelable>().Refuel(Props.cost[0].count);
-            //thing.SetFaction(parent.Faction);
-            //GenSpawn.Spawn(thing, parent.Position, parent.Map, parent.Rotation);
-            //ReinforceDefOf.Reinforce_Success.PlayOneShot(thing);
         }
 
-        
+        public override bool Disabled(out string disabledReason)
+        {
+            if (Parent.HoldingThing != null)
+            {
+                disabledReason = "IR.MustEmpty".Translate();
+                return true;
+            }
+            disabledReason = null;
+            return false;
+        }
+
 
     }
 

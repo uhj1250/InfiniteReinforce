@@ -76,6 +76,7 @@
       <li Class="InfiniteReinforce.CompProperties_UpgradeThing">
         <compClass>InfiniteReinforce.ThingComp_Upgrade_Reinforcer</compClass>
         <upgradeDef>UpgradeReinforcer</upgradeDef>
+        <prerequisite>AdvancedReinforcer</prerequisite>
       </li>
     </comps>
   </ThingDef>

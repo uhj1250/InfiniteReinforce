@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+  <ResearchProjectDef>
+    <defName>AdvancedReinforcer</defName>
+    <label>advanced reinforcer</label>
+    <description>Upgrade reinforcers to advanced reinforcers.</description>
+    <baseCost>3000</baseCost>
+    <techLevel>Spacer</techLevel>
+    <prerequisites>
+      <li>AdvancedFabrication</li>
+    </prerequisites>
+    <requiredResearchBuilding>HiTechResearchBench</requiredResearchBuilding>
+    <requiredResearchFacilities>
+      <li>MultiAnalyzer</li>
+    </requiredResearchFacilities>
+    <researchViewX>20.00</researchViewX>
+    <researchViewY>2.50</researchViewY>
+    <generalRules>
+      <rulesStrings>
+        <li>subject->advanced reinforcer</li>
+
+        <li>subject_story->better reinforce</li>
+
+        <li>subject_gerund->upgrading reinforcer</li>
+      </rulesStrings>
+    </generalRules>
+    <tags>
+      <li>ShipRelated</li>
+    </tags>
+  </ResearchProjectDef>
+</Defs>

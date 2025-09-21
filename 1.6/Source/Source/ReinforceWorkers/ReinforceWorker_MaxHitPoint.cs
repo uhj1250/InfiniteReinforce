@@ -24,7 +24,6 @@ namespace InfiniteReinforce
                 bool res = comp.ReinforceStat(StatDefOf.MaxHitPoints, level, multiplier);
                 delta = (int)comp.parent.GetStatValue(StatDefOf.MaxHitPoints) - delta; 
                 comp.parent.HitPoints += delta;
-                Log.Message("delta: " + delta + " maxhitpoints: " + comp.parent.MaxHitPoints + comp.parent.Label);
                 
                 return res;
             };
@@ -32,7 +31,7 @@ namespace InfiniteReinforce
 
         public override string ResultString(int level)
         {
-            return StatDefOf.MaxHitPoints.label + " +" + def.offsetPerLevel * level * 100 + "%";
+            return Keyed.ReinforceResult(StatDefOf.MaxHitPoints.label, def.offsetPerLevel * level);
         }
 
         public override string LeftLabel(ThingComp_Reinforce comp)

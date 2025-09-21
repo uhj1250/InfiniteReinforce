@@ -33,7 +33,7 @@ namespace InfiniteReinforce
 
         public override string ResultString(int level)
         {
-            return statDef.label + " +" + def.offsetPerLevel * level * 100 + "%";
+            return Keyed.ReinforceResult(statDef.label, def.offsetPerLevel * level);
         }
 
         public override string LeftLabel(ThingComp_Reinforce comp)

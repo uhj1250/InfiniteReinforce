@@ -149,9 +149,30 @@ namespace InfiniteReinforce
 
         public override IEnumerable<StatDrawEntry> SpecialDisplayStats()
         {
-            yield return new StatDrawEntry(StatCategoryDefOf.Source, Keyed.ReinforceFlag, difficult.Translate(), Keyed.ReinforceFlagDesc, 0);
+            if (ReinforcedCount > 0)
+            yield return new StatDrawEntry(StatCategoryDefOf.Source, Keyed.ReinforceFlag, difficult.Translate(), GetReinforceReport() + Keyed.ReinforceFlagDesc + ": " + difficult.Translate(), 0);
 
 
+        }
+
+        public string GetReinforceReport()
+        {
+            string res = "";
+
+            foreach (var kv in custom)
+            {
+                res += Report(customcount[kv.Key], Keyed.ReinforceResult(kv.Key.label, kv.Value - 1.0f));
+            }
+
+            foreach (var kv in statboost)
+            {
+                res += Report(reinforcedcount[kv.Key], Keyed.ReinforceResult(kv.Key.label, kv.Value - 1.0f));
+            }
+
+
+            return res;
+
+            string Report(int count, string value) => String.Format("+{0} {1}\n", count, value);
         }
 
         public new float GetStatFactor(StatDef def)
@@ -235,6 +256,8 @@ namespace InfiniteReinforce
         {
             Discount += count;
         }
+
+
 
         public class StatDefComparer : IEqualityComparer<StatDef>
         {

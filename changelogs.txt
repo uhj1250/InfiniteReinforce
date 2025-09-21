@@ -1,3 +1,7 @@
+Version 1.2.1.2
+ - Added advanced reinforcer research after advanced fabrication
+ - Minor bug fixes
+
 Version 1.2.1.1
  - UI improvements
  - Now the reinforcer upgrade places a blueprint instead of instantly upgrading
